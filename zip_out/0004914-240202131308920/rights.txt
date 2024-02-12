@@ -1,0 +1,6 @@
+Dataset: UTEP Plants (Arctos) 
+Rights as supplied: http://creativecommons.org/publicdomain/zero/1.0/legalcode
+Dataset: The AAU Herbarium Database 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: Arizona State University Vascular Plant Herbarium 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode

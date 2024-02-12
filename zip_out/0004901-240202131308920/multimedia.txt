@@ -1,0 +1,42 @@
+gbifID	type	format	identifier	references	title	description	source	audience	created	creator	contributor	publisher	license	rightsHolder
+2516824060	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.3884276/format/large			L.3884276_01792037283							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2516733648	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.3900175/format/large			L.3900175_942923684							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515459261	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984794/format/large			L.1984794_0345310721							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515457937	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984795/format/large			L.1984795_0850869346							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515456809	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984801/format/large			L.1984801_022233416							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515456745	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984812/format/large			L.1984812_979759768							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515456626	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984789/format/large			L.1984789_085688359							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515456604	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984813/format/large			L.1984813_474201143							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515456546	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984806/format/large			L.1984806_1744940755							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515456522	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984800/format/large			L.1984800_483325209							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515456352	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984807/format/large			L.1984807_1239382130							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515456309	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984805/format/large			L.1984805_02044467916							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515456240	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984811/format/large			L.1984811_1485318393							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515456205	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984788/format/large			L.1984788_419870266							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515456120	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984748/format/large			L.1984748_01315369674							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515454061	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984743/format/large			L.1984743_1212423451							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515452973	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984799/format/large			L.1984799_1421863450							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515451742	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984747/format/large			L.1984747_0809811049							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515451665	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984796/format/large			L.1984796_01356427971							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2515170803	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.3886198/format/large			L.3886198_0865864640							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2514210936	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984797/format/large			L.1984797_01861986596							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2514209965	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984791/format/large			L.1984791_1171365154							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2514207968	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984810/format/large			L.1984810_1990877018							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2514203942	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984798/format/large			L.1984798_1927422075							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2514196955	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984808/format/large			L.1984808_733823505							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2514194954	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984787/format/large			L.1984787_925428891							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2514191966	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984745/format/large			L.1984745_201306201							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2514190968	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984792/format/large			L.1984792_665806529							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2514168941	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984809/format/large			L.1984809_228264880							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2514158953	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984814/format/large			L.1984814_031357482							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2514157979	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984744/format/large			L.1984744_706864826							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2514154931	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984804/format/large			L.1984804_01538909291							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2514134976	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984746/format/large			L.1984746_0304252424							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2514133947	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L.1984803/format/large			L.1984803_01033350666							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+2513210616	StillImage	image/jpeg	https://medialib.naturalis.nl/file/id/L0405461_MLN/format/large			L  0405461_508660527							http://creativecommons.org/publicdomain/zero/1.0/	Naturalis Biodiversity Center
+1988320263	StillImage		https://data.nhm.ac.uk/media/1d5aa584-566c-4226-8641-6df02eba07d8		BM013405246								http://creativecommons.org/licenses/by/4.0/	The Trustees of the Natural History Museum, London
+1988320147	StillImage		https://data.nhm.ac.uk/media/594249f4-04e3-48df-b5cc-1e6d174212d8		BM013405244								http://creativecommons.org/licenses/by/4.0/	The Trustees of the Natural History Museum, London
+1988320142	StillImage		https://data.nhm.ac.uk/media/90c9aedb-cec8-4a31-867f-6cc6e70cb150		BM013405239								http://creativecommons.org/licenses/by/4.0/	The Trustees of the Natural History Museum, London
+1988320140	StillImage		https://data.nhm.ac.uk/media/914a4408-8de2-4e93-abdc-58a459ed07d2		BM013405240								http://creativecommons.org/licenses/by/4.0/	The Trustees of the Natural History Museum, London
+1988320139	StillImage		https://data.nhm.ac.uk/media/94d6a348-454a-402f-97af-53cb0e764ee4		BM013405237								http://creativecommons.org/licenses/by/4.0/	The Trustees of the Natural History Museum, London
+1265743101	StillImage		https://data.nhm.ac.uk/media/2d542c7a-e1c4-4674-aa3e-0f9ff8c0c2c9		BM001191368					Jacek Wajer			http://creativecommons.org/licenses/by/4.0/	The Trustees of the Natural History Museum, London

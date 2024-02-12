@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.1 http://rs.gbif.org/schema/eml-gbif-profile/1.2/eml.xsd"
+packageId="10.15468/dl.qfb8jd"  system="http://gbif.org" scope="system"
+xml:lang="en">
+
+    <dataset>
+                <alternateIdentifier>0004901-240202131308920</alternateIdentifier>
+        <title>GBIF Occurrence Download 10.15468/dl.qfb8jd</title>
+            <creator>
+            <individualName>
+                    <surName>GBIF Download Service</surName>
+            </individualName>
+<electronicMailAddress>support@gbif.org</electronicMailAddress>            </creator>
+            <metadataProvider>
+            <individualName>
+                    <surName>GBIF Download Service</surName>
+            </individualName>
+<electronicMailAddress>support@gbif.org</electronicMailAddress>            </metadataProvider>
+            <pubDate>
+                2024-02-05
+            </pubDate>
+        <language>ENGLISH</language>
+            <abstract>
+                    <para>A dataset containing all occurrences available in GBIF matching the query:
+{
+  &quot;and&quot; : [
+    &quot;TaxonKey is Dalbergia cultrata T.S.Ralph&quot;,
+    &quot;HasCoordinate is true&quot;
+  ]
+}
+The dataset includes records from the following constituent datasets. The full metadata for each constituent is also included in this archive:
+1 records from International Barcode of Life project (iBOL)
+5 records from Harvard University Herbaria: All Records
+24 records from 2023 Contributions of Plant Specimen Data inside China
+28 records from Plant Specimen in Yunnan, China from Herbarium (PE),Institute of Botany, Chinese Academy of Sciences
+1 records from World Plant Specimen from the Herbaria in China
+38 records from Naturalis Biodiversity Center (NL) - Botany
+3 records from Some Plant Specimens from KUN, IBSC, NAS  Herbarium in China from 1900 to 1950
+6 records from Natural History Museum (London) Collection Specimens
+1 records from The AAU Herbarium Database
+1 records from 2007-2022_nibr_simpl_vp
+34 records from Digital Atlas of Trees and Wildlife in Thailand
+1 records from 500,000 plant Specimens from PE Herbarium in China from 1950 to 1999</para>
+            </abstract>
+            <contact>
+            <individualName>
+                    <surName>GBIF Download Service</surName>
+            </individualName>
+<electronicMailAddress>support@gbif.org</electronicMailAddress>            </contact>
+
+    </dataset>
+
+    <additionalMetadata>
+        <metadata>
+            <gbif>
+                <dateStamp>2024-02-05T19:20:04Z</dateStamp>
+                <citation identifier="10.15468/dl.qfb8jd">GBIF Occurrence Download 10.15468/dl.qfb8jd</citation>
+                    <physical>
+                        <objectName>Darwin Core Archive</objectName>
+                        <characterEncoding>UTF-8</characterEncoding>
+                        <dataFormat>
+                            <externallyDefinedFormat>
+                                <formatName>Darwin Core Archive</formatName>
+                            </externallyDefinedFormat>
+                        </dataFormat>
+                        <distribution>
+                            <online>
+                                <url function="download">https://api.gbif.org/v1/occurrence/download/request/0004901-240202131308920.zip</url>
+                            </online>
+                        </distribution>
+                    </physical>
+            </gbif>
+        </metadata>
+    </additionalMetadata>
+
+</eml:eml>

@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.1 http://rs.gbif.org/schema/eml-gbif-profile/1.2/eml.xsd"
+packageId="f5ba6fec-046f-465c-b67c-68a3f86187b0"  system="http://gbif.org" scope="system"
+xml:lang="es">
+
+    <dataset>
+            <alternateIdentifier>10.15472/ga1jzr</alternateIdentifier>
+                <alternateIdentifier>f5ba6fec-046f-465c-b67c-68a3f86187b0</alternateIdentifier>
+                <alternateIdentifier>https://ipt.biodiversidad.co/sib/resource?r=herbario_unillanos</alternateIdentifier>
+        <title>Herbario de la Universidad de los Llanos</title>
+            <creator>
+            <individualName>
+<givenName>Luz Stella</givenName>                    <surName>Suárez-Suárez</surName>
+            </individualName>
+<organizationName>Herbario Llanos-Universidad de los Llanos</organizationName><positionName>Directora</positionName>            <address>
+<deliveryPoint>Km 12 vía Puerto López</deliveryPoint><city>Villavicencio</city><administrativeArea>Meta</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>6616800</phone><electronicMailAddress>luz.suarez@unillanos.edu.co</electronicMailAddress>            </creator>
+            <creator>
+            <individualName>
+<givenName>Gloria Victoria</givenName>                    <surName>Castro-Rojas</surName>
+            </individualName>
+<organizationName>Universidad de los Llanos</organizationName><positionName>Docente</positionName>            <address>
+<deliveryPoint>Km 12 vía Puerto López</deliveryPoint><city>Villavicencio</city><administrativeArea>Meta</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>6616800</phone><electronicMailAddress>glovicar@unillanos.edu.co</electronicMailAddress>            </creator>
+            <creator>
+            <individualName>
+<givenName>Mónica</givenName>                    <surName>Medina-Merchan</surName>
+            </individualName>
+<organizationName>Universidad de los Llanos</organizationName><positionName>Docente</positionName>            <address>
+<deliveryPoint>Km 12 vía Puerto López</deliveryPoint><city>Villavicencio</city><administrativeArea>Meta</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>6616800</phone><electronicMailAddress>mmedina@unillanos.edu.co</electronicMailAddress>            </creator>
+            <creator>
+            <individualName>
+<givenName>Luz Mila</givenName>                    <surName>Quiñonez</surName>
+            </individualName>
+<organizationName>Universidad de los Llanos</organizationName><positionName>Docente</positionName>            <address>
+<deliveryPoint>Km 12 vía Puerto López</deliveryPoint><city>Villavicencio</city><administrativeArea>Meta</administrativeArea><country>COLOMBIA</country>            </address>
+<electronicMailAddress>luzmila@unillanos.edu.co</electronicMailAddress>            </creator>
+            <creator>
+            <individualName>
+<givenName>Martha Lucia</givenName>                    <surName>Ortiz-Moreno</surName>
+            </individualName>
+<organizationName>Universidad de los Llanos</organizationName><positionName>Docente</positionName>            <address>
+<deliveryPoint>Km 12 vía Puerto López</deliveryPoint><city>Villavicencio</city><administrativeArea>Meta</administrativeArea><country>COLOMBIA</country>            </address>
+<electronicMailAddress>mlortiz@unillanos.edu.co</electronicMailAddress>            <userId directory="http://orcid.org/">0000-0003-0172-9111</userId>
+            </creator>
+            <metadataProvider>
+            <individualName>
+<givenName>Luz Stella</givenName>                    <surName>Suárez-Suárez</surName>
+            </individualName>
+<organizationName>Universidad de los Llanos</organizationName><positionName>Docente</positionName>            <address>
+<deliveryPoint>Km 12 vía Puerto López</deliveryPoint><city>Villavicencio</city><administrativeArea>Meta</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>6616800</phone><electronicMailAddress>luz.suarez@unillanos.edu.co</electronicMailAddress>            </metadataProvider>
+            <metadataProvider>
+            <individualName>
+<givenName>Martha Lucia</givenName>                    <surName>Ortiz-Moreno</surName>
+            </individualName>
+<organizationName>Universidad de los Llanos</organizationName><positionName>Directora</positionName>            <address>
+<deliveryPoint>Km 12 vía Puerto López</deliveryPoint><city>Villavicencio</city><administrativeArea>Meta</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>6616800</phone><electronicMailAddress>mlortiz@unillanos.edu.co</electronicMailAddress>            <userId directory="http://orcid.org/">0000-0003-0172-9111</userId>
+            </metadataProvider>
+            <pubDate>
+                2023-11-16
+            </pubDate>
+        <language>SPANISH</language>
+            <abstract>
+                    <para>El Herbario de la Orinoquia Colombiana de la Universidad de los Llanos tiene como objetivo principal documentar la flora de los Llanos orientales de Colombia y cumple con los procesos misionales de la Universidad de los Llanos como son: la docencia, la investigación y la proyección social. Por esas razones, esta colección está abierta a la comunidad universitaria, la comunidad científica nacional e internacional y al público en general. Esta identificada en el Registros Nacional de Colecciones como LLANOS, con el número 17.</para>
+                    <para>Este recurso contiene la información perteneciente a varios proyectos llevados a cabo dentro de la Universidad de los Llanos, pertenecientes a salidas de campo, proyectos de clase, proyectos de investigación, entre otros y que han depositado material en el herbario de la Universidad. Algunos de los proyectos son: Proyecto de aula del curso de taxonomía vegetal- inventarios florísticos en sabanas de la altillanura, Proyecto de aula del curso de Profundización I- Estructura y composición de comunidades vegetales-Restrepo, Proyecto de aula del curso de taxonomía vegetal- inventarios florísticos en tres áreas de la Orinoquia colombiana, Vegetación asociada a paisajes productivos de la Orinoquia colombiana y Caracterización de macrohongos de la Orinoquia.</para>
+                    <para>A la fecha este recurso tiene 2.291 registros, entre plantas (1.589), hongos (697) y protistas (5). Un 27% está clasificado a nivel de especie, 29.6% a nivel de género, 26% a nivel de familia, 1.1% a nivel de orden, 14.9% a nivel de clase, 0.09% a nivel de filo y 1.2% a nivel de reino. Estos han sido recolectados en cinco departamentos, con el mayor número en Meta (1.913). Durante los años 2018, 2019, 2021, 2022 y 2023.</para>
+            </abstract>
+                <keywordSet>
+                        <keyword>Macromicetos</keyword>
+                        <keyword>Estructura</keyword>
+                        <keyword>Arvenses</keyword>
+                        <keyword>Angiospermas</keyword>
+                        <keyword>Hongos</keyword>
+                        <keyword>Caracterización florística</keyword>
+                        <keyword>Cultivos</keyword>
+                        <keyword>Sabanas</keyword>
+                        <keyword>Líquenes</keyword>
+                        <keyword>Inventario</keyword>
+                        <keyword>Altillanura</keyword>
+                        <keyword>Composición</keyword>
+                        <keyword>Agroecosistemas</keyword>
+                        <keyword>Micoteca</keyword>
+                        <keywordThesaurus>n/a</keywordThesaurus>
+                </keywordSet>
+                <keywordSet>
+                        <keyword>PERMISO_COLECTA</keyword>
+                        <keywordThesaurus>SiB Colombia</keywordThesaurus>
+                </keywordSet>
+                <keywordSet>
+                        <keyword>Occurrence</keyword>
+                        <keywordThesaurus>GBIF Dataset Type Vocabulary: http://rs.gbif.org/vocabulary/gbif/dataset_type_2015-07-10.xml</keywordThesaurus>
+                </keywordSet>
+                <keywordSet>
+                        <keyword>Specimen</keyword>
+                        <keywordThesaurus>GBIF Dataset Subtype Vocabulary: http://rs.gbif.org/vocabulary/gbif/dataset_subtype.xml</keywordThesaurus>
+                </keywordSet>
+            <intellectualRights>
+                    <para>This work is licensed under a <ulink url="http://creativecommons.org/licenses/by-nc/4.0/legalcode"><citetitle>Creative Commons Attribution Non Commercial (CC-BY-NC) 4.0 License</citetitle></ulink>.</para>
+            </intellectualRights>
+            <coverage>
+                    <geographicCoverage>
+                            <geographicDescription>Este recurso contiene colectas realizadas en cinco departamentos: Meta (1.913), Casanare (224), Guaviare (76), Cundinamarca (59) y Boyacá (19), abarcando un total de 19 municipios.</geographicDescription>
+                            <boundingCoordinates>
+                                <westBoundingCoordinate>-74.023</westBoundingCoordinate>
+                                <eastBoundingCoordinate>-72.034</eastBoundingCoordinate>
+                                <northBoundingCoordinate>5.511</northBoundingCoordinate>
+                                <southBoundingCoordinate>2.49</southBoundingCoordinate>
+                            </boundingCoordinates>
+                    </geographicCoverage>
+                    <temporalCoverage>
+                            <rangeOfDates>
+                                <beginDate>
+                                    <calendarDate>                2018-04-11
+</calendarDate>
+                                </beginDate>
+                                <endDate>
+                                    <calendarDate>                2023-05-31
+</calendarDate>
+                                </endDate>
+                            </rangeOfDates>
+                    </temporalCoverage>
+                        <taxonomicCoverage>
+                                <generalTaxonomicCoverage>Contiene un total de 2.291 registros, distribuidos en el reino Plantae (1.589), Fungi (697) y Protista (5). Un 27% está clasificado a nivel de especie, 29.6% a nivel de género, 26% a nivel de familia, 1.1% a nivel de orden, 14.9% a nivel de clase, 0.09% a nivel de filo y 1.2% a nivel de reino. 
+
+Las plantas 50 ordenes, 121 familias, 284 géneros y 300 especies. Un 23.5% está clasificado a especie, 21% a género, 34% a nivel de familia, 19% a clase y 1.7% a reino.</generalTaxonomicCoverage>
+                                <taxonomicClassification>
+                                        <taxonRankName>Class</taxonRankName>
+                                    <taxonRankValue>Anthocerotopsida</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Class</taxonRankName>
+                                    <taxonRankValue>Jungermanniopsida</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Class</taxonRankName>
+                                    <taxonRankValue>Liliopsida</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Class</taxonRankName>
+                                    <taxonRankValue>Magnoliopsida</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Class</taxonRankName>
+                                    <taxonRankValue>Marchantiopsida</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Class</taxonRankName>
+                                    <taxonRankValue>Polypodiopsida</taxonRankValue>
+                                </taxonomicClassification>
+                        </taxonomicCoverage>
+                        <taxonomicCoverage>
+                                <generalTaxonomicCoverage>Los hongos comprenden ocho clases, 24 ordenes, 56 familias, 92 géneros y 79 especies. Un 31.2% está clasificado a nivel de especie, 52.2% está clasificado a nivel de género, 9.4% a familia, 3.8% a clase y 2.3% a orden.</generalTaxonomicCoverage>
+                                <taxonomicClassification>
+                                        <taxonRankName>Class</taxonRankName>
+                                    <taxonRankValue>Agaricomycetes</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Class</taxonRankName>
+                                    <taxonRankValue>Archaeorhizomycetes</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Class</taxonRankName>
+                                    <taxonRankValue>Arthoniomycetes</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Class</taxonRankName>
+                                    <taxonRankValue>Dacrymycetes</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Class</taxonRankName>
+                                    <taxonRankValue>Lecanoromycetes</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Class</taxonRankName>
+                                    <taxonRankValue>Pezizomycetes</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Class</taxonRankName>
+                                    <taxonRankValue>Sordariomycetes</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Class</taxonRankName>
+                                    <taxonRankValue>Tremellomycetes</taxonRankValue>
+                                </taxonomicClassification>
+                        </taxonomicCoverage>
+                        <taxonomicCoverage>
+                                <generalTaxonomicCoverage>Los protistas comprenden dos clases, tres ordenes, tres familias, tres géneros y una especie. Un 40% está clasificado a nivel de especie, 40% a género y 20% a reino.</generalTaxonomicCoverage>
+                                <taxonomicClassification>
+                                        <taxonRankName>Class</taxonRankName>
+                                    <taxonRankValue>Myxomycetes</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Class</taxonRankName>
+                                    <taxonRankValue>Prostosteliomycetes</taxonRankValue>
+                                </taxonomicClassification>
+                        </taxonomicCoverage>
+            </coverage>
+            <maintenance>
+                <description>
+                    <para></para>
+                </description>
+                <maintenanceUpdateFrequency>asNeeded</maintenanceUpdateFrequency>
+            </maintenance>
+            <contact>
+            <individualName>
+<givenName>Luz Stella</givenName>                    <surName>Suárez-Suárez</surName>
+            </individualName>
+<organizationName>Herbario Llanos-Universidad de los Llanos</organizationName><positionName>Directora</positionName>            <address>
+<deliveryPoint>Km 12 vía Puerto López</deliveryPoint><city>Villavicencio</city><administrativeArea>Meta</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>6616800</phone><electronicMailAddress>luz.suarez@unillanos.edu.co</electronicMailAddress>            </contact>
+            <methods>
+                    <methodStep>
+                        <description>
+                            <para>Para las colectas libres, se realizan recorridos predeterminados en zonas aleatorias y se recolectan las plantas que estén en estado de floración.</para>
+                        </description>
+                    </methodStep>
+                    <methodStep>
+                        <description>
+                            <para>Para el inventario rápido de las plantas asociadas a cultivos, se utilizaron dos tamaños de parcelas dependiendo del tipo de cultivo. En cultivos anuales o transitorios, se utilizaron parcelas de 2x2 m ubicadas a lo largo de transectos y separadas cada 50 m. En cultivos forestales y agroforestales se utilizaron parcelas de 50x2 m para especies árboreas (DAP &gt; 5 cm) y de 2x2 para especies herbáceas. Cada parcela fue georeferenciada y en cada una se realizó el conteo de los individuos por morfoespecie.</para>
+                        </description>
+                    </methodStep>
+                    <methodStep>
+                        <description>
+                            <para>Las muestras recolectadas, son fotografiadas y descritas frescas, luego prensadas para su posterior procesamiento, catalogación e identificación en el laboratorio.</para>
+                        </description>
+                    </methodStep>
+                    <methodStep>
+                        <description>
+                            <para>Los ejemplares de hongos se colectaron empleando una navaja para retirar los especímenes completos, incluyendo parte del sustrato y se almacenaron en bolsas de papel kraft para ser transportados según las recomendaciones de Lodge et al., (2004). Se determinó el tipo de sustrato y el tipo de pudrición que generan según la metodología indicada por Muller et al., (2004). Se llevaron a cuarentena a 4°C por 3 días, luego se secaron a temperatura ambiente y luego se pasaron a cuarentena de nuevo a 4°C por 3 días más.</para>
+                        </description>
+                    </methodStep>
+                    <methodStep>
+                        <description>
+                            <para>Posteriormente fueron llevados al laboratorio de Biología de la Universidad de los Llanos para su determinación con base en sus características macro y microscópicas empleando guías de campo y claves taxonómicas específicas. Todos los ejemplares serán fotografiados en su estado natural. Los ejemplares fueron empacados y entregados al herbario LLANOS.</para>
+                        </description>
+                    </methodStep>
+                    <sampling>
+                        <studyExtent>
+                            <description>
+                                <para>El área de estudio corresponde a los departamentos de Boyacá, Casanare, Cundinamarca, Guaviare y Meta.</para>
+                            </description>
+                        </studyExtent>
+                        <samplingDescription>
+                            <para>Los métodos de colecta utilizados varían dependiendo del proyecto o la clase, algunos de los métodos utilizados son: Inventario rápido de plantas, colecta libre y levantamiento de vegetación. Los ejemplares colectados son llevados al Herbario de la Universidad de los Llanos (LLANOS).
+
+Para los hongos se emplea muestreo oportunístico de los carpóforos maduros de acuerdo a Huhndorf et al., (2004) y Muller et al., (2004).</para>
+                        </samplingDescription>
+                    </sampling>
+            </methods>
+
+            <project >
+                <title>Enriquecimiento del herbario LLANOS</title>
+                    <personnel>
+            <individualName>
+<givenName>Luz Stella</givenName>                    <surName>Suárez-Suárez</surName>
+            </individualName>
+            <role>CURATOR</role>
+                    </personnel>
+                <abstract>
+                    <para>Este recurso contiene la información perteneciente a varios proyectos llevados a cabo dentro de la Universidad de los Llanos, pertenecientes a salidas de campo, proyectos de clase, proyectos de investigación, entre otros. Algunos de los proyectos son: Proyecto de aula del curso de taxonomía vegetal- inventarios florísticos en sabanas de la altillanura, Proyecto de aula del curso de Profundización I- Estructura y composición de comunidades vegetales-Restrepo, Proyecto de aula del curso de taxonomía vegetal- inventarios florísticos en tres áreas de la Orinoquia colombiana, Vegetación asociada a paisajes productivos de la Orinoquia colombiana y Caracterización de macrohongos de la Orinoquia.
+El proyecto: Caracterización de macrohongos de la Orinoquia, Estudio De La Diversidad De Micetobiontes Del Orden Coleoptera En Macromicetos Lignícolas, Presentes En Un Bosque Secundario De Piedemonte (Villavicencio – Meta). Los macromicetos degradadores de madera en descomposición son un grupo de organismos con una gran importancia ecológica en ecosistemas de bosque y son capaces de formar distintas asociaciones biológicas con grupos megadiversos como los insectos del orden Coleoptera. Mediante muestreos oportunistas durante seis meses del año 2019, se colectaran cuerpos fructíferos de hongos del orden Polyporales u hongos poliporoides en una zona de bosque de piedemonte ubicado en el Jardín Botánico de Villavicencio. Donde se evaluara la estructura de las comunidades de dichos grupos biológicos aplicando índices de diversidad alfa y beta, con el fin de entender cómo se distribuyen las comunidades de especies dentro de un hábitat a lo largo de un gradiente ecológico.</para>
+                </abstract>
+                <funding>
+                    <para></para>
+                </funding>
+                    <designDescription>
+                        <description>
+                            <para>Se han utilizado diferentes métodos de muestreo, entre los cuales se encuentran: Colecta libre de ejemplares fértiles y levantamientos de vegetación.</para>
+                        </description>
+                    </designDescription>
+            </project>
+    </dataset>
+
+    <additionalMetadata>
+        <metadata>
+            <gbif>
+                <dateStamp>2024-02-05T19:22:59Z</dateStamp>
+                <citation identifier="https://doi.org/10.15472/ga1jzr">Suárez-Suárez L S, Castro-Rojas G V, Medina-Merchan M, Quiñonez L M, Ortiz-Moreno M L (2023). Herbario de la Universidad de los Llanos. Version 1.8. Universidad de los Llanos. Occurrence dataset https://doi.org/10.15472/ga1jzr accessed via GBIF.org on 2024-02-05.</citation>
+                    <bibliography>
+                <citation>Huhndorf, S. M., Lodge, D. J., Wang, C. J., &amp; Stokland, J. N. 2004. Macrofungi on woody substrata. In G. M. Mueller, G. F. Bills, &amp; M. S. Foster (Eds.), Biodiversity of Fungi. Inventory and Monitoring Methods. New York: Elsevier Academic Press, pp. 159-168.</citation>
+                <citation>Lodge D., Ammirat J., O?Dell T., Mueller G., Huhndorf S., Wang C., Stokland J., Schmit J., Ryvarden L., Leacock P., Mata M., Umaña L., Wu Q., Czederpiltz D. 2004. Terrestrial and lignicolous macrofungi, In: Biodiversity of fungi: inventory and monitoring methods. Elsevier Inc., San Diego, pp 127-172.</citation>
+                <citation>Mueller, G., Bills, F. &amp; Foster, S. 2004. Biodiversity of Fungi Inventory and Monitoring methods. First edition. Elsevier Academic Press.</citation>
+                    </bibliography>
+                    <physical>
+                        <objectName>1313_ullanosherbar_20201126</objectName>
+                        <characterEncoding>UTF-8</characterEncoding>
+                        <dataFormat>
+                            <externallyDefinedFormat>
+                                <formatName>DWC-A</formatName>
+                                    <formatVersion>1</formatVersion>
+                            </externallyDefinedFormat>
+                        </dataFormat>
+                        <distribution>
+                            <online>
+                                <url function="download">https://ipt.biodiversidad.co/cr-sib/resource.do?r=1313_ullanosherbar_20201126</url>
+                            </online>
+                        </distribution>
+                    </physical>
+                    <physical>
+                        <objectName>1313_ullanosherbar_20210126</objectName>
+                        <characterEncoding>UTF-8</characterEncoding>
+                        <dataFormat>
+                            <externallyDefinedFormat>
+                                <formatName>DWC-A</formatName>
+                                    <formatVersion>1</formatVersion>
+                            </externallyDefinedFormat>
+                        </dataFormat>
+                        <distribution>
+                            <online>
+                                <url function="download">https://ipt.biodiversidad.co/cr-sib/resource.do?r=1313_ullanosherbar_20210126</url>
+                            </online>
+                        </distribution>
+                    </physical>
+                    <resourceLogoUrl>https://raw.githubusercontent.com/SIB-Colombia/logos/main/socio-SiB-unillanos.png</resourceLogoUrl>
+                        <collection>
+                            <parentCollectionIdentifier>LLANOS</parentCollectionIdentifier>
+                            <collectionIdentifier>https://scientific-collections.gbif.org/collection/fe43f9e0-03a3-4805-932d-120eee00e2cd</collectionIdentifier>
+                            <collectionName>Herbario de la Orinoquia Colombiana</collectionName>
+                        </collection>
+                        <specimenPreservationMethod>DRIED</specimenPreservationMethod>
+            </gbif>
+        </metadata>
+    </additionalMetadata>
+
+</eml:eml>

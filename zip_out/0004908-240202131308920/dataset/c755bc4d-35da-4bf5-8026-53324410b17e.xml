@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.1 http://rs.gbif.org/schema/eml-gbif-profile/1.2/eml.xsd"
+packageId="c755bc4d-35da-4bf5-8026-53324410b17e"  system="http://gbif.org" scope="system"
+xml:lang="pt">
+
+    <dataset>
+            <alternateIdentifier>10.15468/s8xuen</alternateIdentifier>
+                <alternateIdentifier>https://ipt.jbrj.gov.br/reflora/resource?r=eac_herbarium</alternateIdentifier>
+                <alternateIdentifier>c755bc4d-35da-4bf5-8026-53324410b17e</alternateIdentifier>
+                <alternateIdentifier>http://ipt.jbrj.gov.br/reflora/resource?r=eac_herbarium</alternateIdentifier>
+        <title>EAC herbarium - Universidade Federal do Ceará - Herbário Virtual REFLORA</title>
+            <creator>
+            <individualName>
+<givenName>Maria Iracema</givenName>                    <surName>Loiola</surName>
+            </individualName>
+<organizationName>Universidade Federal do Ceará</organizationName><positionName>Curadora</positionName>            <address>
+<deliveryPoint>Universidade Federal do Ceará, Departamento de Biologia, Bloco 906, Campus do Pici</deliveryPoint><city>Fortaleza</city><administrativeArea>Ceará</administrativeArea><postalCode>60440-900</postalCode><country>BRAZIL</country>            </address>
+<electronicMailAddress>iloiola@ufc.br</electronicMailAddress><onlineUrl>http://www.botanica.org.br/buscar_herbario_pub.php?opcoes=sigla&amp;busca=eac&amp;result_por_pagi=5&amp;Buscar.x=0&amp;Buscar.y=0&amp;Buscar=Buscar</onlineUrl>            </creator>
+            <creator>
+            <individualName>
+<givenName>Sarah Sued Gomes de Souza</givenName>                    <surName>Souza</surName>
+            </individualName>
+<organizationName>Universidade Federal do Ceará</organizationName><positionName>Técnica de Laboratório-Herbário</positionName>            <address>
+<deliveryPoint>Bloco 906, Campus do Pici, Nºs/n - Bairro: Pici</deliveryPoint><city>Fortaleza</city><administrativeArea>Ceará</administrativeArea><postalCode>60440-900</postalCode><country>BRAZIL</country>            </address>
+<electronicMailAddress>herbarioeac@gmail.com</electronicMailAddress><onlineUrl>http://www.botanica.org.br/buscar_herbario_pub.php?opcoes=sigla&amp;busca=eac&amp;result_por_pagi=5&amp;Buscar.x=0&amp;Buscar.y=0&amp;Buscar=Buscar</onlineUrl>            </creator>
+            <creator>
+            <individualName>
+<givenName>Hugo</givenName>                    <surName>Nascimento</surName>
+            </individualName>
+<organizationName>Universidade Federal do Ceará</organizationName><positionName>Técnico</positionName>            </creator>
+            <metadataProvider>
+            <individualName>
+<givenName>Maria Iracema</givenName>                    <surName>Loiola</surName>
+            </individualName>
+<organizationName>Universidade Federal do Ceará</organizationName><positionName>Curadora</positionName>            <address>
+<deliveryPoint>Universidade Federal do Ceará, Departamento de Biologia, Bloco 906, Campus do Pici</deliveryPoint><city>Fortaleza</city><administrativeArea>Ceará</administrativeArea><postalCode>60440-900</postalCode><country>BRAZIL</country>            </address>
+<electronicMailAddress>iloiola@ufc.br</electronicMailAddress><onlineUrl>http://www.botanica.org.br/buscar_herbario_pub.php?opcoes=sigla&amp;busca=eac&amp;result_por_pagi=5&amp;Buscar.x=0&amp;Buscar.y=0&amp;Buscar=Buscar</onlineUrl>            </metadataProvider>
+            <pubDate>
+                2024-01-01
+            </pubDate>
+        <language>PORTUGUESE</language>
+            <abstract>
+                    <para>O herbário da Universidade Federal do Ceará foi fundado pelo Professor Prisco Bezerra em 15 de março de 1939, quando este ainda integrava o corpo docente da Escola de Agronomia do Ceará. Ele foi responsável pelas coletas iniciais de amostras vegetais oriundas de diferentes regiões e ecossistemas principalmente no território cearense. Sempre empenhado com a melhoria das condições de ensino e pesquisa, Dr. Prisco, posteriormente, passou a ocupar o cargo de Professor Titular do Departamento de Biologia em 1975, realizando a transferência do herbário para o referido departamento no ano de 1978. Após a aposentadoria do Dr. Prisco, o Departamento de Biologia decidiu homenagear o fundador do herbário, que a partir de então, passou a ser denominado Herbário Prisco Bezerra. Em 1981, esse herbário foi registrado internacional sob o acrônimo EAC no Index Herbariorum. Desde 2003, o Herbário EAC está inserido entre as Instituições Credenciadas como Fiel Depositário de Amostras de Componentes do Patrimônio Genético, junto ao Ministério do Meio Ambiente. O Herbário Prisco Bezerra (EAC) é a maior coleção botânica do estado do Ceará, sendo considerada uma referência tanto na região Nordeste como em todo o país. Tem como principal finalidade representar a diversidade da flora regional, através de amostras desidratadas de espécimes vegetais procedentes de diferentes localidades e de tipos de vegetação ocorrentes principalmente no estado do Ceará. As amostras oriundas de estudos taxonômicos, ecológicos, fitossociológicos e florísticos, entre outros, nos diferentes ecossistemas, podem fornecer importantes informações para subsidiar ações políticas para o manejo de espécies ameaçadas e conservação de áreas. As instalações do Herbário EAC compreendem uma área total de 300m2. O acervo abrange uma área de 164,84m2 adequadamente climatizada, onde constam 120 armários de aço individuais. As demais instalações físicas consistem em salas destinadas a 1) triagem de material botânico e secagem; 2) descontaminação; 3) registro, montagem e identificação taxonômica, 4) informatização e ainda, uma biblioteca. O acervo do Herbário Prisco Bezerra é composto atualmente por aproximadamente 62.900 amostras de plantas e a coleção de tipos por 196 amostras. Vale ressaltar que todo o acervo (100%) está digitalizado e 48185 amostras estão fotografadas e disponíveis on-line no REFLORA e em outras plataforma. Desde 2018 contamos com o sitio online do próprio EAC (https://herbario.ufc.br/), no qual apresentamos informações sobre a trajetória do herbário. Esse é o principal canal de divulgação dos estudos e projetos provenientes da coleção, sendo atualizado constantemente para expandir as fronteiras dessa informação para além de visitação in loco. Acreditamos que nestes mais de 80 anos de história, o Herbário Prisco (EAC) vem contribuindo fortemente para o conhecimento da flora brasileira e em especial do Ceará.</para>
+            </abstract>
+                <keywordSet>
+                        <keyword>Occurrence</keyword>
+                        <keywordThesaurus>GBIF Dataset Type Vocabulary: http://rs.gbif.org/vocabulary/gbif/dataset_type.xml</keywordThesaurus>
+                </keywordSet>
+                <keywordSet>
+                        <keyword>Specimen</keyword>
+                        <keywordThesaurus>GBIF Dataset Subtype Vocabulary: http://rs.gbif.org/vocabulary/gbif/dataset_subtype.xml</keywordThesaurus>
+                </keywordSet>
+                <keywordSet>
+                        <keyword>Occurrence</keyword>
+                        <keywordThesaurus>GBIF Dataset Type Vocabulary: http://rs.gbif.org/vocabulary/gbif/dataset_type_2015-07-10.xml</keywordThesaurus>
+                </keywordSet>
+            <intellectualRights>
+                    <para>This work is licensed under a <ulink url="http://creativecommons.org/licenses/by/4.0/legalcode"><citetitle>Creative Commons Attribution (CC-BY) 4.0 License</citetitle></ulink>.</para>
+            </intellectualRights>
+            <coverage>
+                    <geographicCoverage>
+                            <geographicDescription>A prioridade é o território cearense, mas temos coleções de vários estados brasileiro e até de outros países, como a Argentina</geographicDescription>
+                            <boundingCoordinates>
+                                <westBoundingCoordinate>-41.616</westBoundingCoordinate>
+                                <eastBoundingCoordinate>-37.178</eastBoundingCoordinate>
+                                <northBoundingCoordinate>-2.767</northBoundingCoordinate>
+                                <southBoundingCoordinate>-7.885</southBoundingCoordinate>
+                            </boundingCoordinates>
+                    </geographicCoverage>
+            </coverage>
+            <maintenance>
+                <description>
+                    <para></para>
+                </description>
+                <maintenanceUpdateFrequency>monthly</maintenanceUpdateFrequency>
+            </maintenance>
+            <contact>
+            <individualName>
+<givenName>Maria Iracema</givenName>                    <surName>Loiola</surName>
+            </individualName>
+<organizationName>Universidade Federal do Ceará</organizationName><positionName>Curadora</positionName>            <address>
+<deliveryPoint>Universidade Federal do Ceará, Departamento de Biologia, Bloco 906, Campus do Pici</deliveryPoint><city>Fortaleza</city><administrativeArea>Ceará</administrativeArea><postalCode>60440-900</postalCode><country>BRAZIL</country>            </address>
+<electronicMailAddress>iloiola@ufc.br</electronicMailAddress><onlineUrl>http://www.botanica.org.br/buscar_herbario_pub.php?opcoes=sigla&amp;busca=eac&amp;result_por_pagi=5&amp;Buscar.x=0&amp;Buscar.y=0&amp;Buscar=Buscar</onlineUrl>            </contact>
+            <contact>
+            <individualName>
+<givenName>Rafaela</givenName>                    <surName>Forzza</surName>
+            </individualName>
+<organizationName>Jardim Botânico do Rio de Janeiro</organizationName><positionName>Reflora coordinator</positionName>            <address>
+<deliveryPoint>Rua Pacheco Leão 915</deliveryPoint><city>Rio de Janeiro</city><administrativeArea>RJ</administrativeArea><postalCode>22460-030</postalCode><country>BRAZIL</country>            </address>
+<phone>+552132042082</phone><electronicMailAddress>reflora@jbrj.gov.br</electronicMailAddress>            </contact>
+            <methods>
+                    <methodStep>
+                        <description>
+                            <para>Step description</para>
+                        </description>
+                    </methodStep>
+                    <qualityControl>
+                        <description>
+                            <para>Correction of geographical coordinates and standardization of names of collectors and determinator.</para>
+                        </description>
+                    </qualityControl>
+            </methods>
+
+    </dataset>
+
+    <additionalMetadata>
+        <metadata>
+            <gbif>
+                <dateStamp>2024-02-05T19:24:21Z</dateStamp>
+                <citation>Loiola M I, Souza S S G D S, Nascimento H (2024). EAC herbarium - Universidade Federal do Ceará - Herbário Virtual REFLORA. Version 1.285. Instituto de Pesquisas Jardim Botanico do Rio de Janeiro. Occurrence dataset https://doi.org/10.15468/s8xuen accessed via GBIF.org on 2024-02-05.</citation>
+                    <resourceLogoUrl>http://ipt.jbrj.gov.br/reflora/logo.do?r=eac_herbarium</resourceLogoUrl>
+            </gbif>
+        </metadata>
+    </additionalMetadata>
+
+</eml:eml>

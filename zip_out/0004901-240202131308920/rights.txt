@@ -1,0 +1,24 @@
+Dataset: International Barcode of Life project (iBOL) 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: Harvard University Herbaria: All Records 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: 2023 Contributions of Plant Specimen Data inside China 
+Rights as supplied: http://creativecommons.org/licenses/by-nc/4.0/legalcode
+Dataset: Plant Specimen in Yunnan, China from Herbarium (PE),Institute of Botany, Chinese Academy of Sciences 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: World Plant Specimen from the Herbaria in China 
+Rights as supplied: http://creativecommons.org/licenses/by-nc/4.0/legalcode
+Dataset: Naturalis Biodiversity Center (NL) - Botany 
+Rights as supplied: http://creativecommons.org/publicdomain/zero/1.0/legalcode
+Dataset: Some Plant Specimens from KUN, IBSC, NAS  Herbarium in China from 1900 to 1950 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: Natural History Museum (London) Collection Specimens 
+Rights as supplied: http://creativecommons.org/publicdomain/zero/1.0/legalcode
+Dataset: The AAU Herbarium Database 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: 2007-2022_nibr_simpl_vp 
+Rights as supplied: http://creativecommons.org/publicdomain/zero/1.0/legalcode
+Dataset: Digital Atlas of Trees and Wildlife in Thailand 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: 500,000 plant Specimens from PE Herbarium in China from 1950 to 1999 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode

@@ -1,0 +1,2 @@
+gbifID	type	format	identifier	references	title	description	source	audience	created	creator	contributor	publisher	license	rightsHolder
+3762878564	StillImage	image/jpeg	https://swbiodiversity.org/imglib/seinet/swnode/ASU_Plants/CSP17/CSP17107_lg.jpg										http://creativecommons.org/licenses/by-nc/3.0/	Arizona State University Vascular Plant Herbarium (ASU-Plants)

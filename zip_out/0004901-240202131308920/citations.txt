@@ -1,0 +1,13 @@
+When using this dataset please use the following citation and pay attention to the rights documented in rights.txt:
+The International Barcode of Life Consortium (2024). International Barcode of Life project (iBOL). Occurrence dataset https://doi.org/10.15468/inygc6 accessed via GBIF.org on 2024-02-05.
+Kennedy J (2023). Harvard University Herbaria: All Records. Harvard University Herbaria. Occurrence dataset https://doi.org/10.15468/o3pvnh accessed via GBIF.org on 2024-02-05.
+Yang L, Zheping X (2023). 2023 Contributions of Plant Specimen Data inside China. Chinese Academy of Sciences (CAS). Occurrence dataset https://doi.org/10.15468/9us6fb accessed via GBIF.org on 2024-02-05.
+Zhang X, xu Z (2019). Plant Specimen in Yunnan, China from Herbarium (PE),Institute of Botany, Chinese Academy of Sciences. Chinese Academy of Sciences (CAS). Occurrence dataset https://doi.org/10.15468/kvfygp accessed via GBIF.org on 2024-02-05.
+Yang L, Xu Z (2023). World Plant Specimen from the Herbaria in China. Chinese Academy of Sciences (CAS). Occurrence dataset https://doi.org/10.15468/ydqvcq accessed via GBIF.org on 2024-02-05.
+Bijmoer R, Scherrenberg M, Creuwels J (2023). Naturalis Biodiversity Center (NL) - Botany. Naturalis Biodiversity Center. Occurrence dataset https://doi.org/10.15468/ib5ypt accessed via GBIF.org on 2024-02-05.
+Yang Z, Xu Z (2019). Some Plant Specimens from KUN, IBSC, NAS  Herbarium in China from 1900 to 1950. Chinese Academy of Sciences (CAS). Occurrence dataset https://doi.org/10.15468/irnwew accessed via GBIF.org on 2024-02-05.
+Natural History Museum (2024). Natural History Museum (London) Collection Specimens. Occurrence dataset https://doi.org/10.5519/qd.rcafhusx accessed via GBIF.org on 2024-02-05.
+Borchsenius F (2023). The AAU Herbarium Database. Herbarium of the University of Aarhus. Occurrence dataset https://doi.org/10.15468/7uigwo accessed via GBIF.org on 2024-02-05.
+Info, Park K (2023). 2007-2022_nibr_simpl_vp. National Institute of Biological Resources. Occurrence dataset https://doi.org/10.15468/9n63xc accessed via GBIF.org on 2024-02-05.
+Elloran C, Trisurat Y (2023). Digital Atlas of Trees and Wildlife in Thailand. Version 1.5. ASEAN Centre for Biodiversity (ACB). Occurrence dataset https://doi.org/10.15468/ndhvmg accessed via GBIF.org on 2024-02-05.
+Kong H, Yang L (2019). 500,000 plant Specimens from PE Herbarium in China from 1950 to 1999. Chinese Academy of Sciences (CAS). Occurrence dataset https://doi.org/10.15468/44r5e4 accessed via GBIF.org on 2024-02-05.

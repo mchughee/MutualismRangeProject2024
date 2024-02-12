@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.1 http://rs.gbif.org/schema/eml-gbif-profile/1.2/eml.xsd"
+packageId="3b040a48-deae-485c-95b1-2ac80b7fdc54"  system="http://gbif.org" scope="system"
+xml:lang="en">
+
+    <dataset>
+            <alternateIdentifier>10.15468/ed9hcv</alternateIdentifier>
+                <alternateIdentifier>https://serv.biokic.asu.edu/neotrop/plantae/collections/misc/collprofiles.php?collid=140</alternateIdentifier>
+        <title>Aristolochiaceae, Asteraceae, Bromeliaceae, Fabaceae y Myrtaceae de la colección del Herbario USD, Santo Domingo, República Dominicana</title>
+            <creator>
+<organizationName>Neotropical Plant Portal</organizationName><electronicMailAddress>egbot@asu.edu</electronicMailAddress><onlineUrl>https://serv.biokic.asu.edu/neotrop/plantae/index.php</onlineUrl>            </creator>
+            <metadataProvider>
+<organizationName>Neotropical Plant Portal</organizationName><electronicMailAddress>egbot@asu.edu</electronicMailAddress><onlineUrl>https://serv.biokic.asu.edu/neotrop/plantae/index.php</onlineUrl>            </metadataProvider>
+            <associatedParty>
+            <individualName>
+<givenName>Alberto</givenName>                    <surName>Meléndez Juan</surName>
+            </individualName>
+<positionName>Asistente curador</positionName><electronicMailAddress>melendezjuanalberto9525@gmail.com</electronicMailAddress>            <userId directory="https://orcid.org/">0000-0003-3942-5500</userId>
+            <role>CONTENT_PROVIDER</role>
+            </associatedParty>
+            <associatedParty>
+            <individualName>
+<givenName>Lourguis</givenName>                    <surName>Acosta</surName>
+            </individualName>
+<positionName>Asistente curador</positionName><electronicMailAddress>lourguis25@gmail.com</electronicMailAddress>            <userId directory="https://orcid.org/">0000-0002-9232-9756</userId>
+            <role>CONTENT_PROVIDER</role>
+            </associatedParty>
+            <associatedParty>
+            <individualName>
+<givenName>Mayreni</givenName>                    <surName>Gómez</surName>
+            </individualName>
+<positionName>Asistente curador</positionName><electronicMailAddress>mayreni-0@gmail.com</electronicMailAddress>            <userId directory="https://orcid.org/">0000-0002-7144-3509</userId>
+            <role>CONTENT_PROVIDER</role>
+            </associatedParty>
+            <associatedParty>
+            <individualName>
+<givenName>Ruth</givenName>                    <surName>Bastardo</surName>
+            </individualName>
+<positionName>Curator</positionName><electronicMailAddress>rbastardo40@uasd.edu.do</electronicMailAddress>            <userId directory="https://orcid.org/">0000-0003-1564-0724</userId>
+            <role>CONTENT_PROVIDER</role>
+            </associatedParty>
+            <associatedParty>
+            <individualName>
+<givenName>Merali</givenName>                    <surName>Rosario</surName>
+            </individualName>
+<positionName>Curador</positionName><electronicMailAddress>meralisrosario1@gmail.com</electronicMailAddress>            <userId directory="https://orcid.org/">0000-0002-1568-7824</userId>
+            <role>CONTENT_PROVIDER</role>
+            </associatedParty>
+            <pubDate>
+                2023-05-23
+            </pubDate>
+        <language>ENGLISH</language>
+            <abstract>
+                    <para>Se presentan las familias Aristolochiaceae, Asteraceae, Bromeliaceae, Fabaceae y Myrtaceae de la colección del Herbario USD. Este conjunto de datos cuenta con especímenes recolectados entre el 5 de octubre de 1936 y el 15 de mayo de 2004, por exploradores y botánicos reconocidos. La extensión geográfica del conjunto de datos abarca 103 municipios de las 30 provincias y el Distrito Nacional de la República Dominicana. El total de registros es de 1 032 especímenes, pertenecientes a 270 especies y 181 géneros. El número de registros por familia se distribuye de la siguiente manera: Aristolochiaceae (19), Asteraceae (311), Bromeliaceae (142), Fabaceae (441), Myrtaceae (119). La creación del perfil de este conjunto de datos en el portal Neotropical Flora de Symbiota fue posible gracias a la colaboración con el Biodiversity Knowledge Integration Center (BioKIC), Arizona State University. El trabajo de movilización y digitalización de los datos se realizó bajo el financiamiento del Programa Biodiversity Information for Development (project BID-CA2020-031-NAC) de la Global Biodiversity Information Facility (GBIF) y la Unión Europea.</para>
+            </abstract>
+            <intellectualRights>
+                    <para>To the extent possible under law, the publisher has waived all rights to these data and has dedicated them to the <ulink url="http://creativecommons.org/publicdomain/zero/1.0/legalcode"><citetitle>Public Domain (CC0 1.0)</citetitle></ulink>. Users may copy, modify, distribute and use the work, including for commercial purposes, without restriction.</para>
+            </intellectualRights>
+            <contact>
+<organizationName>Aristolochiaceae, Asteraceae, Bromeliaceae, Fabaceae y Myrtaceae de la colección del Herbario USD, Santo Domingo, República Dominicana</organizationName>            </contact>
+
+            <project id="BID-CA2020-031-NAC">
+                <title>Mobilizing natural history collections of the Dominican Republic</title>
+                <abstract>
+                    <para>https://www.gbif.org/project/BID-CA2020-031-NAC</para>
+                </abstract>
+                <funding>
+                    <para></para>
+                </funding>
+            </project>
+    </dataset>
+
+    <additionalMetadata>
+        <metadata>
+            <gbif>
+                <dateStamp>2024-02-05T19:22:59Z</dateStamp>
+                <citation>Instituto de Investigaciones Botánicas y Zoológicas - Prof. Rafael M. Moscoso, Universidad Autónoma de Santo Domingo (2023). Aristolochiaceae, Asteraceae, Bromeliaceae, Fabaceae y Myrtaceae de la colección del Herbario USD, Santo Domingo, República Dominicana. Occurrence dataset https://doi.org/10.15468/ed9hcv accessed via GBIF.org on 2024-02-05.</citation>
+            </gbif>
+        </metadata>
+    </additionalMetadata>
+
+</eml:eml>

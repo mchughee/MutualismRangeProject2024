@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.1 http://rs.gbif.org/schema/eml-gbif-profile/1.2/eml.xsd"
+packageId="246ad1f8-e75c-419d-b97e-16dde697ae30"  system="http://gbif.org" scope="system"
+xml:lang="en">
+
+    <dataset>
+            <alternateIdentifier>10.15468/irnwew</alternateIdentifier>
+                <alternateIdentifier>246ad1f8-e75c-419d-b97e-16dde697ae30</alternateIdentifier>
+                <alternateIdentifier>http://www.gbifchina.org:8080/gbifcas/resource.do?r=some_from_kun_ibsc_nas</alternateIdentifier>
+        <title>Some Plant Specimens from KUN, IBSC, NAS  Herbarium in China from 1900 to 1950</title>
+            <creator>
+            <individualName>
+<givenName>Zhuliang</givenName>                    <surName>Yang</surName>
+            </individualName>
+<organizationName>Kunming Institute of Botany (KIB)</organizationName><positionName>Director</positionName>            <address>
+<deliveryPoint>132# Lanhei Road, Heilongtan</deliveryPoint><city>Kunming</city><administrativeArea>Yunnan</administrativeArea><postalCode>650201</postalCode><country>CHINA</country>            </address>
+<electronicMailAddress>fungi@mail.kib.ac.cn</electronicMailAddress><onlineUrl>http://www.kun.ac.cn/</onlineUrl>            </creator>
+            <metadataProvider>
+            <individualName>
+<givenName>Zheping</givenName>                    <surName>Xu</surName>
+            </individualName>
+<organizationName>Institute of Botany, Chinese Academy of Sciences</organizationName><positionName>Engineer</positionName>            <address>
+<deliveryPoint>No. 20, Nanxincun, Xiangshan, Haidian District</deliveryPoint><city>Beijing</city><administrativeArea>Beijing</administrativeArea><postalCode>100093</postalCode><country>CHINA</country>            </address>
+<phone>86-10-62836024</phone><electronicMailAddress>xuzp@ibcas.ac.cn</electronicMailAddress><onlineUrl>http://www.kun.ac.cn/</onlineUrl>            </metadataProvider>
+            <associatedParty>
+            <individualName>
+<givenName>Zheping</givenName>                    <surName>Xu</surName>
+            </individualName>
+<organizationName>Institute of Botany, Chinese Academy of Sciences</organizationName><positionName>Engineer</positionName>            <address>
+<deliveryPoint>No. 20, Nanxincun, Xiangshan, Haidian District</deliveryPoint><city>Beijing</city><administrativeArea>Beijing</administrativeArea><postalCode>100093</postalCode><country>CHINA</country>            </address>
+<phone>86-10-62836024</phone><electronicMailAddress>xuzp@ibcas.ac.cn</electronicMailAddress><onlineUrl>http://www.kun.ac.cn/</onlineUrl>            <role>PUBLISHER</role>
+            </associatedParty>
+            <associatedParty>
+            <individualName>
+<givenName>Qixin</givenName>                    <surName>Liu</surName>
+            </individualName>
+<organizationName>The Herbarium(NAS),Institute of Botany, Jiangsu Province and Chinese Academy of Sciences</organizationName><positionName>Director</positionName>            <address>
+<city>Nanjing</city><administrativeArea>Jiangsu</administrativeArea><country>CHINA</country>            </address>
+<electronicMailAddress>naslqx@yahoo.com.cn</electronicMailAddress><onlineUrl>http://www.cnbg.net/</onlineUrl>            <role>CONTENT_PROVIDER</role>
+            </associatedParty>
+            <associatedParty>
+            <individualName>
+<givenName>Dianxiang</givenName>                    <surName>Zhang</surName>
+            </individualName>
+<organizationName>The herbarium of the South China Botanical Garden, Chinese Academy of Sciences (IBSC)</organizationName><positionName>Director</positionName>            <address>
+<deliveryPoint>723 Xingke Road, Tianhe</deliveryPoint><city>Guangzhou</city><administrativeArea>Guangdong</administrativeArea><postalCode>510650</postalCode><country>CHINA</country>            </address>
+<phone>86 (020) 3725 2543</phone><electronicMailAddress>dx-zhang@scib.ac.cn</electronicMailAddress><onlineUrl>http://herbarium.scbg.cas.cn/</onlineUrl>            <role>CONTENT_PROVIDER</role>
+            </associatedParty>
+            <pubDate>
+                2019-09-19
+            </pubDate>
+        <language>CHINESE</language>
+            <abstract>
+                    <para>Some Plant Specimens from KUN, IBSC, NAS  Herbarium in China from 1900 to 1950</para>
+            </abstract>
+                <keywordSet>
+                        <keyword>Occurrence</keyword>
+                        <keywordThesaurus>GBIF Dataset Type Vocabulary: http://rs.gbif.org/vocabulary/gbif/dataset_type.xml</keywordThesaurus>
+                </keywordSet>
+            <intellectualRights>
+                    <para>This work is licensed under a <ulink url="http://creativecommons.org/licenses/by/4.0/legalcode"><citetitle>Creative Commons Attribution (CC-BY) 4.0 License</citetitle></ulink>.</para>
+            </intellectualRights>
+            <coverage>
+                    <geographicCoverage>
+                            <geographicDescription>Some Plant Specimens from KUN, IBSC, NAS Herbarium in China from 1900 to 1950</geographicDescription>
+                            <boundingCoordinates>
+                                <westBoundingCoordinate>73.499</westBoundingCoordinate>
+                                <eastBoundingCoordinate>134.78</eastBoundingCoordinate>
+                                <northBoundingCoordinate>53.561</northBoundingCoordinate>
+                                <southBoundingCoordinate>3.582</southBoundingCoordinate>
+                            </boundingCoordinates>
+                    </geographicCoverage>
+                    <temporalCoverage>
+                            <rangeOfDates>
+                                <beginDate>
+                                    <calendarDate>                1900-01-01
+</calendarDate>
+                                </beginDate>
+                                <endDate>
+                                    <calendarDate>                1949-12-31
+</calendarDate>
+                                </endDate>
+                            </rangeOfDates>
+                    </temporalCoverage>
+            </coverage>
+            <contact>
+            <individualName>
+<givenName>Zhuliang</givenName>                    <surName>Yang</surName>
+            </individualName>
+<organizationName>Kunming Institute of Botany (KIB)</organizationName><positionName>Director</positionName>            <address>
+<deliveryPoint>132# Lanhei Road, Heilongtan</deliveryPoint><city>Kunming</city><administrativeArea>Yunnan</administrativeArea><postalCode>650201</postalCode><country>CHINA</country>            </address>
+<electronicMailAddress>fungi@mail.kib.ac.cn</electronicMailAddress><onlineUrl>http://www.kun.ac.cn/</onlineUrl>            </contact>
+            <methods>
+                    <methodStep>
+                        <description>
+                            <para></para>
+                        </description>
+                    </methodStep>
+            </methods>
+
+    </dataset>
+
+    <additionalMetadata>
+        <metadata>
+            <gbif>
+                <dateStamp>2024-02-05T19:20:04Z</dateStamp>
+                <citation>Yang Z, Xu Z (2019). Some Plant Specimens from KUN, IBSC, NAS  Herbarium in China from 1900 to 1950. Chinese Academy of Sciences (CAS). Occurrence dataset https://doi.org/10.15468/irnwew accessed via GBIF.org on 2024-02-05.</citation>
+            </gbif>
+        </metadata>
+    </additionalMetadata>
+
+</eml:eml>

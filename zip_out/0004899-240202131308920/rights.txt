@@ -1,0 +1,36 @@
+Dataset: ALA species sightings and OzAtlas 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: Records of the Australian National Botanic Gardens Seedbank 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: Flora Atlas N.T. 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: N.C.W. Beadle Herbarium (NE) AVH data 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: SP - Herbário do Estado "Maria Eneyda P. Kaufmann Fidalgo" - Coleção de Fanerógamas 
+Rights as supplied: http://creativecommons.org/licenses/by-nc/4.0/legalcode
+Dataset: James Cook University Herbarium (JCT) AVH data 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: Centre for Australian National Biodiversity Research (CANB) AVH data 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: CDA - California Department of Food and Agriculture 
+Rights as supplied: http://creativecommons.org/licenses/by-nc/4.0/legalcode
+Dataset: SA Flora 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: Australian Tropical Herbarium (CNS) AVH data 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: BRI AVH Data and Images 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: Northern Territory Herbarium (DNA) AVH data 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: National Herbarium of Victoria (MEL) AVH data 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: Western Australian Herbarium (PERTH) AVH data 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: AD AVH Data 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: Conservation Atlas Surveys 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode
+Dataset: iNaturalist Research-grade Observations 
+Rights as supplied: http://creativecommons.org/licenses/by-nc/4.0/legalcode
+Dataset: NSW AVH feed 
+Rights as supplied: http://creativecommons.org/licenses/by/4.0/legalcode

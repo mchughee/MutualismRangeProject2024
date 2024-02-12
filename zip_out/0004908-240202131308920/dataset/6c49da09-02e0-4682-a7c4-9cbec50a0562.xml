@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?>
+<eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.1 http://rs.gbif.org/schema/eml-gbif-profile/1.2/eml.xsd"
+packageId="6c49da09-02e0-4682-a7c4-9cbec50a0562"  system="http://gbif.org" scope="system"
+xml:lang="es">
+
+    <dataset>
+            <alternateIdentifier>10.15472/tahsjj</alternateIdentifier>
+                <alternateIdentifier>6c49da09-02e0-4682-a7c4-9cbec50a0562</alternateIdentifier>
+                <alternateIdentifier>https://ipt.biodiversidad.co/sinchi/resource?r=vegetacion_amazonas</alternateIdentifier>
+        <title>Levantamientos de vegetación de la Amazonia Colombiana de 0.1 Ha</title>
+            <creator>
+            <individualName>
+<givenName>Dairon</givenName>                    <surName>Cardenas López</surName>
+            </individualName>
+<organizationName>Instituto Amazónico de Investigaciones Científicas SINCHI</organizationName><positionName>Curador y director del Herbario Amazónico Colombiano - COAH</positionName>            <address>
+<deliveryPoint>Calle 20 No. 5 - 44</deliveryPoint><city>Bogotá, D.C.</city><administrativeArea>Bogotá, D.C.</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>+57 (601) 444 2060</phone><onlineUrl>https://www.sinchi.org.co/</onlineUrl>            </creator>
+            <creator>
+            <individualName>
+<givenName>Alvaro Javier</givenName>                    <surName>Duque Montoya</surName>
+            </individualName>
+<organizationName>Universidad  Nacional de Colombia, sede Medellín</organizationName><positionName>Investigador</positionName>            <address>
+<deliveryPoint>Calle 59A # 63 - 20</deliveryPoint><city>Bogotá, D.C.</city><administrativeArea>Bogotá, D.C.</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>+57 (601) 444 2060</phone>            </creator>
+            <creator>
+            <individualName>
+<givenName>Joost</givenName>                    <surName>Duivenvoorden</surName>
+            </individualName>
+<organizationName>Universidad de Amsterdam</organizationName><positionName>Investigador</positionName>            <address>
+<deliveryPoint>Science Park113 1098 XGAmsterdam</deliveryPoint><city>Amsterdam</city><administrativeArea>North Holland</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>+57 (601) 444 2060</phone>            </creator>
+            <creator>
+            <individualName>
+<givenName>Laura</givenName>                    <surName>Rivera</surName>
+            </individualName>
+<organizationName>Instituto Amazónico de Investigaciones Científicas SINCHI</organizationName><positionName>Investigadora</positionName>            <address>
+<deliveryPoint>Calle 20 No. 5 - 44</deliveryPoint><city>Bogotá, D.C.</city><administrativeArea>Bogotá, D.C.</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>+57 (601) 444 2060</phone><onlineUrl>https://www.sinchi.org.co/</onlineUrl>            </creator>
+            <creator>
+            <individualName>
+<givenName>Nelly</givenName>                    <surName>Rodriguez</surName>
+            </individualName>
+<organizationName>Instituto Amazónico de Investigaciones Científicas SINCHI</organizationName><positionName>Investigadora</positionName>            <address>
+<deliveryPoint>Calle 20 No. 5 - 44</deliveryPoint><city>Bogotá, D.C.</city><administrativeArea>Bogotá, D.C.</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>+57 (601) 444 2060</phone><onlineUrl>https://www.sinchi.org.co/</onlineUrl>            </creator>
+            <creator>
+            <individualName>
+<givenName>Nidia Cristina</givenName>                    <surName>Garzón</surName>
+            </individualName>
+<organizationName>Universidad Nacional de Colombia, sede Bogotá</organizationName><positionName>Investigadora</positionName>            <address>
+<deliveryPoint>Cra 45 #26-85</deliveryPoint><city>Bogotá, D.C.</city><administrativeArea>Bogotá, D.C.</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>+57 (601) 444 2060</phone>            </creator>
+            <creator>
+            <individualName>
+<givenName>Pablo</givenName>                    <surName>Stevenson</surName>
+            </individualName>
+<organizationName>Universidad de los Andes</organizationName><positionName>Investigador</positionName>            <address>
+<deliveryPoint>Cra. 1 #18a-12</deliveryPoint><city>Bogotá, D.C.</city><administrativeArea>Bogotá, D.C.</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>+57 (601) 444 2060</phone>            </creator>
+            <creator>
+            <individualName>
+<givenName>Milton</givenName>                    <surName>Oidor</surName>
+            </individualName>
+<organizationName>Instituto Amazónico de Investigaciones Científicas SINCHI</organizationName><positionName>Investigador</positionName>            <address>
+<deliveryPoint>Calle 20 No. 5 - 44</deliveryPoint><city>Bogotá, D.C.</city><administrativeArea>Bogotá, D.C.</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>+57 (601) 444 2060</phone><onlineUrl>https://www.sinchi.org.co/</onlineUrl>            </creator>
+            <creator>
+            <individualName>
+<givenName>Marco</givenName>                    <surName>Correa</surName>
+            </individualName>
+<organizationName>Universidad de la Amazonia</organizationName><positionName>Investigador</positionName>            <address>
+<deliveryPoint>Carrera #3</deliveryPoint><city>Florencia</city><administrativeArea>Caquetá</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>+57 (601) 444 2060</phone>            </creator>
+            <metadataProvider>
+            <individualName>
+<givenName>Dairon</givenName>                    <surName>Cardenas López</surName>
+            </individualName>
+<organizationName>Instituto Amazónico de Investigaciones Científicas SINCHI</organizationName><positionName>Curador y director del Herbario Amazónico Colombiano - COAH</positionName>            <address>
+<deliveryPoint>Calle 20 No. 5 - 44</deliveryPoint><city>Bogotá, D.C.</city><administrativeArea>Bogotá, D.C.</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>+57 (601) 444 2060</phone><onlineUrl>https://www.sinchi.org.co/</onlineUrl>            </metadataProvider>
+            <associatedParty>
+            <individualName>
+<givenName>Nicolas</givenName>                    <surName>Castaño</surName>
+            </individualName>
+<organizationName>Instituto Amazónico de Investigaciones Científicas SINCHI</organizationName><positionName>Analista de datos</positionName>            <address>
+<deliveryPoint>Calle 20 No. 5 - 44</deliveryPoint><city>Bogotá, D.C.</city><administrativeArea>Bogotá, D.C.</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>+57 (601) 444 2060</phone><onlineUrl>https://www.sinchi.org.co/</onlineUrl>            <role>PROCESSOR</role>
+            </associatedParty>
+            <pubDate>
+                2023-05-05
+            </pubDate>
+        <language>SPANISH</language>
+            <abstract>
+                    <para>En este recurso se presentan 28633 registros de observaciones de ejemplares vegetales realizadas en el periodo comprendido desde mediados de 1980 y finales del 2011. Los datos abarcan 26 municipios de los departamentos de Amazonas, Caquetá, Guainía, Guaviare, Meta, Putumayo y Vaupés. Siendo Amazonas el departamento más representativo con el 38.72%, seguido de Guainía con el 18.27% y Guaviare con el 15.98%.</para>
+                    <para>Se realizaron mediciones de diámetro a la altura del pecho (DAP) y altura total de los individuos vegetales, los cuales corresponden a 1832 taxa, distribuidos en 4 clases, 35 ordenes, 102 familias, 456 géneros y 972 especies del filo Tracheophyta.</para>
+            </abstract>
+                <keywordSet>
+                        <keyword>Colombia</keyword>
+                        <keyword>Mapa</keyword>
+                        <keyword>Amazonia</keyword>
+                        <keyword>Vegetación</keyword>
+                        <keyword>Inventario</keyword>
+                        <keywordThesaurus>n/a</keywordThesaurus>
+                </keywordSet>
+                <keywordSet>
+                        <keyword>Occurrence</keyword>
+                        <keywordThesaurus>GBIF Dataset Type Vocabulary: http://rs.gbif.org/vocabulary/gbif/dataset_type_2015-07-10.xml</keywordThesaurus>
+                </keywordSet>
+                <keywordSet>
+                        <keyword>Observation</keyword>
+                        <keywordThesaurus>GBIF Dataset Subtype Vocabulary: http://rs.gbif.org/vocabulary/gbif/dataset_subtype.xml</keywordThesaurus>
+                </keywordSet>
+            <intellectualRights>
+                    <para>This work is licensed under a <ulink url="http://creativecommons.org/licenses/by/4.0/legalcode"><citetitle>Creative Commons Attribution (CC-BY) 4.0 License</citetitle></ulink>.</para>
+            </intellectualRights>
+            <coverage>
+                    <geographicCoverage>
+                            <geographicDescription>Los datos abarcan 26 municipios de los departamentos de Amazonas, Caquetá, Guainía, Guaviare, Meta, Putumayo y Vaupés. Siendo Amazonas el departamento más representativo con el 38.72%, seguido de Guainía con el 18.27%, Guaviare con el 15.98%, Caquetá con el 14.97%, Putumayo con el 6.49%, Meta con el 3.52% y Vaupés con el 2.01%. En cuanto a la cobertura de los datos a nivel municipal, Puerto Santander en el Amazonas es el más representativo con el 14.39% de los datos.</geographicDescription>
+                            <boundingCoordinates>
+                                <westBoundingCoordinate>-76.76</westBoundingCoordinate>
+                                <eastBoundingCoordinate>-67.34</eastBoundingCoordinate>
+                                <northBoundingCoordinate>4.02</northBoundingCoordinate>
+                                <southBoundingCoordinate>-0.07</southBoundingCoordinate>
+                            </boundingCoordinates>
+                    </geographicCoverage>
+                    <temporalCoverage>
+                            <rangeOfDates>
+                                <beginDate>
+                                    <calendarDate>                1984-03-01
+</calendarDate>
+                                </beginDate>
+                                <endDate>
+                                    <calendarDate>                2009-06-30
+</calendarDate>
+                                </endDate>
+                            </rangeOfDates>
+                    </temporalCoverage>
+                        <taxonomicCoverage>
+                                <generalTaxonomicCoverage>Los 28633 taxa presentados se encuentran identificados en su mayoría a nivel de especie con un 84.10% de los datos, seguidos de género con un 13.55% y el restante 2.33% a familia. Los especímenes vegetales se distribuyen en 35 ordenes, 102 familias, 456 géneros y 972 especies del filo Tracheophyta.</generalTaxonomicCoverage>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Alismatales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Apiales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Aquifoliales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Arecales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Asterales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Boraginales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Brassicales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Caryophyllales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Celastrales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Crossosomatales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Cucurbitales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Cyatheales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Dilleniales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Ericales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Fabales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Gentianales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Icacinales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Lamiales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Laurales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Magnoliales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Malpighiales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Malvales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Metteniusales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Myrtales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Oxalidales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Picramniales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Pinales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Poales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Proteales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Ranunculales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Rosales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Santalales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Sapindales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Solanales</taxonRankValue>
+                                </taxonomicClassification>
+                                <taxonomicClassification>
+                                        <taxonRankName>Order</taxonRankName>
+                                    <taxonRankValue>Zingiberales</taxonRankValue>
+                                </taxonomicClassification>
+                        </taxonomicCoverage>
+            </coverage>
+            <maintenance>
+                <description>
+                    <para></para>
+                </description>
+                <maintenanceUpdateFrequency>asNeeded</maintenanceUpdateFrequency>
+            </maintenance>
+            <contact>
+            <individualName>
+<givenName>Sonia</givenName>                    <surName>Sua Tunjano</surName>
+            </individualName>
+<organizationName>Instituto Amazónico de Investigaciones Científicas SINCHI</organizationName><positionName>Investigadora Asociada</positionName>            <address>
+<deliveryPoint>Calle 20 No. 5 - 44</deliveryPoint><city>Bogotá, D.C.</city><administrativeArea>Bogotá, D.C.</administrativeArea><country>COLOMBIA</country>            </address>
+<phone>+57 (601) 444 2060</phone><electronicMailAddress>ssua@sinchi.org.co</electronicMailAddress><onlineUrl>https://www.sinchi.org.co/</onlineUrl>            </contact>
+            <methods>
+                    <methodStep>
+                        <description>
+                            <para>Se realizo el levantamiento florístico por medio de parcelas distribuidas en zonas de bosque en los diferentes municipios de la Amazonia Colombiana.</para>
+                        </description>
+                    </methodStep>
+                    <methodStep>
+                        <description>
+                            <para>Los especímenes botánicos se colectaron y fueron depositados en el Herbario Amazónico Colombiano COAH.</para>
+                        </description>
+                    </methodStep>
+                    <sampling>
+                        <studyExtent>
+                            <description>
+                                <para>Amazonia Colombiana.</para>
+                            </description>
+                        </studyExtent>
+                        <samplingDescription>
+                            <para>Levantamientos florísticos en parcelas.</para>
+                        </samplingDescription>
+                    </sampling>
+                    <qualityControl>
+                        <description>
+                            <para>Se estructuraron los datos biológicos en Darwin Core (DwC) como registros biológicos, mediante el uso de los elementos, definiciones y vocabularios controlados del estándar y con el propósito de mejorar la calidad de los datos biológicos se realizaron los siguientes ajustes: (1) Cambios en la estructuración del conjunto de datos de acuerdo al estándar Darwin Core. (2) Ajustes de formato y vocabularios controlados en algunos elementos de ubicación y evento. (3) Corrección de errores de tipeo o escritura. (4) Documentación de información faltante en datos y metadatos.</para>
+                        </description>
+                    </qualityControl>
+            </methods>
+
+            <project id="SINCHI:CE-622:2021">
+                <title>Mapa de Vegetación de Colombia</title>
+                    <personnel>
+            <individualName>
+<givenName>Sonia</givenName>                    <surName>Sua Tunjano</surName>
+            </individualName>
+            <role>POINT_OF_CONTACT</role>
+                    </personnel>
+                <abstract>
+                    <para>El Ministerio de Ambiente y Desarrollo Sostenible (MADS), el Instituto de Investigación de Recursos Biológicos Alexander von Humboldt (IAvH), el Instituto Amazónico de Investigaciones Científicas (SINCHI), el Instituto de Hidrología, Meteorología y Estudios Ambientales de Colombia (IDEAM), el Instituto de Investigaciones Ambientales del Pacíﬁco (IIAP) y el Instituto de Ciencias Naturales de la Universidad Nacional de Colombia (ICN) dieron inicio en agosto del 2021 a la construcción del Mapa de Vegetación de Colombia, que será el insumo principal para la orientación de acciones de protección, restauración y conservación de los suelos, así como las demás estrategias encaminadas a cumplir los Objetivos del Desarrollo Sostenible.</para>
+                </abstract>
+                <funding>
+                    <para>Recursos para la construcción del Mapa de Vegetación de Colombia.</para>
+                </funding>
+                    <studyAreaDescription>
+                        <descriptor name="generic" citableClassificationSystem="false">
+                            <descriptorValue>Territorio Nacional.</descriptorValue>
+                        </descriptor>
+                    </studyAreaDescription>
+                    <designDescription>
+                        <description>
+                            <para>Dentro de los objetivos del Mapa de Vegetación de Colombia, se incluyen la meta nacional de promover 701900 hectáreas de sistemas sostenibles de conservación y el Mapa será fundamental para su cumplimiento.</para>
+                        </description>
+                    </designDescription>
+            </project>
+    </dataset>
+
+    <additionalMetadata>
+        <metadata>
+            <gbif>
+                <dateStamp>2024-02-05T19:24:24Z</dateStamp>
+                <citation identifier="https://doi.org/10.15472/tahsjj">Cardenas López D, Duque Montoya A J, Duivenvoorden J, Rivera L, Rodriguez N, Garzón N C, Stevenson P, Oidor M, Correa M (2023). Levantamientos de vegetación de la Amazonia Colombiana de 0.1 Ha. Version 1.3. Instituto Amazónico de Investigaciones Científicas - SINCHI. Occurrence dataset https://doi.org/10.15472/tahsjj accessed via GBIF.org on 2024-02-05.</citation>
+                    <physical>
+                        <objectName>Mapa de vegetación Natural de Colombia</objectName>
+                        <characterEncoding>UTF-8</characterEncoding>
+                        <dataFormat>
+                            <externallyDefinedFormat>
+                                <formatName>Página web</formatName>
+                                    <formatVersion>1</formatVersion>
+                            </externallyDefinedFormat>
+                        </dataFormat>
+                        <distribution>
+                            <online>
+                                <url function="download">https://mvn.colombiadiversidadbiotica.com/</url>
+                            </online>
+                        </distribution>
+                    </physical>
+                    <resourceLogoUrl>https://raw.githubusercontent.com/SIB-Colombia/logos/main/socio-SiB-sinchi.png</resourceLogoUrl>
+                        <collection>
+                            <parentCollectionIdentifier>COAH</parentCollectionIdentifier>
+                            <collectionIdentifier>Registro Nacional de Colecciones Biológicas: 1</collectionIdentifier>
+                            <collectionName>Herbario Amazónico Colombiano</collectionName>
+                        </collection>
+            </gbif>
+        </metadata>
+    </additionalMetadata>
+
+</eml:eml>

@@ -1,0 +1,19 @@
+When using this dataset please use the following citation and pay attention to the rights documented in rights.txt:
+Citizen Science - ALA Website (2023). ALA species sightings and OzAtlas. Occurrence dataset https://doi.org/10.15468/jayxmn accessed via GBIF.org on 2024-02-05.
+Australian Seedbank Partnership (2020). Records of the Australian National Botanic Gardens Seedbank. Occurrence dataset https://doi.org/10.15468/kinrrl accessed via GBIF.org on 2024-02-05.
+Northern Territory Department of Environment and Natural Resources (2020). Flora Atlas N.T.. Occurrence dataset https://doi.org/10.15468/d5o7bf accessed via GBIF.org on 2024-02-05.
+University of New England (2023). N.C.W. Beadle Herbarium (NE) AVH data. Occurrence dataset https://doi.org/10.15468/7t5ghf accessed via GBIF.org on 2024-02-05.
+Cândida Henrique Mamede M (2024). SP - Herbário do Estado "Maria Eneyda P. Kaufmann Fidalgo" - Coleção de Fanerógamas. Version 1.103. Instituto de Botânica, São Paulo. Occurrence dataset https://doi.org/10.15468/axlcjr accessed via GBIF.org on 2024-02-05.
+James Cook University (2023). James Cook University Herbarium (JCT) AVH data. Occurrence dataset https://doi.org/10.15468/mzbw85 accessed via GBIF.org on 2024-02-05.
+Centre for Australian National Biodiversity Research (2023). Centre for Australian National Biodiversity Research (CANB) AVH data. Occurrence dataset https://doi.org/10.15468/xycuk7 accessed via GBIF.org on 2024-02-05.
+California Department of Food and Agriculture (CDA) (2023). CDA - California Department of Food and Agriculture. Occurrence dataset https://doi.org/10.15468/phc373 accessed via GBIF.org on 2024-02-05.
+South Australia, Department for Environment and Water (2023). SA Flora. Occurrence dataset https://doi.org/10.15468/af24d8 accessed via GBIF.org on 2024-02-05.
+Australian Tropical Herbarium (2023). Australian Tropical Herbarium (CNS) AVH data. Occurrence dataset https://doi.org/10.15468/xunb57 accessed via GBIF.org on 2024-02-05.
+Queensland Department of Environment and Science (2023). BRI AVH Data and Images. Occurrence dataset https://doi.org/10.15468/jsffsa accessed via GBIF.org on 2024-02-05.
+Department of Environment and Natural Resources (2022). Northern Territory Herbarium (DNA) AVH data. Occurrence dataset https://doi.org/10.15468/e46kae accessed via GBIF.org on 2024-02-05.
+Australia's Virtual Herbarium (2023). National Herbarium of Victoria (MEL) AVH data. Occurrence dataset https://doi.org/10.15468/rhzrxw accessed via GBIF.org on 2024-02-05.
+Western Australia, Department of Biodiversity, Conservation and Attractions (2023). Western Australian Herbarium (PERTH) AVH data. Occurrence dataset https://doi.org/10.15468/9rkjjq accessed via GBIF.org on 2024-02-05.
+Department of Environment and Natural Resources (2023). AD AVH Data. Occurrence dataset https://doi.org/10.15468/z6vaed accessed via GBIF.org on 2024-02-05.
+The University of Queensland (2021). Conservation Atlas Surveys. Occurrence dataset https://doi.org/10.15468/yoxxna accessed via GBIF.org on 2024-02-05.
+iNaturalist contributors, iNaturalist (2024). iNaturalist Research-grade Observations. iNaturalist.org. Occurrence dataset https://doi.org/10.15468/ab3s5x accessed via GBIF.org on 2024-02-05.
+The Royal Botanic Gardens & Domain Trust (2023). NSW AVH feed. Occurrence dataset https://doi.org/10.15468/jf3yae accessed via GBIF.org on 2024-02-05.

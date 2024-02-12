@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.1 http://rs.gbif.org/schema/eml-gbif-profile/1.2/eml.xsd"
+packageId="021cf0d3-aae6-417d-8682-ae535d17de89"  system="http://gbif.org" scope="system"
+xml:lang="pt">
+
+    <dataset>
+            <alternateIdentifier>10.15468/afdpuk</alternateIdentifier>
+                <alternateIdentifier>https://ipt.jbrj.gov.br/jbrj/resource?r=catalogoucs</alternateIdentifier>
+                <alternateIdentifier>https://ipt-teste.jbrj.gov.br/jbrj/resource?r=catalogoucs</alternateIdentifier>
+                <alternateIdentifier>021cf0d3-aae6-417d-8682-ae535d17de89</alternateIdentifier>
+                <alternateIdentifier>http://ipt.jbrj.gov.br/jbrj/resource?r=catalogoucs</alternateIdentifier>
+        <title>Catálogo de Plantas das Unidades de Conservação do Brasil</title>
+            <creator>
+            <individualName>
+<givenName>Rafaela</givenName>                    <surName>Forzza</surName>
+            </individualName>
+<organizationName>JBRJ</organizationName>            <address>
+<deliveryPoint>Rua Pacheco Leão - 915</deliveryPoint><city>Rio de Janeiro</city><administrativeArea>RJ</administrativeArea><postalCode>22460-030</postalCode><country>BRAZIL</country>            </address>
+<phone>+552132042082</phone><electronicMailAddress>rafaela@jbrj.gov.br</electronicMailAddress>            </creator>
+            <metadataProvider>
+            <individualName>
+<givenName>Rafaela</givenName>                    <surName>Forzza</surName>
+            </individualName>
+<organizationName>JBRJ</organizationName><positionName>Curadora</positionName>            <address>
+<deliveryPoint>Rua Pacheco Leão - 915</deliveryPoint><city>Rio de Janeiro</city><administrativeArea>RJ</administrativeArea><postalCode>22460-030</postalCode><country>BRAZIL</country>            </address>
+<phone>+552132042082</phone><electronicMailAddress>rafaela@jbrj.gov.br</electronicMailAddress>            </metadataProvider>
+            <associatedParty>
+            <individualName>
+<givenName>Rafaela</givenName>                    <surName>Forzza</surName>
+            </individualName>
+<organizationName>Instituto de Pesquisas Jardim Botânico do Rio de Janeiro</organizationName><positionName>Curadora</positionName>            <address>
+<deliveryPoint>Rua Pacheco Leão, 915 - Jardim Botânico</deliveryPoint><city>Rio de Janeiro</city><administrativeArea>RJ</administrativeArea><country>BRAZIL</country>            </address>
+<electronicMailAddress>rb@jbrj.gov.br</electronicMailAddress><onlineUrl>https://catalogo-ucs-brasil.jbrj.gov.br/</onlineUrl>            <role>CURATOR</role>
+            </associatedParty>
+            <pubDate>
+                2023-06-20
+            </pubDate>
+        <language>PORTUGUESE</language>
+            <abstract>
+                    <para>O desenvolvimento de novas ferramentas integrativas e dinâmicas para gestão dos dados sobre biodiversidade é fundamental para um país megadiverso como o Brasil, que conta com uma ampla rede de UCs federais, estaduais e municipais. Mesmo com os avanços obtidos nas duas últimas décadas relacionados com a publicação online dos dados associados às coleções biológicas e a ampliação de estudos de inventários, o conhecimento relativo à flora protegida na rede de UCs do Brasil ainda é disperso na literatura e, de certa forma, pouco acessível tanto para os profissionais que a estudam, quanto para aqueles encarregados de proteger e preservar a biodiversidade. O Catálogo de Plantas das Unidades de Conservação do Brasil é lançado como uma ferramenta inovadora, desenvolvida para atender à necessidade fundamental de conhecimento e acesso à informação sobre a biodiversidade protegida por cada UC brasileira. O objetivo do catálogo é disponibilizar online a lista de espécies de Briófitas, Licófitas, Samambaias, Gimnospermas e Angiospermas ocorrentes em UCs do Brasil. Os usuários do catálogo podem ter acesso à imagem de um exemplar testemunho representativo da espécie na unidade de conservação pesquisada, proveniente do Herbário Virtual Reflora ou do Jabot. Também é possível conferir o grau de ameaça da espécie atribuído pelo Centro Nacional de Conservação da Flora.</para>
+            </abstract>
+                <keywordSet>
+                        <keyword>Occurrence</keyword>
+                        <keywordThesaurus>GBIF Dataset Type Vocabulary: http://rs.gbif.org/vocabulary/gbif/dataset_type.xml</keywordThesaurus>
+                </keywordSet>
+                <keywordSet>
+                        <keyword>Inventoryregional</keyword>
+                        <keywordThesaurus>GBIF Dataset Subtype Vocabulary: http://rs.gbif.org/vocabulary/gbif/dataset_subtype.xml</keywordThesaurus>
+                </keywordSet>
+                <keywordSet>
+                        <keyword>Checklist</keyword>
+                        <keywordThesaurus>GBIF Dataset Type Vocabulary: http://rs.gbif.org/vocabulary/gbif/dataset_type_2015-07-10.xml</keywordThesaurus>
+                </keywordSet>
+            <intellectualRights>
+                    <para>This work is licensed under a <ulink url="http://creativecommons.org/licenses/by/4.0/legalcode"><citetitle>Creative Commons Attribution (CC-BY) 4.0 License</citetitle></ulink>.</para>
+            </intellectualRights>
+            <distribution scope="document">
+                <online>
+                    <url function="information">https://catalogo-ucs-brasil.jbrj.gov.br/</url>
+                </online>
+            </distribution>
+            <coverage>
+                    <geographicCoverage>
+                            <geographicDescription>O Catálogo de Plantas das unidades de Conservação do Brasil abrange todo o território brasileiro.</geographicDescription>
+                            <boundingCoordinates>
+                                <westBoundingCoordinate>-74.18</westBoundingCoordinate>
+                                <eastBoundingCoordinate>-34.102</eastBoundingCoordinate>
+                                <northBoundingCoordinate>5.091</northBoundingCoordinate>
+                                <southBoundingCoordinate>-34.162</southBoundingCoordinate>
+                            </boundingCoordinates>
+                    </geographicCoverage>
+                    <temporalCoverage>
+                            <rangeOfDates>
+                                <beginDate>
+                                    <calendarDate>                1750
+</calendarDate>
+                                </beginDate>
+                                <endDate>
+                                    <calendarDate>                2022
+</calendarDate>
+                                </endDate>
+                            </rangeOfDates>
+                    </temporalCoverage>
+            </coverage>
+            <maintenance>
+                <description>
+                    <para></para>
+                </description>
+                <maintenanceUpdateFrequency>monthly</maintenanceUpdateFrequency>
+            </maintenance>
+            <contact>
+            <individualName>
+<givenName>Rafaela</givenName>                    <surName>Forzza</surName>
+            </individualName>
+<organizationName>JBRJ</organizationName>            <address>
+<deliveryPoint>Rua Pacheco Leão - 915</deliveryPoint><city>Rio de Janeiro</city><administrativeArea>RJ</administrativeArea><postalCode>22460-030</postalCode><country>BRAZIL</country>            </address>
+<phone>+552132042082</phone><electronicMailAddress>rafaela@jbrj.gov.br</electronicMailAddress>            </contact>
+            <contact>
+            <individualName>
+<givenName>DIPEQ</givenName>                    <surName>Diretoria de Pesquisas do Jardim Botânico do Rio de Janeiro</surName>
+            </individualName>
+<organizationName>Jardim Botânico do Rio de Janeiro</organizationName><positionName>Institution</positionName>            <address>
+<deliveryPoint>Rua Pacheco Leão 915, Jardim Botânico</deliveryPoint><city>Rio de Janeito</city><administrativeArea>RJ</administrativeArea><postalCode>22411-030</postalCode><country>BRAZIL</country>            </address>
+<electronicMailAddress>jbrj@jbrj.gov.br</electronicMailAddress>            </contact>
+            <methods>
+                    <methodStep>
+                        <description>
+                            <para></para>
+                        </description>
+                    </methodStep>
+            </methods>
+
+            <project >
+                <title>Catálogo de Plantas das Unidades de Conservação do Brasil</title>
+                    <personnel>
+            <individualName>
+<givenName>Rafaela</givenName>                    <surName>Forzza</surName>
+            </individualName>
+            <role>PRINCIPAL_INVESTIGATOR</role>
+                    </personnel>
+                    <personnel>
+            <individualName>
+<givenName>Felipe</givenName>                    <surName>Oliveira</surName>
+            </individualName>
+            <role>PROGRAMMER</role>
+                    </personnel>
+                    <personnel>
+            <individualName>
+<givenName>Luís Alexandre</givenName>                    <surName>Estevão</surName>
+            </individualName>
+            <role>PROGRAMMER</role>
+                    </personnel>
+                    <personnel>
+            <individualName>
+<givenName>Tatiana</givenName>                    <surName>Carrijo</surName>
+            </individualName>
+            <role>CONTENT_PROVIDER</role>
+                    </personnel>
+                <abstract>
+                    <para></para>
+                </abstract>
+                <funding>
+                    <para></para>
+                </funding>
+            </project>
+    </dataset>
+
+    <additionalMetadata>
+        <metadata>
+            <gbif>
+                <dateStamp>2024-02-05T19:24:22Z</dateStamp>
+                <citation>Forzza R (2023). Catálogo de Plantas das Unidades de Conservação do Brasil. Version 1.73. Instituto de Pesquisas Jardim Botanico do Rio de Janeiro. Checklist dataset https://doi.org/10.15468/afdpuk accessed via GBIF.org on 2024-02-05.</citation>
+                    <bibliography>
+                <citation>Catálogo de Plantas das Unidades de Conservação do Brasil. Jardim Botânico do Rio de Janeiro. Disponível em: [https://catalogo-ucs-brasil.jbrj.gov.br]. Acesso em dia/mês/ano.</citation>
+                    </bibliography>
+                    <resourceLogoUrl>http://ipt.jbrj.gov.br/jbrj/logo.do?r=catalogoucs</resourceLogoUrl>
+            </gbif>
+        </metadata>
+    </additionalMetadata>
+
+</eml:eml>
