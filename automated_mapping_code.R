@@ -1,23 +1,30 @@
-### Exploring legume data in R
-### Install packages
-# install.packages("filesstrings")
+### Automating downloading and mapping occurrence data, mapping it with worldclim data and overlaying
+### Anna's shapefiles
+### Author: Erin McHugh
+### Date: 13/02/2024
 
 ### Call libraries
 library(tidyverse)
 library(purrr)
 library(filesstrings)
+library(rgbif)
+library(taxize)
+library(readr)
+library(here)
+library(dplyr)
+library(sp)
+library(geodata)
+library(raster)
+library(ggplot2)
 
-### First, read in legume data and filter out species with fewer than 50 occurrences
-# Note: Sure, I can filter this stuff out, but the number of occurrences in Pooja's dataset and
-# in GBIF are very different, so sometimes I end up randomly selecting species that have >50
-# occurrences in P's data, but have <50 in gbif
+# Read in legume data and filter out species with less than fewer occurrences in the gbif file
 
 legume<-read.csv("legume_range_traits.csv")
 str(legume)
 legume1 <-legume %>% filter(Count>=50)
 
 ### Filter species with no symbiotic relationship
-# But what about fungi? It's in the dataset, but very spotty data.
+# (I excluded fungi here for now, because the data is few and far between)
 nonsym<-legume1 %>% subset(fixer==0 & Domatia == 0 & EFN==0)
 
 ### Subset species that ARE in a symbiotic relationship (fixer OR domatia OR EFN)
@@ -30,28 +37,12 @@ sample_n(nonsym, 3)->randomnsym
 ### Combine into one dataframe
 rbind(randomsym, randomnsym)->minidat
 
-
-#### Now, I want to pull in gbif occurrence data 
-
-## I will need rgbif, taxize, reader, and here
-
-# install.packages("rgbif")
-# install.packages("taxize")
-# install.packages("readr")
-# install.packages("here")
-library(rgbif)
-library(taxize)
-library(readr)
-library(here)
-
-
 # Make list of taxonomic keys
 
 keys <- minidat$Phy
 
-# grabbing gbif data-- this code mostly comes from Takuji's Range limits proj w/
-# Amy and Megan Oldfather
-# grab gbif data using "backbone"
+# grabbing gbif data-- this entire code chunk (from gbif_taxon_keys to dup_names) 
+# comes from Takuji, Amy, and Megan Oldfather
 
 gbif_taxon_keys <- 
   keys %>% 
@@ -115,7 +106,8 @@ dl_spname <- NA # create empty vector to store succesfully changed download spec
 dup_names <- NA 
 
 # unzip files
-# identify the folders
+# identify the folder you want to move things from, and the folder you want to move those things to
+# This copying files code chunk is modified from https://amywhiteheadresearch.wordpress.com/2014/11/12/copying-files-with-r/
 current.folder <- "C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024"
 new.folder <- "C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024/zip_files"
 
@@ -137,41 +129,9 @@ file.rename(list.files(), sub(".zip", "",list.files()))
 # reset working directory
 setwd("~/Mutualism_Range_Project_2024")
 
-
-# rename files with species names
-# try i=1 or i=10, comment out the brackets so it's not a loop, and try that
-# for occ data, does each step do the right thing, or is it getting messed up?
-# if kept: dataframe with key and species name, make loop and go through, for i in length, for each
-### occurrence file, grab taxon name, make dataframe where i append key and spname, which key is which 
-### name. close loop and create second loop where for all keys in dataframe, and then for each key, load
-### in occurrence and write it to a new file with taxonomic name, rename using write.csv(spname, occdata)
-### okay, so in better words:
-### I want this loop to take the taxonomic names for each species from the occurrence file, and I want
-### to link this information to dl_keys so that I have a file with each key and it's taxon
-### I then want to create a second loop in which I add the taxonomic name onto the end of each
-### occurrence file and put it in a new folder called "occurrence data"
-
-
-
-for(i in 1:length(dl_keys$key)){ # for all the keys in dl_keys
-  occdata <- read.delim(here(paste0("zip_out/", dl_keys$key[i], "/occurrence.txt")))  # grab occurrence txt file
-  spname <- gsub(" ", "_", unique(occdata$species)) # grab species name and adhere to end of existing file name
-  spname <- strsplit(spname, split = " ")[[1]]
-  if(identical(dir(pattern=spname), character(0))){ # if the directory does not have the species name already...
-    dl_spname[i] <- spname # save species names as vector
-    setwd(here())
-    file.rename(list.files(pattern=dl_keys$key[i]), spname) # then rename to species name
-  }
-  
-  print(paste(dl_keys$key[i], spname, i, sep = "_"))
-  
-}
-
-rbind(dl_keys, spname)->write.csv(here("dl_spname.csv"))
-
-write.csv(dl_spname, here("dl_spname.csv"))
-
-
+### THIS freaking code chunk. This is Takuji's/Amy's/Megan's code, and it is supposed
+# to rename downloaded occurrence files with their taxonomic names, but it keeps scrambling
+# the data. Hence, it is a work in progress.
 
 for(i in 1:length(dl_keys$key)){ # for all the keys in dl_keys
   occdata <- read.delim(paste0("zip_out/", dl_keys$key[i], "/occurrence.txt"))  # grab occurrence txt file
@@ -192,110 +152,73 @@ for(i in 1:length(dl_keys$key)){ # for all the keys in dl_keys
 write.csv(dl_spname, here("dl_spname.csv"))
 write.csv(dup_names, here("duplicatenames.csv"))
 
-# Might need to move all renamed occurrence files into their own folder at this step
 
-
-### map occurrence data
-### here, I am trialling some things
-# Call leaflet
-# install.packages("leaflet")
-# install.packages("rgdal")
-library(leaflet)
-library(dplyr)
-library(rgdal)
-
-# Trying to map just one file
-
-setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024/zip_out/0004908-240202131308920")
-
-read.delim("occurrence.txt",header=T)->Crudia_ama
-
-write.csv(Crudia_ama, "C_amazonica_occ.csv")
-
-
-### Adding in Pooja's polygon data
-# read in shapefiles
+### Bring in Anna's shapefiles and extract the actual polygons
+# Sometimes working directory can get a little weird, so reset here
 setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024")
+
+# All of the code used to wrangle the polygons comes from Pooja's 2023 Proc B paper
+# Read in legume polygons as a .rds file
 legume_pol <- readRDS("legume_range_polygons_data.rds")
 
+# Make a new empty dataframe
 tmp <- data.frame(code = NULL, index = NULL)
+
+# Make a loop-- for every polygon in the rds file, if the polygon has codes, put it into the
+# tmp dataframe. Bind the tmp file with the actual polygon info
 for (x in 1:length(legume_pol$polygon)) {
   if(legume_pol$polygon[[x]]@data$Code %in% tmp$code) next()
   tmp <- rbind((data.frame(code = legume_pol$polygon[[x]]@data$Code, index = x)), tmp)
 }
+# make an object caled unique_pols that includes the species code and the index
 unique_pols <- legume_pol[tmp$index, ]
+# cbind the two dataframes to make unique_pols
 unique_pols <- cbind(unique_pols, tmp)
 
+# make code full of NAs and replace with codes from polygons
 legume_pol$code<-NA
 for (x in 1:length(legume_pol$polygon)) {
   legume_pol[x, "code"] <- legume_pol$polygon[[x]]@data$Code 
 }
 
-lspecies_counts <- subset(legume_pol, introduced_status == "N") %>%
+# make a new dataframe that is a subset of legume_pol. Used to filter for only  species in their
+# native range, but I axed that. Group by geographic code and summarise by num of distinct sp.
+lspecies_counts <- subset(legume_pol) %>%
   group_by(code) %>%
   summarise(num_species = n_distinct(species))
 
 # Merge with unique polygons
 merge <- sp::merge(unique_pols, lspecies_counts, by.x="code", by.y="code")
 
-
 spatial_polygons <- do.call(rbind, merge$`polygon`)
 attribute_data <- merge[c("species", "num_species")]
 spatial_polygons_df <- SpatialPolygonsDataFrame(spatial_polygons, data = attribute_data, match.ID = F)
 spatial_polygons_sf <- sf::st_as_sf(spatial_polygons_df)
 
-crudia_polygon<-susbet(spatial_polygons_sf, species=="Crudia amazonica")
+# Download global climate data
 
-### Adding in climate data
-install.packages("geodata")
-install.packages("raster")
-library(geodata)
-library(raster)
-
-# Try downloading average temp for just one continent that Crudia is found in (because like, it should
-# be found in one continent??)
 # worldclim_global("tavg", 10, "world", version="2.1")
 
-
-setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024/South America/wc2.1_10m")
+setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024/world/wc2.1_10m")
 climfiles<-list.files(pattern = "*.tif")
 
-str(wc2.1_10m_tavg_01.tif)
+# read in climate files for each month
 
 for (i in 1:length(climfiles)){
-  climdat<-raster(climfiles[i])
+  raster(climfiles[i])->climdat
 }
 
-tempcol <- colorRampPalette(c("purple", "blue", "skyblue", "green", "lightgreen", "yellow", "orange", "red", "darkred"))
-plot(climdat, col=tempcol(100))
 
-k <- leaflet(Crudia_ama) %>%
-  addTiles() %>%  # Add default OpenStreetMap map tiles
-  addMarkers(~decimalLongitude, ~decimalLatitude, popup=Crudia_ama$species)
-k %>% 
-  addMarkers(crudia_pol)->k_shapefilecomp
-
-library(ggplot2)
-# install.packages("sf")
-library(sf)
-
-
-### Trying this using ggplot and mapdata
-
+# Download world map
 world <- map_data("world")
 
 ### convert raster data to dataframe for ggplot
-climdat_df <- raster::as.data.frame(climdat, xy=TRUE)  
+climdat_df <- raster::as.data.frame(climdat, xy=TRUE)
 
-ggplot() +
-  geom_polygon(data = world, aes(x=long, y=lat, group=group), colour="darkgrey",fill="grey", alpha=1)+
-  #coord_sf(xlim = c(50,160), ylim=c(-70,-30))+
-  geom_raster(data=climdat_df, aes(x=x, y=y,fill=climdat_df$wc2.1_10m_tavg_12))+
-  geom_point(data=Crudia_ama, aes(x=decimalLongitude, y=decimalLatitude, colour="Crudia amazonica"), pch=20, size=2)+
-  geom_sf(data=subset(spatial_polygons_sf, species == "Acacia adunca"), aes(fill = num_species))
-
-
-
-
+# make loop to plot each species in zip_out files
+for (i in 1:length("zip_out/")){
+  read.delim(occurrence.txt)
+  
+}
 
 
