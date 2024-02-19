@@ -1,4 +1,0 @@
-When using this dataset please use the following citation and pay attention to the rights documented in rights.txt:
-Mayfield-Meyer T, Zhuang V (2024). UTEP Plants (Arctos). Version 5.87. University of Texas at El Paso Biodiversity Collections. Occurrence dataset https://doi.org/10.15468/yhb6ky accessed via GBIF.org on 2024-02-05.
-Borchsenius F (2023). The AAU Herbarium Database. Herbarium of the University of Aarhus. Occurrence dataset https://doi.org/10.15468/7uigwo accessed via GBIF.org on 2024-02-05.
-Arizona State University Biocollections (2024). Arizona State University Vascular Plant Herbarium. Occurrence dataset https://doi.org/10.15468/a2o8vy accessed via GBIF.org on 2024-02-05.
