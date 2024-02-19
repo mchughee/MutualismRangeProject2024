@@ -92,8 +92,10 @@ for (i in 1:length(gbif_taxon_keys$keys)){
 
 # Okay, but now I want to count the number of occurrences in the gbif dataset
 # Print download keys
+# Megan B: try to remove [[2]][1:5, 1:5] from occ_download_list and make an object to play
+# around with it and figure out what these brackets actually mean
 
-occ_download_list(user = 'erin_m', pwd ='Dawson2023#')[[2]][1:5, 1:5]
+occ_download_list(user = 'erin_m', pwd ='Dawson2023#')-> occlist
 
 # Make a list of download keys
 dl_keys <- occ_download_list(user = 'erin_m', pwd ='Dawson2023#', limit = 1000)[[2]][1:5, 1:5]
@@ -130,6 +132,9 @@ file_names<- list.files("zip_files")
 walk(file_names, ~ unzip(zipfile = str_c("zip_files/", .x), 
                          exdir = str_c("zip_out/", .x)))
 
+# Delete old files-- haven't quite figured this out
+file.remove(list=ls(pattern="*.zip"))
+
 # Get rid of the .zip part of the unzipped files
 setwd("~/Mutualism_Range_Project_2024/zip_out")
 file.rename(list.files(), sub(".zip", "",list.files()))
@@ -151,35 +156,15 @@ setwd("~/Mutualism_Range_Project_2024")
 ### I then want to create a second loop in which I add the taxonomic name onto the end of each
 ### occurrence file and put it in a new folder called "occurrence data"
 
-
+i=2
 
 for(i in 1:length(dl_keys$key)){ # for all the keys in dl_keys
-  occdata <- read.delim(here(paste0("zip_out/", dl_keys$key[i], "/occurrence.txt")))  # grab occurrence txt file
+  occdata <- read.delim(here(paste0("~/zip_out/", dl_keys$key[i], "/occurrence.txt")))  # grab occurrence txt file
   spname <- gsub(" ", "_", unique(occdata$species)) # grab species name and adhere to end of existing file name
   spname <- strsplit(spname, split = " ")[[1]]
   if(identical(dir(pattern=spname), character(0))){ # if the directory does not have the species name already...
     dl_spname[i] <- spname # save species names as vector
     setwd(here())
-    file.rename(list.files(pattern=dl_keys$key[i]), spname) # then rename to species name
-  }
-  
-  print(paste(dl_keys$key[i], spname, i, sep = "_"))
-  
-}
-
-rbind(dl_keys, spname)->write.csv(here("dl_spname.csv"))
-
-write.csv(dl_spname, here("dl_spname.csv"))
-
-
-
-for(i in 1:length(dl_keys$key)){ # for all the keys in dl_keys
-  occdata <- read.delim(paste0("zip_out/", dl_keys$key[i], "/occurrence.txt"))  # grab occurrence txt file
-  spname <- gsub(" ", "_", unique(occdata$species)) # grab species name and adhere to end of existing file name
-  spname <- strsplit(spname, split = " ")[[1]]
-  if(identical(dir(pattern=spname), character(0))){ # if the directory does not have the species name already...
-    dl_spname[i] <- spname # save species names as vector
-    setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024/zip_out")
     file.rename(list.files(pattern=dl_keys$key[i]), spname) # then rename to species name
   }else{ # otherwise...
     dup_names[i] <- spname # save species names as duplicate downloads to check later
