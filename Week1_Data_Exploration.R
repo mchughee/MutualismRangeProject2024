@@ -133,9 +133,6 @@ walk(file_names, ~ unzip(zipfile = str_c("zip_files/", .x),
                          exdir = str_c("zip_out/", .x)))
 
 
-# Delete old files-- haven't quite figured this out
-file.remove(list=ls(pattern="*.zip"))
-
 # Get rid of the .zip part of the unzipped files
 setwd("~/Mutualism_Range_Project_2024/zip_out")
 file.rename(list.files(), sub(".zip", "",list.files()))
@@ -143,11 +140,12 @@ file.rename(list.files(), sub(".zip", "",list.files()))
 # reset working directory
 setwd("~/Mutualism_Range_Project_2024")
 
+
 # Extract occurrence files from each folder and rename them to match the species they are
 
 
 for(i in 1:length(dl_keys$key)){
-  occdata <- read.delim(here(paste0("~/Mutualism_Range_Project_2024/zip_out/", dl_keys$key[i], "/occurrence.txt")), na.strings="", encoding = "UTF-8")  # grab occurrence txt file
+  occdata <- read.delim(here(paste0("~/Mutualism_Range_Project_2024/zip_out/", dl_keys$key[i], "/occurrence.txt")), na.strings="", encoding = "UTF-8", header=T)  # grab occurrence txt file
   spname <- gsub(" ", "_", unique(occdata$species)) # grab species name
   spname <- strsplit(spname, split = " ")[[1]]
   if(identical(dir(pattern=spname), character(0))){ # if the directory does not have the species name already...
@@ -173,16 +171,14 @@ write.csv(dup_names, here("~/Mutualism_Range_Project_2024/duplicatenames.csv"))
 
 ### map occurrence data
 ### here, I am trialling some things
-# Call leaflet
-# install.packages("leaflet")
-# install.packages("rgdal")
-library(leaflet)
 library(dplyr)
-library(rgdal)
 
-# Trying to map just one file
+occurrence_dat<-list.files(path="~/Mutualism_Range_Project_2024/zip_out/", pattern="occurrence.txt", recursive=TRUE)
 
-setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024/zip_out/0004908-240202131308920")
+#for (i in occurrence_dat){
+  
+#}
+
 
 read.delim("occurrence.txt",header=T)->Crudia_ama
 
