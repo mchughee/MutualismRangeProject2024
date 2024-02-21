@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ### Exploring legume data in R
 ### Install packages
 # install.packages("filesstrings")
@@ -96,7 +95,7 @@ for (i in 1:length(gbif_taxon_keys$keys)){
 # Megan B: try to remove [[2]][1:5, 1:5] from occ_download_list and make an object to play
 # around with it and figure out what these brackets actually mean
 
-occ_download_list(user = 'erin_m', pwd ='Dawson2023#')-> occlist
+occ_download_list(user = 'erin_m', pwd ='Dawson2023#')[[2]][1:5, 1:5]
 
 # Make a list of download keys
 dl_keys <- occ_download_list(user = 'erin_m', pwd ='Dawson2023#', limit = 1000)[[2]][1:5, 1:5]
@@ -133,6 +132,7 @@ file_names<- list.files("zip_files")
 walk(file_names, ~ unzip(zipfile = str_c("zip_files/", .x), 
                          exdir = str_c("zip_out/", .x)))
 
+
 # Delete old files-- haven't quite figured this out
 file.remove(list=ls(pattern="*.zip"))
 
@@ -143,29 +143,16 @@ file.rename(list.files(), sub(".zip", "",list.files()))
 # reset working directory
 setwd("~/Mutualism_Range_Project_2024")
 
+# Extract occurrence files from each folder and rename them to match the species they are
 
-# rename files with species names
-# try i=1 or i=10, comment out the brackets so it's not a loop, and try that
-# for occ data, does each step do the right thing, or is it getting messed up?
-# if kept: dataframe with key and species name, make loop and go through, for i in length, for each
-### occurrence file, grab taxon name, make dataframe where i append key and spname, which key is which 
-### name. close loop and create second loop where for all keys in dataframe, and then for each key, load
-### in occurrence and write it to a new file with taxonomic name, rename using write.csv(spname, occdata)
-### okay, so in better words:
-### I want this loop to take the taxonomic names for each species from the occurrence file, and I want
-### to link this information to dl_keys so that I have a file with each key and it's taxon
-### I then want to create a second loop in which I add the taxonomic name onto the end of each
-### occurrence file and put it in a new folder called "occurrence data"
 
-i=2
-
-for(i in 1:length(dl_keys$key)){ # for all the keys in dl_keys
-  occdata <- read.delim(here(paste0("~/zip_out/", dl_keys$key[i], "/occurrence.txt")))  # grab occurrence txt file
-  spname <- gsub(" ", "_", unique(occdata$species)) # grab species name and adhere to end of existing file name
+for(i in 1:length(dl_keys$key)){
+  occdata <- read.delim(here(paste0("~/Mutualism_Range_Project_2024/zip_out/", dl_keys$key[i], "/occurrence.txt")), na.strings="", encoding = "UTF-8")  # grab occurrence txt file
+  spname <- gsub(" ", "_", unique(occdata$species)) # grab species name
   spname <- strsplit(spname, split = " ")[[1]]
   if(identical(dir(pattern=spname), character(0))){ # if the directory does not have the species name already...
     dl_spname[i] <- spname # save species names as vector
-    setwd(here())
+    setwd(here("~/Mutualism_Range_Project_2024/zip_out/"))
     file.rename(list.files(pattern=dl_keys$key[i]), spname) # then rename to species name
   }else{ # otherwise...
     dup_names[i] <- spname # save species names as duplicate downloads to check later
@@ -175,8 +162,11 @@ for(i in 1:length(dl_keys$key)){ # for all the keys in dl_keys
   print(paste(dl_keys$key[i], spname, i, sep = "_"))
   
 }
-write.csv(dl_spname, here("dl_spname.csv"))
-write.csv(dup_names, here("duplicatenames.csv"))
+write.csv(dl_spname, here("~/Mutualism_Range_Project_2024/dl_spname.csv"))
+write.csv(dup_names, here("~/Mutualism_Range_Project_2024/duplicatenames.csv"))
+
+# This code still doesn't rename the occurrence files themselves, but DOES rename the folders,
+# without scrambling the encoding. So it's a step up
 
 # Might need to move all renamed occurrence files into their own folder at this step
 
