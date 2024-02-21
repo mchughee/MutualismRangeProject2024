@@ -3,6 +3,7 @@
 # install.packages("filesstrings")
 
 ### Call libraries
+
 library(tidyverse)
 library(purrr)
 library(filesstrings)
@@ -11,6 +12,8 @@ library(filesstrings)
 # Note: Sure, I can filter this stuff out, but the number of occurrences in Pooja's dataset and
 # in GBIF are very different, so sometimes I end up randomly selecting species that have >50
 # occurrences in P's data, but have <50 in gbif
+# MB: interesting, we should ask Megan F about the source of Pooja's occurrence counts. A possible change to the workflow is to merge on occurence counts from gbif before filtering. 
+# MB: this could also be caused by taxonomic discrepancies, e.g., if some keys are pulling up synonyms rather than accepted names
 
 legume<-read.csv("legume_range_traits.csv")
 str(legume)
@@ -26,6 +29,8 @@ sym<-legume1 %>% subset(fixer==1 | Domatia == 1 | EFN==1)
 ### Randomly select 3 symbiotic and 3 nonsymbiotic species
 sample_n(sym, 3)-> randomsym
 sample_n(nonsym, 3)->randomnsym
+# MB: convention is to always put the object you are assigning to on the left eg. newdata <- filter(oldata, x)
+# MB: For reproducibility, can you replace these with a step that will always sample the same 6 species? (e.g., filter to the species names of the six you've been working with). That'll make it easier for us to jointly troubeshoot code. 
 
 ### Combine into one dataframe
 rbind(randomsym, randomnsym)->minidat
@@ -58,11 +63,14 @@ gbif_taxon_keys <-
   get_gbifid_(method="backbone") %>% 
   imap(~ .x %>% mutate(original_sciname = .y)) %>%
   bind_rows() %>%
-  write_tsv(path = "all_matches.tsv") %>% 
+  write_tsv(path = "all_matches.tsv") %>%
   filter(matchtype == "EXACT" & status == "ACCEPTED") %>%
   filter(kingdom == "Plantae") %>%
   select(usagekey, canonicalname) %>%
   data.frame()
+
+# MB: when I run this with a random six species, two get dropped at this step because the names called by the keys are synonyms. We'll probably need to add a step that deals with that to the pipeline (unless it already exists below)
+
 
 # write gbif taxon keys into a csv
 
@@ -71,44 +79,57 @@ write.csv(gbif_taxon_keys, ("gbif_taxon_keys.csv"))
 # get actual occurrence data
 
 gbif_taxon_keys <- read.csv("gbif_taxon_keys.csv")
+# MB: what's the purpose of writing out then reading in? 
+
 colnames(gbif_taxon_keys) <- c("X", "keys", "taxon")
+
 
 for (i in 1:length(gbif_taxon_keys$keys)) {
   gbif_taxon_keys$occ_count[i] <- occ_count(taxonKey = gbif_taxon_keys$keys[i], hasCoordinate = TRUE)
 }
-write.csv(gbif_taxon_keys, ("gbif_occ_count.csv"))
+write.csv(gbif_taxon_keys, "gbif_occ_count.csv")
 
+# MB: again what's the purpose of writing out then reading in? 
 occ_data<-read.csv("gbif_occ_count.csv")
 occ_data <- occ_data[ -c(1)]
 
 # Okay, but now, let's download all the occurences for these species
 # First print key names???
 
+# MB: this step sends a request to gbif to prepare occurrences for download. the print() wrappers make the out put print so you can watch progress, this is useful if you hit your download limit and need to start from where you left off.
 for (i in 1:length(gbif_taxon_keys$keys)){
   print(occ_download(pred_and(pred("taxonKey", gbif_taxon_keys$keys[i]), pred("hasCoordinate", TRUE)), user = "erin_m", pwd ='Dawson2023#', email = 'erinmchugh94@gmail.com'))
   print(gbif_taxon_keys$keys[i])
   print(gbif_taxon_keys$taxon[i])
-  Sys.sleep(120)}
+  print(i)
+  Sys.sleep(120)
+  }
+
 
 # Okay, but now I want to count the number of occurrences in the gbif dataset
+# MB: occurrence counts are obtained above in line 86
 # Print download keys
 
-occ_download_list(user = 'erin_m', pwd ='Dawson2023#')[[2]][1:5, 1:5]
+occ_download_list(user = 'erin_m', pwd ='Dawson2023#')[[2]][1:length(gbif_taxon_keys$keys), 1:5]
+# MB: indices above are to use the second item in a list (first item is just metadata) and then select the first x rows (number of rows should correspond to the number of species you're downloading occurrences for, so I replaced it). selects first 5 columns, are these ones we need?
 
 # Make a list of download keys
-dl_keys <- occ_download_list(user = 'erin_m', pwd ='Dawson2023#', limit = 1000)[[2]][1:5, 1:5]
+dl_keys <- occ_download_list(user = 'erin_m', pwd ='Dawson2023#', limit = 1000)[[2]][1:length(gbif_taxon_keys$keys), 1:5]
 length(unique(dl_keys$key))
 write.csv(dl_keys, ("dl_keys.csv"))
 
 # Download actual data
 
 for (i in 1:length(dl_keys$key)){
-  occ_download_get(key = paste(dl_keys$key[i]))
+  occ_download_get(key = paste(dl_keys$key[i]), path = "zip_files")
+  # MB: just download to zip_files and save the step of moving later. 
   print(i)
 }
 
 # change folder name to species name
+
 dl_keys <- read.csv(here("dl_keys.csv")) # get download key
+# MB: why reading in and out again?
 dl_keys$key <- as.character(dl_keys$key) # convert to character
 setwd(here("")) %>% list.files(pattern="") # how many files?
 dl_spname <- NA # create empty vector to store succesfully changed download species file names
@@ -116,14 +137,18 @@ dup_names <- NA
 
 # unzip files
 # identify the folders
-current.folder <- "C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024"
-new.folder <- "C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024/zip_files"
+# current.folder <- "C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024"
+# new.folder <- "C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024/zip_files"
+# MB better not to use absolute paths in R projects
+current.folder <- here()
+new.folder <- here("zip_files")
 
 # find the files that you want
 list.of.files <- list.files(pattern="*.zip")
 
 # copy the files to the new folder
-file.copy(list.of.files, new.folder)
+# MB: this step isn't working for me. says more from files than to files.
+file.copy(from = here(list.files(pattern="*.zip")), to = new.folder, recursive = TRUE)
 
 file_names<- list.files("zip_files")
 
@@ -131,11 +156,12 @@ walk(file_names, ~ unzip(zipfile = str_c("zip_files/", .x),
                          exdir = str_c("zip_out/", .x)))
 
 # Get rid of the .zip part of the unzipped files
-setwd("~/Mutualism_Range_Project_2024/zip_out")
-file.rename(list.files(), sub(".zip", "",list.files()))
+# setwd("~/Mutualism_Range_Project_2024/zip_out")
+# file.rename(list.files(), sub(".zip", "",list.files()))
+# MB: this seems like a bad idea--why get rid of a file extension? 
 
 # reset working directory
-setwd("~/Mutualism_Range_Project_2024")
+# setwd("~/Mutualism_Range_Project_2024")
 
 
 # rename files with species names
@@ -154,7 +180,7 @@ setwd("~/Mutualism_Range_Project_2024")
 
 
 for(i in 1:length(dl_keys$key)){ # for all the keys in dl_keys
-  occdata <- read.delim(here(paste0("zip_out/", dl_keys$key[i], "/occurrence.txt")))  # grab occurrence txt file
+  occdata <- read.delim(here(paste0("zip_out/", paste0(dl_keys$key[i], ".zip"), "/occurrence.txt")))  # grab occurrence txt file
   spname <- gsub(" ", "_", unique(occdata$species)) # grab species name and adhere to end of existing file name
   spname <- strsplit(spname, split = " ")[[1]]
   if(identical(dir(pattern=spname), character(0))){ # if the directory does not have the species name already...
