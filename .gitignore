@@ -4,3 +4,5 @@
 .Ruserdata
 .RdataTmp
 *.zip
+world/*
+zip_out/*
