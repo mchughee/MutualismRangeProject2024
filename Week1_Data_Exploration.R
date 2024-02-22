@@ -121,12 +121,25 @@ occ_download_list(user = 'erin_m', pwd ='Dawson2023#')[[2]][1:length(gbif_taxon_
 
 # Make a list of download keys
 dl_keys <- occ_download_list(user = 'erin_m', pwd ='Dawson2023#', limit = 1000)[[2]][1:length(gbif_taxon_keys$keys), 1:5]
+  Sys.sleep(120)}
+
+# Okay, but now I want to count the number of occurrences in the gbif dataset
+# MB: occurrence counts are obtained above in line 86
+# Print download keys
+
+occ_download_list(user = 'erin_m', pwd ='Dawson2023#')[[2]][1:length(gbif_taxon_keys$keys), 1:5]
+# MB: indices above are to use the second item in a list (first item is just metadata) and then select the first x rows (number of rows should correspond to the number of species you're downloading occurrences for, so I replaced it). selects first 5 columns, are these ones we need?
+
+# Make a list of download keys
+dl_keys <- occ_download_list(user = 'erin_m', pwd ='Dawson2023#', limit = 1000)[[2]][1:length(gbif_taxon_keys$keys), 1:5]
+
 length(unique(dl_keys$key))
 write.csv(dl_keys, ("dl_keys.csv"))
 
 # Download actual data
 
 for (i in 1:length(dl_keys$key)){
+
   occ_download_get(key = paste(dl_keys$key[i]), path = "zip_files")
   # MB: just download to zip_files and save the step of moving later. 
   print(i)
@@ -134,8 +147,11 @@ for (i in 1:length(dl_keys$key)){
 
 # change folder name to species name
 
+
 dl_keys <- read.csv(here("dl_keys.csv")) # get download key
 # MB: why reading in and out again?
+
+
 
 dl_keys$key <- as.character(dl_keys$key) # convert to character
 setwd(here("")) %>% list.files(pattern="") # how many files?
@@ -144,11 +160,13 @@ dup_names <- NA
 
 # unzip files
 # identify the folders
+
 # current.folder <- "C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024"
 # new.folder <- "C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024/zip_files"
 # MB better not to use absolute paths in R projects
 current.folder <- here()
 new.folder <- here("zip_files")
+
 
 # find the files that you want
 list.of.files <- list.files(pattern="*.zip")
@@ -438,6 +456,7 @@ walk(file_names, ~ unzip(zipfile = str_c("zip_files/", .x),
                          exdir = str_c("zip_out/", .x)))
 
 # Get rid of the .zip part of the unzipped files
+
 # setwd("~/Mutualism_Range_Project_2024/zip_out")
 # file.rename(list.files(), sub(".zip", "",list.files()))
 # MB: this seems like a bad idea--why get rid of a file extension? 
@@ -445,7 +464,11 @@ walk(file_names, ~ unzip(zipfile = str_c("zip_files/", .x),
 # reset working directory
 # setwd("~/Mutualism_Range_Project_2024")
 
+setwd("~/Mutualism_Range_Project_2024/zip_out")
+file.rename(list.files(), sub(".zip", "",list.files()))
 
+# reset working directory
+setwd("~/Mutualism_Range_Project_2024")
 
 
 # rename files with species names
@@ -464,7 +487,9 @@ walk(file_names, ~ unzip(zipfile = str_c("zip_files/", .x),
 
 
 for(i in 1:length(dl_keys$key)){ # for all the keys in dl_keys
+
   occdata <- read.delim(here(paste0("zip_out/", paste0(dl_keys$key[i], ".zip"), "/occurrence.txt")))  # grab occurrence txt file
+
   spname <- gsub(" ", "_", unique(occdata$species)) # grab species name and adhere to end of existing file name
   spname <- strsplit(spname, split = " ")[[1]]
   if(identical(dir(pattern=spname), character(0))){ # if the directory does not have the species name already...
@@ -603,9 +628,6 @@ ggplot() +
   geom_raster(data=climdat_df, aes(x=x, y=y,fill=climdat_df$wc2.1_10m_tavg_12))+
   geom_point(data=Crudia_ama, aes(x=decimalLongitude, y=decimalLatitude, colour="Crudia amazonica"), pch=20, size=2)+
   geom_sf(data=subset(spatial_polygons_sf, species == "Acacia adunca"), aes(fill = num_species))
-
-
-
 
 
 
