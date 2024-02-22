@@ -1,203 +1,169 @@
 ### Exploring legume data in R
-### Install packages
-# install.packages("filesstrings")
 
 ### Call libraries
 library(tidyverse)
 library(purrr)
 library(filesstrings)
-
-### First, read in legume data and filter out species with fewer than 50 occurrences
-# Note: Sure, I can filter this stuff out, but the number of occurrences in Pooja's dataset and
-# in GBIF are very different, so sometimes I end up randomly selecting species that have >50
-# occurrences in P's data, but have <50 in gbif
-
-# MB: interesting, we should ask Megan F about the source of Pooja's occurrence counts. A possible change to the workflow is to merge on occurence counts from gbif before filtering. 
-# MB: this could also be caused by taxonomic discrepancies, e.g., if some keys are pulling up synonyms rather than accepted names
-
-
-legume<-read.csv("legume_range_traits.csv")
-str(legume)
-legume1 <-legume %>% filter(Count>=50)
-
-### Filter species with no symbiotic relationship
-# But what about fungi? It's in the dataset, but very spotty data.
-nonsym<-legume1 %>% subset(fixer==0 & Domatia == 0 & EFN==0)
-
-### Subset species that ARE in a symbiotic relationship (fixer OR domatia OR EFN)
-sym<-legume1 %>% subset(fixer==1 | Domatia == 1 | EFN==1)
-
-### Randomly select 3 symbiotic and 3 nonsymbiotic species
-sample_n(sym, 3)-> randomsym
-sample_n(nonsym, 3)->randomnsym
-
-# MB: convention is to always put the object you are assigning to on the left eg. newdata <- filter(oldata, x)
-# MB: For reproducibility, can you replace these with a step that will always sample the same 6 species? (e.g., filter to the species names of the six you've been working with). That'll make it easier for us to jointly troubeshoot code. 
-
-
-### Combine into one dataframe
-rbind(randomsym, randomnsym)->minidat
-
-
-#### Now, I want to pull in gbif occurrence data 
-
-## I will need rgbif, taxize, reader, and here
-
-# install.packages("rgbif")
-# install.packages("taxize")
-# install.packages("readr")
-# install.packages("here")
 library(rgbif)
 library(taxize)
 library(readr)
 library(here)
 
+# MB: Goals:
+# - get GBIF occurrence data: 
+#   - requires getting gbif key associated with each species name
+#   - checking number of occurrences
+#   - querying gbif to prepare download
+#   - downloading compressed file and slimming this down to coordinates
+
+
+# MB: existing hurdles as I see them:
+# - add a gbif data cleaning step, maybe with this https://cran.r-project.org/web/packages/CoordinateCleaner/vignettes/Cleaning_GBIF_data_with_CoordinateCleaner.html
+# - see if taxonomic issues need further work (e.g., names that return both accepted and synonymous taxa, names that return ONLY synonymous taxa)
+
+
+
+### First, read in legume data and filter out species with fewer than 50 occurrences
+# Note: Sure, I can filter this stuff out, but the number of occurrences in Pooja's dataset and
+# in GBIF are very different, so sometimes I end up randomly selecting species that have >50
+# occurrences in P's data, but have <50 in gbif
+# MB: interesting, we should ask Megan F about the source of Pooja's occurrence counts. A possible change to the workflow is to merge on occurence counts from gbif before filtering. 
+# MB: this could also be caused by taxonomic discrepancies, e.g., if some keys are pulling up synonyms rather than accepted names
+
+legume <- read.csv("legume_range_traits.csv") %>% 
+  filter(Count >= 50)
+
+### Create subset of species with no symbiotic relationship
+
+# But what about fungi? It's in the dataset, but very spotty data.
+
+nonsym <- legume %>% 
+  filter(fixer==0 & Domatia == 0 & EFN==0)
+
+### Subset species that ARE in a symbiotic relationship (fixer OR domatia OR EFN)
+
+sym <- legume %>% 
+  filter(fixer==1 | Domatia == 1 | EFN==1)
+
+### Randomly select 3 symbiotic and 3 nonsymbiotic species
+
+# randomsym <- sample_n(sym, 3)
+# randomnsym <- sample_n(nonsym, 3)
+
+
+### Combine into one dataframe
+# minidat <- rbind(randomsym, randomnsym)
+
+# MB: convention is to always put the object you are assigning to on the left eg. newdata <- filter(oldata, x)
+# MB: Now that you have chosen 6, for reproducibility, replacing the above with a step that will always sample the same 6 species. (e.g., filter to the species names of the six you've been working with). That'll make it easier for us to jointly troubleshoot code. 
+
+
+minidat <- legume %>% 
+  filter(Phy %in% c("Inga splendens", 
+                    "Macrolobium pendulum", 
+                    "Phaseolus parvulus", 
+                    "Saraca asoca", 
+                    "Taralea cordata", 
+                    "Crudia amazonica"))
+
+
+#### Now, I want to pull in gbif occurrence data 
 
 # Make list of taxonomic keys
 
-keys <- minidat$Phy
+species_names <- minidat$Phy
 
 # grabbing gbif data-- this code mostly comes from Takuji's Range limits proj w/
 # Amy and Megan Oldfather
 # grab gbif data using "backbone"
 
 gbif_taxon_keys <- 
-  keys %>% 
+  species_names %>% 
+  # MB: Pass names of species to gbif to get ID numbers (keys) associated with them
   get_gbifid_(method="backbone") %>% 
+  # MB: This returns a named list of data frames, one data frame per species with a number of rows equal to the number of possible matches
   imap(~ .x %>% mutate(original_sciname = .y)) %>%
+  # MB: This step adds a new column to each dataframe (.x) in the list that contains the original scientific name queried (the index/name of the list item, .y). THis column is called original_sciname
   bind_rows() %>%
-  write_tsv(path = "all_matches.tsv") %>% 
+  # MB: This step combines all the listed dataframes into one big one. 
+  # write_tsv(path = "all_matches.tsv") %>% 
+  # MB: Omitting this writeout step until it becomes clear we need it. It's probably for a visual check of whether keys are good matches?
   filter(matchtype == "EXACT" & status == "ACCEPTED") %>%
-  filter(kingdom == "Plantae") %>%
-  select(usagekey, canonicalname) %>%
-  data.frame()
+  # MB: get rid of fuzzy matches (these have different spellings and are mostly the wrong species, e.g., Crudia amazonica vs. Clusia amazonica)
+  # MB: Important: do keys with the status "SYNONYM"give unique and legitimate occurrence points? Or will occurrences under synonymous names be returned by the accepted name? We should look this up or test it out. 
+  # filter(kingdom == "Plantae") %>%
+  # MB: Commented out the above because hopefully it's not necessary and reduces the generality of the code
+  select(usagekey, original_sciname) %>%
+  tibble()
 
-# MB: when I run this with a random six species, two get dropped at this step because the names called by the keys are synonyms. We'll probably need to add a step that deals with that to the pipeline (unless it already exists below)
 
+# Write gbif taxon keys into a csv
+# MB: Omitting this step because it's redundant with the table that could be written out above and not clear what it's for, can add it back in if needed later
+# write.csv(gbif_taxon_keys, ("gbif_taxon_keys.csv"))
 
-# write gbif taxon keys into a csv
-
-write.csv(gbif_taxon_keys, ("gbif_taxon_keys.csv"))
-
-# get actual occurrence data
-
-gbif_taxon_keys <- read.csv("gbif_taxon_keys.csv")
+# gbif_taxon_keys <- read.csv("gbif_taxon_keys.csv")
 # MB: what's the purpose of writing out then reading in? 
+# colnames(gbif_taxon_keys) <- c("X", "keys", "taxon")
 
-colnames(gbif_taxon_keys) <- c("X", "keys", "taxon")
 
+# Get occurrence counts for each species
 
-for (i in 1:length(gbif_taxon_keys$keys)) {
-  gbif_taxon_keys$occ_count[i] <- occ_count(taxonKey = gbif_taxon_keys$keys[i], hasCoordinate = TRUE)
+for (i in 1:length(gbif_taxon_keys$usagekey)) {
+  gbif_taxon_keys$occ_count[i] <- occ_count(taxonKey = gbif_taxon_keys$usagekey[i], hasCoordinate = TRUE)
 }
-write.csv(gbif_taxon_keys, "gbif_occ_count.csv")
 
-# MB: again what's the purpose of writing out then reading in? 
+# MB: Deleted another write out/read in step
 
-occ_data<-read.csv("gbif_occ_count.csv")
-occ_data <- occ_data[ -c(1)]
 
-# Okay, but now, let's download all the occurences for these species
+# Okay, but now, let's download all the occurrences for these species
 # First print key names???
 
+# Request that gbif prepare the downloads
 
-# MB: this step sends a request to gbif to prepare occurrences for download. the print() wrappers make the out put print so you can watch progress, this is useful if you hit your download limit and need to start from where you left off.
-
-for (i in 1:length(gbif_taxon_keys$keys)){
-  print(occ_download(pred_and(pred("taxonKey", gbif_taxon_keys$keys[i]), pred("hasCoordinate", TRUE)), user = "erin_m", pwd ='Dawson2023#', email = 'erinmchugh94@gmail.com'))
-  print(gbif_taxon_keys$keys[i])
-  print(gbif_taxon_keys$taxon[i])
+for (i in 1:length(gbif_taxon_keys$usagekey)){
+  print(occ_download_queue(occ_download(pred_and(pred("taxonKey", gbif_taxon_keys$usagekey[i]), pred("hasCoordinate", TRUE)), user = "erin_m", pwd ='Dawson2023#', email = 'erinmchugh94@gmail.com', format = "SIMPLE_CSV")))
+  # MB: Tried switching format from DWCA to SIMPLE_CSV which might be adequate for our purposes
+  print(gbif_taxon_keys$usagekey[i])
+  print(gbif_taxon_keys$original_sciname[i])
   print(i)
-  Sys.sleep(120)
-  }
+}
 
+# MB: this step sends a request to gbif to prepare occurrences for download. the print() wrappers make the output print so you can watch progress, this is useful if something goes wrong and you need to start up where you left off
+# MB: found the function occ_download_queue which makes sys.sleep unnecessary
+# MB: There may be some improvements that could be made on this step:
+# 1. Bundling many taxa into one gbif download might be efficient
+# 2. Adding some other preds that omit records that will get removed anyways when you QC geographic data would be efficient
 
-# Okay, but now I want to count the number of occurrences in the gbif dataset
-# MB: occurrence counts are obtained above in line 86
-# Print download keys
+# MB: The thing I'm stuck on here is getting the correct download keys for actually downloading the files. The list of keys returned in the step below will not necessarily be in the order that you requested them--the order could be altered if you have made the same request before or if some request are a lot larger than others. I'm sure we can figure this out in a makeshift way but there is probably an elegant solution too. 
 
-occ_download_list(user = 'erin_m', pwd ='Dawson2023#')[[2]][1:length(gbif_taxon_keys$keys), 1:5]
+# View all your download requests
+View(occ_download_list(user = 'erin_m', pwd ='Dawson2023#')[[2]])
 # MB: indices above are to use the second item in a list (first item is just metadata) and then select the first x rows (number of rows should correspond to the number of species you're downloading occurrences for, so I replaced it). selects first 5 columns, are these ones we need?
 
 # Make a list of download keys
-dl_keys <- occ_download_list(user = 'erin_m', pwd ='Dawson2023#', limit = 1000)[[2]][1:length(gbif_taxon_keys$keys), 1:5]
-  Sys.sleep(120)}
-
-# Okay, but now I want to count the number of occurrences in the gbif dataset
-# MB: occurrence counts are obtained above in line 86
-# Print download keys
-
-occ_download_list(user = 'erin_m', pwd ='Dawson2023#')[[2]][1:length(gbif_taxon_keys$keys), 1:5]
-# MB: indices above are to use the second item in a list (first item is just metadata) and then select the first x rows (number of rows should correspond to the number of species you're downloading occurrences for, so I replaced it). selects first 5 columns, are these ones we need?
-
-# Make a list of download keys
-dl_keys <- occ_download_list(user = 'erin_m', pwd ='Dawson2023#', limit = 1000)[[2]][1:length(gbif_taxon_keys$keys), 1:5]
-
-length(unique(dl_keys$key))
-write.csv(dl_keys, ("dl_keys.csv"))
-
-# Download actual data
+# MB: in my current situation, the 6 most recent requests are the six I want, but this might not always be the case!
+dl_keys <- occ_download_list(user = 'erin_m', pwd ='Dawson2023#', limit = 1000)[[2]][1:6, 1]
 
 for (i in 1:length(dl_keys$key)){
-
   occ_download_get(key = paste(dl_keys$key[i]), path = "zip_files")
   # MB: just download to zip_files and save the step of moving later. 
   print(i)
 }
 
-# change folder name to species name
-
-
-dl_keys <- read.csv(here("dl_keys.csv")) # get download key
-# MB: why reading in and out again?
-
-
-
-dl_keys$key <- as.character(dl_keys$key) # convert to character
-setwd(here("")) %>% list.files(pattern="") # how many files?
-dl_spname <- NA # create empty vector to store succesfully changed download species file names
-dup_names <- NA 
-
-# unzip files
-# identify the folders
-
-# current.folder <- "C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024"
-# new.folder <- "C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024/zip_files"
-# MB better not to use absolute paths in R projects
-current.folder <- here()
-new.folder <- here("zip_files")
-
-
-# find the files that you want
-list.of.files <- list.files(pattern="*.zip")
-
-# copy the files to the new folder
-
-# MB: this step isn't working for me. says more from files than to files.
-file.copy(from = here(list.files(pattern="*.zip")), to = new.folder, recursive = TRUE)
-
-
+# Unzip files
 file_names<- list.files("zip_files")
-
 walk(file_names, ~ unzip(zipfile = str_c("zip_files/", .x), 
-                         exdir = str_c("zip_out/", .x)))
-
-
-# Get rid of the .zip part of the unzipped files
-setwd("~/Mutualism_Range_Project_2024/zip_out")
-file.rename(list.files(), sub(".zip", "",list.files()))
-
-# reset working directory
-setwd("~/Mutualism_Range_Project_2024")
-
+                         exdir = str_c("zip_out/", .x), overwrite = TRUE))
 
 # Extract occurrence files from each folder and rename them to match the species they are
 
-
 for(i in 1:length(dl_keys$key)){
-  occdata <- read.delim(here(paste0("~/Mutualism_Range_Project_2024/zip_out/", dl_keys$key[i], "/occurrence.txt")), na.strings="", encoding = "UTF-8", header=T)  # grab occurrence txt file
+  # occdata <- read.delim(paste0("zip_out/", dl_keys$key[i], "/occurrence.txt")), na.strings="", encoding = "UTF-8", header=T)  # grab occurrence txt file
+  occdata <- read.delim(paste0("zip_out/", dl_keys$key[i], ".zip", "/", dl_keys$key[i], ".csv"), na.strings="", encoding = "UTF-8", header=T)  # grab occurrence txt file
   spname <- gsub(" ", "_", unique(occdata$species)) # grab species name
-  spname <- strsplit(spname, split = " ")[[1]]
+  spname <- strsplit(spname, split = " ")[[1]] # MB: necessary?
+  
+  # MB: Left off here
   if(identical(dir(pattern=spname), character(0))){ # if the directory does not have the species name already...
     dl_spname[i] <- spname # save species names as vector
     setwd(here("~/Mutualism_Range_Project_2024/zip_out/"))
