@@ -102,6 +102,8 @@ library(CoordinateCleaner)
 install.packages("countrycode")
 library(countrycode)
 
+# change country cod efrom iso2 to iso3
+
 occ_data$countryCode <-  countrycode(occ_data$countryCode, 
                                 origin =  'iso2c',
                                 destination = 'iso3c')
@@ -111,11 +113,11 @@ head(occ_data$countryCode)
 i=1
 
 for (i in 1:length(occ_data$species)) {
-  flags <- clean_coordinates(x = occ_data[i], 
-                                 lon = "decimalLongitude",
-                                 lat = "decimalLatitude",
-                                 countries = "countryCode",
-                                 species = "species")}
+  flags_[i] <- clean_coordinates(x = occ_data, 
+                                 lon = "decimalLongitude"[i],
+                                 lat = "decimalLatitude"[i],
+                                 countries = "countryCode"[i],
+                                 species = "species"[i])}
 
 # trying out some stuff
 # make test dataset
@@ -123,12 +125,66 @@ occ_data$species<-as.factor(occ_data$species)
 levels(occ_data$species)
 
 # first, remove NA values from test dataset
-test<-subset(occ_data, species=="Abrus fruticulosus" | species == "Abrus precatorius" | species=="Acacia acinacea") 
+test<-filter(occ_data, (species=="Abrus fruticulosus") | (species=="Abrus precatorius") | (species=="Acacia acinacea")) %>% droplevels()
+
 test1<-test %>% group_by(species) %>% filter(!is.na(decimalLatitude), !is.na(decimalLongitude))
 head(test1$decimalLatitude)
-nlevels(test1$species)
+levels(test1$species)
 
-split(test1, test1$species)
+
+
+split(test1, test1$species, drop=FALSE)->test2
+str(test2)
+
+# from https://stackoverflow.com/questions/9713294/split-data-frame-based-on-levels-of-a-factor-into-new-data-frames
+
+for (i in unique(test1$species)) {
+  len <- sum(test1$species == i)
+  df <- data.frame(species = rep(i, len), 
+                   decimalLatitude = test1[test1$species == i,"decimalLatitude"],
+                   decimalLongitude = test1[test1$species == i,"decimalLongitude"],
+                   countryCode = test1[test1$species == i,"countryCode"])
+  assign(paste0("df_", i), df)
+}
+
+dflist<-list(pattern="df_*")
+lapply("df_*", clean_coordinates(x = test2, 
+                                lon = "decimalLongitude",
+                                lat = "decimalLatitude",
+                                countries = "countryCode",
+                                species = "species",
+                                tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros")))
+
+
+lapply(test2, clean_coordinates(x = test2, 
+                                lon = "decimalLongitude",
+                                lat = "decimalLatitude",
+                                countries = "countryCode",
+                                species = "species",
+                                tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros")))
+
+
+for (i in 1:unique(test1$species)){
+  flag_[i]<-clean_coordinates(x = test1, 
+                              lon = "decimalLongitude"[i],
+                              lat = "decimalLatitude"[i],
+                              countries = "countryCode"[i],
+                              species = "species"[i],
+                              tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))}
+  
+for (i in 1:length(test2)) 
+{flag_[i]<-clean_coordinates(x = test2[i], 
+                              lon = "decimalLongitude",
+                              lat = "decimalLatitude",
+                              countries = "countryCode",
+                              species = "species",
+                              tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))}
+
+by(test2, flags <- clean_coordinates(x = test1, 
+                    lon = "decimalLongitude",
+                    lat = "decimalLatitude",
+                    countries = "countryCode",
+                    species = "species"))
 
 
 flags<- clean_coordinates(x = test1, 
@@ -146,15 +202,26 @@ sapply(split(test1,test1$species),
         species = "species",
         tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas", "zeros")))
 
-
 for (i in 1:length(test1$species)) 
-  {flag_[i]<-clean_coordinates(x = test1, 
-    lon = "decimalLongitude",
-    lat = "decimalLatitude",
-    countries = "countryCode",
-    species = "species",
+  {group_by(species)
+  flag_[i]<-clean_coordinates(x = test1, 
+    lon = "decimalLongitude"[i],
+    lat = "decimalLatitude"[i],
+    countries = "countryCode"[i],
+    species = "species"[i],
     tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))}
+
+test1 %>% group_by(species)
 
 summary(flags)
 plot(flags, lon = "decimalLongitude", lat = "decimalLatitude")
 
+library(plyr)
+
+plyrmethod<-dlply(test1, (.species), flags<- clean_coordinates(x = test1, 
+                                                               lon = "decimalLongitude",
+                                                               lat = "decimalLatitude",
+                                                               countries = "countryCode",
+                                                               species = "species",
+                                                               tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas", "zeros")))
+                  
