@@ -119,24 +119,107 @@ for (i in 1:length(occ_data$species)) {
                                  countries = "countryCode"[i],
                                  species = "species"[i])}
 
+# Trying coordiante cleaner for one species
+vicia<-occ_data %>% subset(species=="Vicia villosa")
+
+flags<-clean_coordinates(x = vicia, 
+                         lon = "decimalLongitude",
+                         lat = "decimalLatitude",
+                         countries = "countryCode",
+                         species = "species",
+                         tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros")))
+
+
+
 # trying out some stuff
 # make test dataset
 occ_data$species<-as.factor(occ_data$species)
 levels(occ_data$species)
-
-# first, remove NA values from test dataset
 test<-filter(occ_data, (species=="Abrus fruticulosus") | (species=="Abrus precatorius") | (species=="Acacia acinacea")) %>% droplevels()
 
+# Remove NA values from test dataset
 test1<-test %>% group_by(species) %>% filter(!is.na(decimalLatitude), !is.na(decimalLongitude))
 head(test1$decimalLatitude)
 levels(test1$species)
 
 
+# Using for loops causes R to consider the entire dataset just as one group of occurrences--
+# problematic, because coordinate cleaner looks at species ranges/polygons as a whole to find outliers!
+# Using flag_[i] causes a problem, bc R does not recognize it
+for (i in 1:length(test1$species)) 
+{flag_[i]<-clean_coordinates(x = test1, 
+                             lon = "decimalLongitude"[i],
+                             lat = "decimalLatitude"[i],
+                             countries = "countryCode"[i],
+                             species = "species"[i],
+                             tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))}
 
+# Using flag just as is also causes problems, throwing an NA column not found error
+for (i in 1:length(test1$species)) 
+{flag_[i]<-clean_coordinates(x = test1, 
+                             lon = "decimalLongitude"[i],
+                             lat = "decimalLatitude"[i],
+                             countries = "countryCode"[i],
+                             species = "species"[i],
+                             tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))}
+# Trying some more random stuff (representative of what I did, but not exhaustive):
+
+
+for (i in 1:unique(test1$species)){
+  flag_[i]<-clean_coordinates(x = test1, 
+                              lon = "decimalLongitude"[i],
+                              lat = "decimalLatitude"[i],
+                              countries = "countryCode"[i],
+                              species = "species"[i],
+                              tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))}
+
+
+for (i in 1:length(test2)) 
+{flag_[i]<-clean_coordinates(x = test2[i], 
+                             lon = "decimalLongitude",
+                             lat = "decimalLatitude",
+                             countries = "countryCode",
+                             species = "species",
+                             tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))}
+
+
+by(test2, flags <- clean_coordinates(x = test1, 
+                                     lon = "decimalLongitude",
+                                     lat = "decimalLatitude",
+                                     countries = "countryCode",
+                                     species = "species"))
+
+
+flags<- clean_coordinates(x = test1, 
+                          lon = "decimalLongitude",
+                          lat = "decimalLatitude",
+                          countries = "countryCode",
+                          species = "species",
+                          tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas", "zeros"))
+
+
+
+
+# Overall, not working-- individual flag datasets for each species not being generated, and cleaner ends up flagging
+# every occurrence!
+
+
+# Trying to split test1 by species, which did not work when I tried to plug it into for loops and apply statements
 split(test1, test1$species, drop=FALSE)->test2
 str(test2)
 
-# from https://stackoverflow.com/questions/9713294/split-data-frame-based-on-levels-of-a-factor-into-new-data-frames
+# sapply actually  works, but it only works when you don't use flags...also, it still treats 
+# the dataframe as one group of species! Yikes!
+sapply(split(test1,test1$species), 
+       flags[""]<-clean_coordinates(x=test1),
+       lon = "decimalLongitude",
+       lat = "decimalLatitude",
+       countries = "countryCode",
+       species = "species",
+       tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas", "zeros"))
+
+# Tried splitting them into a bunch of different files to feed into a loop/apply statement
+# code modified from https://stackoverflow.com/questions/9713294/split-data-frame-based-on-levels-of-a-factor-into-new-data-frames
 
 for (i in unique(test1$species)) {
   len <- sum(test1$species == i)
@@ -147,81 +230,25 @@ for (i in unique(test1$species)) {
   assign(paste0("df_", i), df)
 }
 
-dflist<-list(pattern="df_*")
-lapply("df_*", clean_coordinates(x = test2, 
-                                lon = "decimalLongitude",
-                                lat = "decimalLatitude",
-                                countries = "countryCode",
-                                species = "species",
-                                tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros")))
+# making list of files
+my_dfs <- lapply(ls(pattern = "df_.*"), get)
+       
 
 
-lapply(test2, clean_coordinates(x = test2, 
-                                lon = "decimalLongitude",
-                                lat = "decimalLatitude",
-                                countries = "countryCode",
-                                species = "species",
-                                tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros")))
-
-
-for (i in 1:unique(test1$species)){
-  flag_[i]<-clean_coordinates(x = test1, 
-                              lon = "decimalLongitude"[i],
-                              lat = "decimalLatitude"[i],
-                              countries = "countryCode"[i],
-                              species = "species"[i],
-                              tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))}
-  
-for (i in 1:length(test2)) 
-{flag_[i]<-clean_coordinates(x = test2[i], 
-                              lon = "decimalLongitude",
-                              lat = "decimalLatitude",
-                              countries = "countryCode",
-                              species = "species",
-                              tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))}
-
-by(test2, flags <- clean_coordinates(x = test1, 
-                    lon = "decimalLongitude",
-                    lat = "decimalLatitude",
-                    countries = "countryCode",
-                    species = "species"))
-
-
-flags<- clean_coordinates(x = test1, 
-      lon = "decimalLongitude",
-      lat = "decimalLatitude",
-      countries = "countryCode",
-      species = "species",
-      tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas", "zeros"))
-
-sapply(split(test1,test1$species), 
-       clean_coordinates(x=
+# Okay, this doesn't work even remotely...it flags everything
+sapply(my_dfs, 
+       flags<-clean_coordinates(x=test1),
         lon = "decimalLongitude",
         lat = "decimalLatitude",
         countries = "countryCode",
         species = "species",
-        tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas", "zeros")))
+        tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas", "zeros"))
 
-for (i in 1:length(test1$species)) 
-  {group_by(species)
-  flag_[i]<-clean_coordinates(x = test1, 
-    lon = "decimalLongitude"[i],
-    lat = "decimalLatitude"[i],
-    countries = "countryCode"[i],
-    species = "species"[i],
-    tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))}
+### Final thoughts: I think I need to move all of my newly generated single-species dataframes
+# into one single folder and create an apply function or for loop that will read them through. I 
+# ran out of time to do this, but will attempt next week
 
-test1 %>% group_by(species)
 
-summary(flags)
-plot(flags, lon = "decimalLongitude", lat = "decimalLatitude")
 
-library(plyr)
 
-plyrmethod<-dlply(test1, (.species), flags<- clean_coordinates(x = test1, 
-                                                               lon = "decimalLongitude",
-                                                               lat = "decimalLatitude",
-                                                               countries = "countryCode",
-                                                               species = "species",
-                                                               tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas", "zeros")))
                   
