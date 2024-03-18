@@ -136,11 +136,12 @@ flags<-clean_coordinates(x = vicia,
 occ_data$species<-as.character(occ_data$species)
 levels(occ_data$species)
 test<-filter(occ_data, (species=="Abrus fruticulosus") | (species=="Abrus precatorius") | (species=="Acacia acinacea")) %>% droplevels()
-write.csv(test, "test_df.csv")
+
 # Remove NA values from test dataset
 test1<-test %>% group_by(species) %>% filter(!is.na(decimalLatitude), !is.na(decimalLongitude))
 head(test1$decimalLatitude)
 levels(test1$species)
+write.csv(test1, "test_df.csv")
 
 
 # Using for loops causes R to consider the entire dataset just as one group of occurrences--
@@ -149,7 +150,7 @@ levels(test1$species)
 
 
 i=1
-for (i in 1:length(unique(test1$species)){ 
+for(i in 1:length(unique(test1$species)){ 
 species_tmp <- unique(test1$species)[i] %>% droplevels()
 df.tmp <- filter(test1, species == as.character(species_tmp))
 flag_[i]<-clean_coordinates(x = df.tmp, 
