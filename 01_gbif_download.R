@@ -127,16 +127,16 @@ flags<-clean_coordinates(x = vicia,
                          lat = "decimalLatitude",
                          countries = "countryCode",
                          species = "species",
-                         tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros")))
+                         tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))
 
 
 
 # trying out some stuff
 # make test dataset
-occ_data$species<-as.factor(occ_data$species)
+occ_data$species<-as.character(occ_data$species)
 levels(occ_data$species)
 test<-filter(occ_data, (species=="Abrus fruticulosus") | (species=="Abrus precatorius") | (species=="Acacia acinacea")) %>% droplevels()
-
+write.csv(test, "test_df.csv")
 # Remove NA values from test dataset
 test1<-test %>% group_by(species) %>% filter(!is.na(decimalLatitude), !is.na(decimalLongitude))
 head(test1$decimalLatitude)
@@ -146,8 +146,13 @@ levels(test1$species)
 # Using for loops causes R to consider the entire dataset just as one group of occurrences--
 # problematic, because coordinate cleaner looks at species ranges/polygons as a whole to find outliers!
 # Using flag_[i] causes a problem, bc R does not recognize it
-for (i in 1:length(test1$species)) 
-{flag_[i]<-clean_coordinates(x = test1, 
+
+
+i=1
+for (i in 1:length(unique(test1$species)){ 
+species_tmp <- unique(test1$species)[i] %>% droplevels()
+df.tmp <- filter(test1, species == as.character(species_tmp))
+flag_[i]<-clean_coordinates(x = df.tmp, 
                              lon = "decimalLongitude"[i],
                              lat = "decimalLatitude"[i],
                              countries = "countryCode"[i],
