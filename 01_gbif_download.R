@@ -1,11 +1,9 @@
-getwd()
-install.packages("rgbif")
-install.packages("taxize")
 library(rgbif)
 library(taxize)
 library(tidyverse)
 
-legume <- read.csv("legume_data/legume_range_traits.csv")
+
+legume <- read.csv("legume_range_traits.csv")
 
 species_names <- legume$Phy
 
@@ -21,9 +19,9 @@ gbif_taxon_keys <-
   
   
   # MB: get rid of fuzzy matches (these have different spellings and are mostly the wrong species, e.g., Crudia amazonica vs. Clusia amazonica)
-  # MB: Important: do keys with the status "SYNONYM"give unique and legitimate occurrence points? Or will occurrences under synonymous names be returned by the accepted name? We should look this up or test it out. 
-  # filter(kingdom == "Plantae") %>%
-  # MB: Commented out the above because hopefully it's not necessary and reduces the generality of the code
+  # MB: Important: do keys with the status "SYNONYM" give unique and legitimate occurrence points? Or will occurrences under synonymous names be returned by the accepted name? We should look this up or test it out. 
+  filter(kingdom == "Plantae") %>%
+
   select(usagekey, original_sciname) %>%
   tibble()
 
@@ -35,7 +33,7 @@ for (i in 1:length(gbif_taxon_keys$usagekey)) {
 
 # filter for species that have 50+ occurrences
 
-gbif_taxon_keys_filtered<-gbif_taxon_keys%>% filter(occ_count>=50)
+gbif_taxon_keys_filtered <- gbif_taxon_keys %>% filter(occ_count>=50)
 
 # ask gbif to pretty please prepare some downloads for me
 
@@ -86,49 +84,21 @@ file_names<- list.files("zip_files")
 setwd("/symbiont/erin.mchugh/Files/legume_data/occurrence_data")
 unzip("0008106-240229165702484.zip")
 
-occ_data<-read_delim("0008106-240229165702484.csv")
-head(occ_data)
-# row names are probably species, causing problems
-# use n_max in read_ series to read in just a few of the observations
+# Full version
+# occ_data <- read_delim("0008106-240229165702484.csv")
 
-# install coordinate cleaner
-install.packages("CoordinateCleaner")
-library(CoordinateCleaner)
+head(occ_data)
+summary(occ_data)
 
 # transforming country codes from iso2c to iso3c (apparently this is required for using )
-
-# trying out clean coordinates wrapped function
-
-install.packages("countrycode")
-library(countrycode)
-
-# change country cod efrom iso2 to iso3
-
-occ_data$countryCode <-  countrycode(occ_data$countryCode, 
-                                origin =  'iso2c',
-                                destination = 'iso3c')
+# Skip this step for the test dataset because I think it was already done before it was written out
+occ_data$countryCode <- countrycode(occ_data$countryCode, 
+                                    origin =  'iso2c',
+                                    destination = 'iso3c')
 
 head(occ_data$countryCode)
 
-i=1
-
-for (i in 1:length(occ_data$species)) {
-  flags_[i] <- clean_coordinates(x = occ_data, 
-                                 lon = "decimalLongitude"[i],
-                                 lat = "decimalLatitude"[i],
-                                 countries = "countryCode"[i],
-                                 species = "species"[i])}
-
-# Trying coordiante cleaner for one species
-vicia<-occ_data %>% subset(species=="Vicia villosa")
-
-flags<-clean_coordinates(x = vicia, 
-                         lon = "decimalLongitude",
-                         lat = "decimalLatitude",
-                         countries = "countryCode",
-                         species = "species",
-                         tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))
-
+table(occ_data$species)
 
 
 # trying out some stuff
@@ -142,119 +112,6 @@ test1<-test %>% group_by(species) %>% filter(!is.na(decimalLatitude), !is.na(dec
 head(test1$decimalLatitude)
 levels(test1$species)
 write.csv(test1, "test_df.csv")
-
-
-# Using for loops causes R to consider the entire dataset just as one group of occurrences--
-# problematic, because coordinate cleaner looks at species ranges/polygons as a whole to find outliers!
-# Using flag_[i] causes a problem, bc R does not recognize it
-
-
-i=1
-for(i in 1:length(unique(test1$species)){ 
-species_tmp <- unique(test1$species)[i] %>% droplevels()
-df.tmp <- filter(test1, species == as.character(species_tmp))
-flag_[i]<-clean_coordinates(x = df.tmp, 
-                             lon = "decimalLongitude"[i],
-                             lat = "decimalLatitude"[i],
-                             countries = "countryCode"[i],
-                             species = "species"[i],
-                             tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))}
-
-# Using flag just as is also causes problems, throwing an NA column not found error
-for (i in 1:length(test1$species)) 
-{flag_[i]<-clean_coordinates(x = test1, 
-                             lon = "decimalLongitude"[i],
-                             lat = "decimalLatitude"[i],
-                             countries = "countryCode"[i],
-                             species = "species"[i],
-                             tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))}
-# Trying some more random stuff (representative of what I did, but not exhaustive):
-
-
-for (i in 1:unique(test1$species)){
-  flag_[i]<-clean_coordinates(x = test1, 
-                              lon = "decimalLongitude"[i],
-                              lat = "decimalLatitude"[i],
-                              countries = "countryCode"[i],
-                              species = "species"[i],
-                              tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))}
-
-
-for (i in 1:length(test2)) 
-{flag_[i]<-clean_coordinates(x = test2[i], 
-                             lon = "decimalLongitude",
-                             lat = "decimalLatitude",
-                             countries = "countryCode",
-                             species = "species",
-                             tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))}
-
-
-by(test2, flags <- clean_coordinates(x = test1, 
-                                     lon = "decimalLongitude",
-                                     lat = "decimalLatitude",
-                                     countries = "countryCode",
-                                     species = "species"))
-
-
-flags<- clean_coordinates(x = test1, 
-                          lon = "decimalLongitude",
-                          lat = "decimalLatitude",
-                          countries = "countryCode",
-                          species = "species",
-                          tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas", "zeros"))
-
-
-
-
-# Overall, not working-- individual flag datasets for each species not being generated, and cleaner ends up flagging
-# every occurrence!
-
-
-# Trying to split test1 by species, which did not work when I tried to plug it into for loops and apply statements
-split(test1, test1$species, drop=FALSE)->test2
-str(test2)
-
-# sapply actually  works, but it only works when you don't use flags...also, it still treats 
-# the dataframe as one group of species! Yikes!
-sapply(split(test1,test1$species), 
-       flags[""]<-clean_coordinates(x=test1),
-       lon = "decimalLongitude",
-       lat = "decimalLatitude",
-       countries = "countryCode",
-       species = "species",
-       tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas", "zeros"))
-
-# Tried splitting them into a bunch of different files to feed into a loop/apply statement
-# code modified from https://stackoverflow.com/questions/9713294/split-data-frame-based-on-levels-of-a-factor-into-new-data-frames
-
-for (i in unique(test1$species)) {
-  len <- sum(test1$species == i)
-  df <- data.frame(species = rep(i, len), 
-                   decimalLatitude = test1[test1$species == i,"decimalLatitude"],
-                   decimalLongitude = test1[test1$species == i,"decimalLongitude"],
-                   countryCode = test1[test1$species == i,"countryCode"])
-  assign(paste0("df_", i), df)
-}
-
-# making list of files
-my_dfs <- lapply(ls(pattern = "df_.*"), get)
-       
-
-
-# Okay, this doesn't work even remotely...it flags everything
-sapply(my_dfs, 
-       flags<-clean_coordinates(x=test1),
-        lon = "decimalLongitude",
-        lat = "decimalLatitude",
-        countries = "countryCode",
-        species = "species",
-        tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas", "zeros"))
-
-### Final thoughts: I think I need to move all of my newly generated single-species dataframes
-# into one single folder and create an apply function or for loop that will read them through. I 
-# ran out of time to do this, but will attempt next week
-
-
 
 
                   
