@@ -11,8 +11,16 @@ library(countrycode)
 
 # Testing version of dataset
 occ_data <- read.csv("test_df.csv") %>% 
-  select(-1)
-# Omitting the first column of index numbers (adding these is a write.csv behavior that can be prevented with row.names = FALSE unless you want them)
+  select(-1) 
+  # Omitting the first column of index numbers (adding these is a write.csv behavior that can be prevented with row.names = FALSE unless you want them)
+  # Could consider reducing to columns of interest per the coordinatecleaner vignette, but first should look through and see if there are any others we might need.
+    # select(species, decimalLongitude,
+    # decimalLatitude, countryCode, individualCount,
+    # gbifID, family, taxonRank, coordinateUncertaintyInMeters,
+    # year, basisOfRecord, institutionCode)
+  # You could then have a smaller dataframe in your environment and that might be easier on the computer
+  
+names(occ_data)
 
 # Full version
 # occ_data <- read_delim("0008106-240229165702484.csv")
@@ -22,21 +30,14 @@ summary(occ_data)
 
 # transforming country codes from iso2c to iso3c (apparently this is required for using )
 # Skip this step for the test dataset because I think it was already done before it was written out
-occ_data$countryCode <- countrycode(occ_data$countryCode, 
-                                     origin =  'iso2c',
-                                     destination = 'iso3c')
+# occ_data$countryCode <- countrycode(occ_data$countryCode, 
+#                                      origin =  'iso2c',
+#                                      destination = 'iso3c')
 
 head(occ_data$countryCode)
 
 table(occ_data$species)
 
-# Could consider reducing to columns of interest per the coordinatecleaner vignette, but first should look through and see if there are any others we might need.
-# dat <- dat %>%
-#   select(species, decimalLongitude, 
-#   decimalLatitude, countryCode, individualCount,
-#   gbifID, family, taxonRank, coordinateUncertaintyInMeters,
-#   year, basisOfRecord, institutionCode, datasetName)
-# You could then have a smaller dataframe in your environment and that might be easier on the computer
 
 # Trying coordinate cleaner for each species separately
 abrus <- occ_data %>% subset(species == "Abrus fruticulosus")
@@ -68,13 +69,13 @@ flags_abrus_p <- clean_coordinates(x = abrus_p,
 
 # The "seas" test is slow
 # So is "outliers"
-
 flags_occ_data <- clean_coordinates(x = occ_data, 
                                     lon = "decimalLongitude",
                                     lat = "decimalLatitude",
                                     countries = "countryCode",
                                     species = "species",
                                     tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))
+# 7 min 20 sec on my old computer
 
 # Remove species designations
 occ_data_nospecies <- occ_data %>% 
@@ -86,6 +87,7 @@ flags_occ_data_nospecies <- clean_coordinates(x = occ_data_nospecies,
                                     species = NULL,
                                     countries = "countryCode",
                                     tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros")) 
+
 # Without species indicated it won't run the outliers test, which indicates that it's doing it on a species-by-species basis
 
 # Do we get the same number of records flagged if we do it for all 3 test species vs. each individually?
@@ -96,6 +98,25 @@ table(flags_acacia$.summary)
 table(flags_occ_data$species, flags_occ_data$.summary)
 
 # Same whether run together or separately
+
+# Do these run faster with a map function?
+
+# Here's the map() setup, but no, I don't think it's any faster, it's not parallel, just iterative so not really any different than running it on the full dataframe
+
+flags_map = occ_data %>%
+  # split into a list of dataframes
+  group_split(species, .keep = TRUE) %>% 
+  # apply fuction--that's the first argument after the ., then supply arguments to clean_coordinates
+  map(., clean_coordinates, 
+      species = "species",
+      lon = "decimalLongitude",
+      lat = "decimalLatitude",
+      countries = "countryCode",
+      tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros")) %>%
+  # bind back into columns
+  list_rbind()
+# 7 min 6 sec for the test dataset of 3 species and 17536 observations on my 2015 macbook air
+
 
 # Explore these on maps
 
