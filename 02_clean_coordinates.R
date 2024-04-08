@@ -69,12 +69,43 @@ flags_abrus_p <- clean_coordinates(x = abrus_p,
 
 # The "seas" test is slow
 # So is "outliers"
+
+# testing with basic switches
 flags_occ_data <- clean_coordinates(x = occ_data, 
                                     lon = "decimalLongitude",
                                     lat = "decimalLatitude",
                                     countries = "countryCode",
                                     species = "species",
-                                    tests = c("capitals", "centroids", "equal", "institutions", "outliers", "seas","zeros"))
+                                    tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "gbif", "seas"))#,
+                                    #country_ref=rnaturalearth:ne_countries('large', returnclass = "sf"))
+
+# changing country ref to finer-scale map
+
+flags_occ_data_ref <- clean_coordinates(x = occ_data, 
+                                    lon = "decimalLongitude",
+                                    lat = "decimalLatitude",
+                                    countries = "countryCode",
+                                    species = "species",
+                                    tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "gbif", "seas"),
+                                    country_ref=rnaturalearth:ne_countries('110', returnclass = "sf"))
+
+# Taking out gbif
+
+flags_occ_data_ref <- clean_coordinates(x = occ_data, 
+                                    lon = "decimalLongitude",
+                                    lat = "decimalLatitude",
+                                    countries = "countryCode",
+                                    species = "species",
+                                    tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "gbif", "seas"),
+                                    country_ref=rnaturalearth:ne_countries('large', returnclass = "sf"))
+seas_flags<-cc_sea(
+  occ_data,
+  lon = "decimalLongitude",
+  lat = "decimalLatitude",
+  scale = 110,
+  value = "flagged",
+  buffer = 500)
+  
 # 7 min 20 sec on my old computer
 
 # Remove species designations
@@ -96,6 +127,8 @@ table(flags_abrus$.summary)
 table(flags_abrus_p$.summary)
 table(flags_acacia$.summary)
 table(flags_occ_data$species, flags_occ_data$.summary)
+
+summary(flags_occ_data)
 
 # Same whether run together or separately
 
