@@ -1,4 +1,6 @@
 # Run clean coordinates function on all data
+library(tidyverse)
+library(readr)
 
 # First, read in the 10.6 gigabyte data file
 occ_data <- read_delim("0008106-240229165702484.csv")
@@ -50,3 +52,18 @@ flags_part_one <- clean_coordinates(x = part_a,
                   tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "seas"),
                   seas_ref=rnaturalearth::ne_download(scale = 10, type = 'land', category = 'physical', returnclass = "sf"),
                   seas_buffer=20)
+
+# Okay well this took a VERY long time to run
+# I am going to try with a revised function that uses 50 for seas_ref and gets rid of the 
+#seas buffer
+
+flags_two <- clean_coordinates(x = part_a, 
+                               lon = "decimalLongitude",
+                               lat = "decimalLatitude",
+                               countries = "countryCode",
+                               species = "species",
+                               tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "seas"),
+                               seas_ref=rnaturalearth::ne_download(scale = 50, type = 'land', category = 'physical', returnclass = "sf"))
+# This took 3 hours to run on 1624100 points
+# So 3 hours to run about 10% of the data
+# 3 hours x 10=30 hours of running total
