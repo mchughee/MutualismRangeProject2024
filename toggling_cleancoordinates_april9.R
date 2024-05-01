@@ -51,10 +51,54 @@ flags_four<-clean_coordinates(x = test_data,
                               tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "seas"),
                               seas_ref=rnaturalearth::ne_download(scale = 110, type = 'land', category = 'physical', returnclass = "sf"))
 
-summary(flags_one)
-summary(flags_two)
-summary(flags_three)
-summary(flags_four)
+# Trying out different outlier methods
+# first, mean absolute deviation
+flags_five<-clean_coordinates(x = test_data, 
+                              lon = "decimalLongitude",
+                              lat = "decimalLatitude",
+                              countries = "countryCode",
+                              species = "species",
+                              tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "seas"),
+                              seas_ref=rnaturalearth::ne_download(scale = 110, type = 'land', category = 'physical', returnclass = "sf"),
+                              outliers_method = "mad")
+
+# min distance to next record
+flags_six<-clean_coordinates(x = test_data, 
+                              lon = "decimalLongitude",
+                              lat = "decimalLatitude",
+                              countries = "countryCode",
+                              species = "species",
+                              tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "seas"),
+                              seas_ref=rnaturalearth::ne_download(scale = 110, type = 'land', category = 'physical', returnclass = "sf"),
+                              outliers_method = "distance")
+
+# trying it with tdi smaller
+flags_seven<-clean_coordinates(x = test_data, 
+                             lon = "decimalLongitude",
+                             lat = "decimalLatitude",
+                             countries = "countryCode",
+                             species = "species",
+                             tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "seas"),
+                             seas_ref=rnaturalearth::ne_download(scale = 110, type = 'land', category = 'physical', returnclass = "sf"),
+                             outliers_method = "distance",
+                             outliers_td=500)
+
+
+summary(flags_one) # seas_ref at 10; buffer at 20; total flags=1197
+# seas=863
+plot(flags_one, lon = "decimalLongitude", lat = "decimalLatitude")
+
+summary(flags_two) #seas_ref at 50; no buffer; total flags=1530
+# seas=1288
+plot(flags_two, lon = "decimalLongitude", lat = "decimalLatitude")
+
+summary(flags_three) # seas_ref at 50; 20 m buffer; total flags=1526
+# seas=1284
+plot(flags_three, lon = "decimalLongitude", lat = "decimalLatitude")
+
+summary(flags_four) # seas_ref at 110; no buffer; total flags=2452
+# seas=2266
+plot(flags_four, lon = "decimalLongitude", lat = "decimalLatitude")
 
 # Capitals: removes records referenced to capital cities with a default buffer of 10 km
 # Centroids: removes records within radius around country centroid

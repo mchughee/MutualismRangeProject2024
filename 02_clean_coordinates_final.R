@@ -4,6 +4,10 @@ library(readr)
 
 # First, read in the 10.6 gigabyte data file
 occ_data <- read_delim("0008106-240229165702484.csv")
+occ_data$species<-as.factor(occ_data$species)
+levels(occ_data$species)
+
+objectclasses = unique(factor(occ_data$species))
 
 # Remove occurrences with no lat/long
 occ_cleaned<-occ_data %>% drop_na(decimalLatitude)
