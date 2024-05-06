@@ -5,20 +5,13 @@ library(sf)
 library(terra)
 library(tidyverse)
 library(raster)
-#install.packages("shapefiles")
-library(shapefiles)
-
-str(test)
-
-
-# Download bioclim variables
-library(raster)
 
 # turn df into an sf object
 test<-read.csv("dat_test_clean.csv")
 df <- st_as_sf(x = test,                         
                coords = c("decimalLongitude", "decimalLatitude")
 )
+st_set_crs(df, 4326)->df_1
 
 
 ### Never mind! I will try to overlay climate and occurrence data first because that's
@@ -41,13 +34,17 @@ plot(precip)
 # Now, point data
 setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024")
 
-climate_mean <- raster::extract(clim, # the raster that you wish to extract values from
-                                df, # a point, or polygon spatial object
-                                buffer=0.5,
-                                fun = mean, # extract the MEAN value from each plot
-                                sp = TRUE)
+temp_data<-terra::extract(temp, df_1)
+temp_df<-as.data.frame(temp_data)
 
-climate_df<-as.data.frame(climate_mean)
+precip_data<-terra::extract(precip, df_1)
+precip_df<-as.data.frame(precip_data)
+
+# climate_mean <- raster::extract(temp, # the raster that you wish to extract values from
+                                # df_1, # a point, or polygon spatial object
+                                # buffer=0.5,
+                                # fun = mean, # extract the MEAN value from each plot
+                                # sp = TRUE)
 
 plot(clim)
 
