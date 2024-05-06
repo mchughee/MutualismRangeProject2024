@@ -30,8 +30,8 @@ library(here)
 # MB: interesting, we should ask Megan F about the source of Pooja's occurrence counts. A possible change to the workflow is to merge on occurence counts from gbif before filtering. 
 # MB: this could also be caused by taxonomic discrepancies, e.g., if some keys are pulling up synonyms rather than accepted names
 
-legume <- read.csv("legume_range_traits.csv") %>% 
-  filter(Count >= 50)
+legume <- read.csv("legume_range_traits.csv") #%>% 
+  #filter(Count >= 50)
 
 ### Create subset of species with no symbiotic relationship
 
@@ -58,20 +58,20 @@ sym <- legume %>%
 # MB: Now that you have chosen 6, for reproducibility, replacing the above with a step that will always sample the same 6 species. (e.g., filter to the species names of the six you've been working with). That'll make it easier for us to jointly troubleshoot code. 
 
 
-minidat <- legume %>% 
-  filter(Phy %in% c("Inga splendens", 
+#minidat <- legume %>% 
+  #filter(Phy %in% c("Inga splendens", 
                     "Macrolobium pendulum", 
                     "Phaseolus parvulus", 
                     "Saraca asoca", 
                     "Taralea cordata", 
                     "Crudia amazonica"))
 
-
+#minidat<-legume
 #### Now, I want to pull in gbif occurrence data 
 
 # Make list of taxonomic keys
 
-species_names <- minidat$Phy
+species_names <- legume$Phy
 
 # grabbing gbif data-- this code mostly comes from Takuji's Range limits proj w/
 # Amy and Megan Oldfather
@@ -84,11 +84,15 @@ gbif_taxon_keys <-
   # MB: This returns a named list of data frames, one data frame per species with a number of rows equal to the number of possible matches
   imap(~ .x %>% mutate(original_sciname = .y)) %>%
   # MB: This step adds a new column to each dataframe (.x) in the list that contains the original scientific name queried (the index/name of the list item, .y). THis column is called original_sciname
-  bind_rows() %>%
+  bind_rows() #%>%
   # MB: This step combines all the listed dataframes into one big one. 
   # write_tsv(path = "all_matches.tsv") %>% 
   # MB: Omitting this writeout step until it becomes clear we need it. It's probably for a visual check of whether keys are good matches?
-  filter(matchtype == "EXACT" & status == "ACCEPTED") %>%
+  
+ 
+  gbif_taxon_keys<-filter(gbif_taxon_keys, matchtype=="EXACT" & status=="ACCEPTED") %>% 
+
+ 
   # MB: get rid of fuzzy matches (these have different spellings and are mostly the wrong species, e.g., Crudia amazonica vs. Clusia amazonica)
   # MB: Important: do keys with the status "SYNONYM"give unique and legitimate occurrence points? Or will occurrences under synonymous names be returned by the accepted name? We should look this up or test it out. 
   # filter(kingdom == "Plantae") %>%
@@ -112,6 +116,10 @@ for (i in 1:length(gbif_taxon_keys$usagekey)) {
   gbif_taxon_keys$occ_count[i] <- occ_count(taxonKey = gbif_taxon_keys$usagekey[i], hasCoordinate = TRUE)
 }
 
+# filter out species with less than 50 occurrences
+  
+gbif_taxon_keys_filtered<-gbif_taxon_keys%>% filter(occ_count>=50)
+  
 # MB: Deleted another write out/read in step
 
 
@@ -120,11 +128,11 @@ for (i in 1:length(gbif_taxon_keys$usagekey)) {
 
 # Request that gbif prepare the downloads
 
-for (i in 1:length(gbif_taxon_keys$usagekey)){
-  print(occ_download_queue(occ_download(pred_and(pred("taxonKey", gbif_taxon_keys$usagekey[i]), pred("hasCoordinate", TRUE)), user = "erin_m", pwd ='Dawson2023#', email = 'erinmchugh94@gmail.com', format = "SIMPLE_CSV")))
+for (i in 1:length(gbif_taxon_keys_filtered$usagekey)){
+  print(occ_download_queue(occ_download(pred_and(pred("taxonKey", gbif_taxon_keys_filtered$usagekey[i]), pred("hasCoordinate", TRUE)), user = "erin_m", pwd ='Dawson2023#', email = 'erinmchugh94@gmail.com', format = "SIMPLE_CSV")))
   # MB: Tried switching format from DWCA to SIMPLE_CSV which might be adequate for our purposes
-  print(gbif_taxon_keys$usagekey[i])
-  print(gbif_taxon_keys$original_sciname[i])
+  print(gbif_taxon_keys_filtered$usagekey[i])
+  print(gbif_taxon_keys_filtered$original_sciname[i])
   print(i)
 }
 

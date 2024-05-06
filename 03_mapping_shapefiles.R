@@ -102,7 +102,7 @@ for (x in 1:length(legume_pol$polygon)) {
   legume_pol[x, "code"] <- legume_pol$polygon[[x]]@data$Code 
 }
 
-lspecies_counts <- subset(legume_pol, introduced_status == "N") %>%
+lspecies_counts <- subset(legume_pol) %>%
   group_by(code) %>%
   summarise(num_species = n_distinct(species))
 
