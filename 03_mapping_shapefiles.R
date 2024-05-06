@@ -1,10 +1,4 @@
-# Overlaying our occurrence data with Pooja's shapefiles
-# Started 15 April 2024
-setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024")
-# First, read in test df
-test<-read.csv("dat_test_clean.csv")
-df <- st_as_sf(x = test,                         
-               coords = c("decimalLongitude", "decimalLatitude"))
+# Overlaying occurrence data with Pooja's shapefiles
 
 # Read in packages
 
@@ -15,7 +9,20 @@ library(tidyverse)
 library(CoordinateCleaner)
 library(rnaturalearthdata)
 
-# read in shapefiles and whip em into shape
+# setwd
+setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024")
+
+# First, read in test df
+test<-read.csv("dat_test_clean.csv")
+df <- st_as_sf(x = test,                         
+               coords = c("decimalLongitude", "decimalLatitude"))
+# Tell R to read coordinates as WGS84
+st_set_crs(df, 4326)->df_1
+
+class(df_1)
+st_crs(df_1)
+
+# read in shapefiles and whip em into shape. All code taken from Pooja's repo.
 legume_pol <- readRDS("legume_range_polygons_data.rds")
 
 tmp <- data.frame(code = NULL, index = NULL)
@@ -46,14 +53,8 @@ spatial_polygons_sf <- sf::st_as_sf(spatial_polygons_df)
 
 subset_polygon<-filter(spatial_polygons_sf, species=="Abrus fruticulosus"|species=="Abrus precatorius"|species=="Acacia acinacea")
 
-# Use st_contains??? Or st_instersect?
-st_set_crs(df, 4326)->df_1
-class(df_1)
-st_crs(df_1)
-
+# Tell R to not interpret data as being spherical
 sf_use_s2(FALSE)
-st_intersects(df_1, subset_polygon, sparse=FALSE)->overlap
+# Tell R 
+overlap<-st_intersects(df_1, subset_polygon, sparse=FALSE)
 
-for unique(species) in subset_polygon {
-  
-}
