@@ -55,6 +55,37 @@ subset_polygon<-filter(spatial_polygons_sf, species=="Abrus fruticulosus"|specie
 
 # Tell R to not interpret data as being spherical
 sf_use_s2(FALSE)
-# Tell R 
-overlap<-st_intersects(df_1, subset_polygon, sparse=FALSE)
+
+# fix up the species names so they don't have a space inbetween
+df_1$species<-gsub(" ", "_", df_1$species)
+subset_polygon$species<-gsub(" ", "_", subset_polygon$species)
+
+
+# Suck it, R, I wrote a for loop AND it works for once
+
+for(i in (unique(df_1$species))){
+  this.species<- st_intersects(subset_polygon[subset_polygon$species==i,], df_1[df_1$species==i,], sparse=FALSE)
+  assign(paste0("overlay", "_", i), this.species, envir = .GlobalEnv)}
+
+
+# make list of st_intersect output objects
+all <- mget(ls(pattern="overlay_*"), envir = globalenv())
+
+# calculate number of trues across polygons, i.e. the number of occurrences
+# falling within polygons.
+results <- lapply(all, sum)
+# make dataframe to look at results
+datanew<-as.data.frame(do.call(rbind, results))
+
+# Next step: I'd like to see how this compares to the total number of occurrences
+# that we pulled from gbif
+
+
+
+
+# Okay, now to take the matrix output and make it *actually useful*
+overlay_Acacia_acinacea<-as.data.frame(overlay_Acacia_acinacea)
+occ_true<-rowSums(overlay_Abrus_fruticulosus == "TRUE")
+occ_false<-rowSums(overlay_Abrus_fruticulosus == "FALSE")
+
 
