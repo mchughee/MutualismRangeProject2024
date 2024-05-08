@@ -75,17 +75,54 @@ all <- mget(ls(pattern="overlay_*"), envir = globalenv())
 # falling within polygons.
 results <- lapply(all, sum)
 # make dataframe to look at results
-datanew<-as.data.frame(do.call(rbind, results))
+overlayresults<-as.data.frame(do.call(rbind, results))
 
 # Next step: I'd like to see how this compares to the total number of occurrences
 # that we pulled from gbif
 
+# get number of occurrences for each species (we kind of already have this, but
+# this method seems easier than trying to deal with logical matrices)
+df_1 %>% 
+  group_by(species) %>% 
+  summarize(count=n())->counts
 
+# bind with overlay results
+cbind(overlayresults, counts)-> finaldf
 
-
-# Okay, now to take the matrix output and make it *actually useful*
+# Using a method I already know works to validate that sums() is correctly
+# grabbing true occurrences
 overlay_Acacia_acinacea<-as.data.frame(overlay_Acacia_acinacea)
 occ_true<-rowSums(overlay_Abrus_fruticulosus == "TRUE")
 occ_false<-rowSums(overlay_Abrus_fruticulosus == "FALSE")
+
+# Common-sense check time! I am going to try to map the points and polygons
+# to do a visual check
+
+# First, abrus fruticulosus
+
+pol_frut<-subset(subset_polygon, species=="Abrus_fruticulosus")
+occ_frut<-subset(df_1, species=="Abrus_fruticulosus")
+
+world <- map_data('world')
+world<-st_as_sf(world, coords = c("long", "lat"))
+
+ggplot() +
+  geom_polygon(data = world, aes(x=long, y=lat, group=group), colour="darkgrey",fill="grey", alpha=1)+
+  geom_sf(data=subset(pol_frut), aes(fill = num_species))+
+  geom_sf(data = occ_frut, color = "red", inherit.aes = T) 
+
+# Next, acacia acinacea
+
+pol_acacia<-subset(subset_polygon, species=="Acacia_acinacea")
+occ_acacia<-subset(df_1, species=="Acacia_acinacea")
+
+world <- map_data('world')
+world<-st_as_sf(world, coords = c("long", "lat"))
+
+ggplot() +
+  geom_polygon(data = world, aes(x=long, y=lat, group=group), colour="darkgrey",fill="grey", alpha=1)+
+  geom_sf(data=subset(pol_acacia), aes(fill = num_species))+
+  geom_sf(data = occ_acacia, color = "red", inherit.aes = T) 
+
 
 
