@@ -74,7 +74,7 @@ summary(flags_b)
 
 
 
-# running part c
+# running part cdef
 flags_cdef<- clean_coordinates(x = part_cdef, 
                             lon = "decimalLongitude",
                             lat = "decimalLatitude",
@@ -138,3 +138,35 @@ flags_wxyz<- clean_coordinates(x = part_wxyz,
                                  seas_buffer = 25)
 # Look at summary
 summary(flags_wxyz)
+
+### Drop flagged records from data
+dat_cl_a <- part_a[flags_a$.summary,]
+dat_cl_b <- part_b[flags_b$.summary,]
+dat_cl_cdef <- part_cdef[flags_cdef$.summary,]
+dat_cl_ghijk <- part_ghijk[flags_ghijk$.summary,]
+dat_cl_lmnop <- part_lmnop[flags_lmnop$.summary,]
+dat_cl_qrstuv <- part_qrstuv[flags_qrstuv$.summary,]
+dat_cl_wxyz <- part_wxyz[flags_wxyz$.summary,]
+
+
+# writing clean data into csvs so that I don't lose anything if R crashes!
+write.csv(dat_cl_a, "dat_clean_a.csv")
+write.csv(dat_cl_b, "dat_clean_b.csv")
+write.csv(dat_cl_cdef, "dat_clean_cdef.csv")
+write.csv(dat_cl_ghijk, "dat_clean_ghijk.csv")
+write.csv(dat_cl_lmnop, "dat_clean_lmnop.csv")
+write.csv(dat_cl_qrstuv, "dat_clean_qrstuv.csv")
+write.csv(dat_cl_wxyz, "dat_clean_wxyz.csv")
+
+# binding some of the datasets together because R crashed when I tried to rbind
+# all the smaller separate frames
+binded_ab<-rbind(dat_cl_a, dat_cl_b)
+binded_c_thru_k<-rbind(dat_cl_cdef, dat_cl_ghijk)
+
+# bind everything into one master
+alldat_clean<-rbind(binded_ab, binded_c_thru_k, dat_cl_lmnop,
+                    dat_cl_qrstuv, dat_cl_wxyz)
+
+# write into a csv
+write.csv(alldat_clean, "allocc_clean.csv")
+
