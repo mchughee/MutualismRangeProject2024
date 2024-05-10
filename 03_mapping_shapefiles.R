@@ -54,8 +54,6 @@ spatial_polygons_sf <- sf::st_as_sf(spatial_polygons_df)
 subset_polygon<-filter(spatial_polygons_sf, species=="Abrus fruticulosus"|species=="Abrus precatorius"|species=="Acacia acinacea")
 
 
-st_make_valid(subset_polygon)
-
 # Tell R to not interpret data as being spherical
 # Update: can only do this for small areas, not global ones!
 # will have to find another solution
@@ -65,12 +63,12 @@ st_make_valid(subset_polygon)
 df_1$species<-gsub(" ", "_", df_1$species)
 subset_polygon$species<-gsub(" ", "_", subset_polygon$species)
 
-p <- poly2nb(st_make_valid(subset_polygon))
+# p <- poly2nb(st_make_valid(subset_polygon))
 
 # Suck it, R, I wrote a for loop AND it works for once
 
 for(i in (unique(df_1$species))){
-  this.species<- st_intersects(st_difference(subset_polygon[subset_polygon$species==i,]), df_1[df_1$species==i,], sparse=FALSE)
+  this.species<- st_intersects(st_make_valid(subset_polygon[subset_polygon$species==i,]), df_1[df_1$species==i,], sparse=FALSE)
   assign(paste0("overlay", "_", i), this.species, envir = .GlobalEnv)}
 
 
@@ -131,4 +129,4 @@ ggplot() +
   geom_sf(data = occ_acacia, color = "red", inherit.aes = T) 
 
 
-
+plot(subset_polygon)
