@@ -23,6 +23,12 @@ part_ghijk<-reorder_data %>% filter(grepl("^G|^H|^I|^J|^K", genus)) %>% dropleve
 part_lmnop<-reorder_data %>% filter(grepl("^L|^M|^N|^O|^P", genus)) %>% droplevels()
 part_qrstuv<-reorder_data %>% filter(grepl("^Q|^R|^S|^T|^U|^V", genus)) %>% droplevels()
 part_wxyz<-reorder_data %>% filter(grepl("^W|^X|^Y|^Z", genus)) %>% droplevels()
+# 21 May 2024: check to make sure eveyrthing starts with capitals
+# plot flagged occurrences for same species in datasets giving diff numbers. Find where they are
+# give you info as it runs-- look at summary output
+# rerun function on both datasets, dropping out tests
+# equal, outlier
+# for loop with pause?
 
 
 

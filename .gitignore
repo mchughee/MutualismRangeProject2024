@@ -24,3 +24,12 @@ legume_pol_shape
 overlayingrasterandpointdata.R
 running_coordinatecleaner.R
 legume_polygons.csv
+allocc_clean.csv
+dat_clean_b.csv
+dat_clean_a.csv
+dat_clean_cdef.csv
+dat_clean_ghijk.csv
+dat_clean_lmnop.csv
+dat_clean_qrstuv.csv
+dat_clean_wxyz.csv
+finaldf_st_intersect.csv
