@@ -33,3 +33,5 @@ dat_clean_lmnop.csv
 dat_clean_qrstuv.csv
 dat_clean_wxyz.csv
 finaldf_st_intersect.csv
+lessthan50percentcov.csv
+polygon_occ_coverage.csv

@@ -45,7 +45,7 @@ spatial_polygons_sf <- sf::st_as_sf(spatial_polygons_df)
 df_1$species<-gsub(" ", "_", df_1$species)
 spatial_polygons_sf$species<-gsub(" ", "_", spatial_polygons_sf$species)
 
-sf_use_s2(TRUE)
+# sf_use_s2(TRUE)
 
 # Suck it, R, I wrote a for loop AND it works for once
 
@@ -68,26 +68,71 @@ overlayresults<-as.data.frame(do.call(rbind, results))
 
 # get number of occurrences for each species (we kind of already have this, but
 # this method seems easier than trying to deal with logical matrices)
-df_1 %>% 
+#df_1 %>% 
+ # group_by(species) %>% 
+  #summarize(count=n(), species=species)->counts
+# above code does not work due to summarize being DEPRECATED (!)
+
+counts<-df_1 %>% 
   group_by(species) %>% 
-  summarize(count=n(), species=species)->counts
+  tally()
 
 # bind with overlay results
 cbind(overlayresults, counts)-> finaldf
 
+# rename columns and drop the geometry column that got preserved for god knows what reason
+names(finaldf)[names(finaldf) == 'V1'] <- 'num_in_polygon'
+names(finaldf)[names(finaldf) == 'n'] <- 'num_total'
+drops <- c("geometry")
+finaldf <- subset(finaldf, select = -c(geometry))
+
+# calculate percentages
+finaldf$percent_cover<-(finaldf$num_in_polygon/finaldf$num_total)*100
+
+write.csv(finaldf, "polygon_occ_coverage.csv")
+
+# what is the mean coverage?
+mean(finaldf$percent_cover)
+# 90.78% cover! Pretty good
+
+# How many have coverage under 80%?
+count(subset(finaldf, percent_cover<80))
+# 543
+
+# How many have coverage under 75%?
+count(subset(finaldf, percent_cover<75))
+# 441
+
+# make histogram
+hist(finaldf$percent_cover)
+
+# Time to inspect. Let's start with under 50% coverage
+
+giant_headache<-subset(finaldf, percent_cover<50)
+write.csv(giant_headache, "lessthan50percentcov.csv")
+
 # Using a method I already know works to validate that sums() is correctly
 # grabbing true occurrences
 overlay_Acacia_acinacea<-as.data.frame(overlay_Acacia_acinacea)
+occ_true_acin<-rowSums(overlay_Acacia_acinacea == "TRUE")
+occ_false_acin<-rowSums(overlay_Acacia_acinacea == "FALSE")
+
 occ_true<-rowSums(overlay_Abrus_fruticulosus == "TRUE")
 occ_false<-rowSums(overlay_Abrus_fruticulosus == "FALSE")
+
+# doing it for one with 200% coverage (yeeks)
+rowSums(overlay_Afzelia_rhomboidea == "TRUE")
+rowSums(overlay_Afzelia_rhomboidea == "FALSE")
+
+afz_rhom<-subset(datall, species=="Afzelia rhomboidea")
 
 # Common-sense check time! I am going to try to map the points and polygons
 # to do a visual check
 
 # First, abrus fruticulosus
 
-pol_frut<-subset(subset_polygon, species=="Abrus_fruticulosus")
-occ_frut<-subset(df_1, species=="Abrus_fruticulosus")
+pol_frut<-subset(subset_polygon, species=="Afzelia_rhomboidea")
+occ_frut<-subset(df_1, species=="Afzelia_rhomboidea")
 
 world <- map_data('world')
 world<-st_as_sf(world, coords = c("long", "lat"))

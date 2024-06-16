@@ -1,20 +1,27 @@
 # Finally running coordinate cleaner lol
 # 15 April 2024
 
+library(CoordinateCleaner)
+library(tidyverse)
+library(countrycode)
+
+
 # read in full dataset
 occ_data <- read_delim("0008106-240229165702484.csv")
+
+# Convert country code from ISO2 to ISO3
+occ_data$countryCode <-  countrycode(occ_data$countryCode, 
+                                origin =  'iso2c',
+                                destination = 'iso3c')
 
 # Remove occurrences with no lat/long
 occ_cleaned<-occ_data %>% drop_na(decimalLatitude)
 
 # Split data into a few different data frames to read into the function! Yayyy!
 
-occ_reordered<-occ_cleaned %>% group_by(genus)
+reorder_data<-occ_cleaned %>% group_by(genus)
 
-names(table(occ_data$genus))->genus_table
-
-
-reorder_data <- occ_reordered[order(occ_reordered$genus),]
+# reorder_data <- occ_reordered[order(occ_reordered$genus),]
 
 part_a<-reorder_data %>% filter(grepl("^A", genus)) %>% droplevels()
 part_b<-reorder_data %>% filter(grepl("^B", genus)) %>% droplevels()
@@ -39,11 +46,16 @@ flags_a<- clean_coordinates(x = part_a,
                                 lat = "decimalLatitude",
                                 countries = "countryCode",
                                 species = "species",
-                                tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "seas"),
+                                tests = c("capitals", "centroids", "equal", "institutions", "zeros", "seas"),
                                 seas_ref=rnaturalearth::ne_download(scale = 50, type = 'land', category = 'physical', returnclass = "sf"),
                                 seas_buffer = 25)
 # Look at summary
 summary(flags_a)
+
+dat_a_test <- part_a[flags_a$.summary,]
+sum(dat_a_test$species == "Abrus fruticulosus")
+sum(dat_a_test$species == "Acacia acinacea")
+sum(dat_a_test$species == "Abrus precatorius")
 
 plot(flags_a, lon = "decimalLongitude", lat = "decimalLatitude")
 
@@ -72,9 +84,9 @@ flags_b<- clean_coordinates(x = part_b,
                             lat = "decimalLatitude",
                             countries = "countryCode",
                             species = "species",
-                            tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "seas"),
+                            tests = c("capitals", "centroids", "equal", "institutions", "zeros", "seas"),
                             seas_ref=rnaturalearth::ne_download(scale = 50, type = 'land', category = 'physical', returnclass = "sf"),
-                            seas_buffer = 25)
+                            seas_buffer = 25) 
 # Look at summary
 summary(flags_b)
 
@@ -86,7 +98,7 @@ flags_cdef<- clean_coordinates(x = part_cdef,
                             lat = "decimalLatitude",
                             countries = "countryCode",
                             species = "species",
-                            tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "seas"),
+                            tests = c("capitals", "centroids", "equal", "institutions", "zeros", "seas"),
                             seas_ref=rnaturalearth::ne_download(scale = 50, type = 'land', category = 'physical', returnclass = "sf"),
                             seas_buffer = 25)
 # Look at summary
@@ -100,7 +112,7 @@ flags_ghijk<- clean_coordinates(x = part_ghijk,
                                lat = "decimalLatitude",
                                countries = "countryCode",
                                species = "species",
-                               tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "seas"),
+                               tests = c("capitals", "centroids", "equal", "institutions", "zeros", "seas"),
                                seas_ref=rnaturalearth::ne_download(scale = 50, type = 'land', category = 'physical', returnclass = "sf"),
                                seas_buffer = 25)
 # Look at summary
@@ -113,7 +125,7 @@ flags_lmnop<- clean_coordinates(x = part_lmnop,
                                 lat = "decimalLatitude",
                                 countries = "countryCode",
                                 species = "species",
-                                tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "seas"),
+                                tests = c("capitals", "centroids", "equal", "institutions", "zeros", "seas"),
                                 seas_ref=rnaturalearth::ne_download(scale = 50, type = 'land', category = 'physical', returnclass = "sf"),
                                 seas_buffer = 25)
 # Look at summary
@@ -126,7 +138,7 @@ flags_qrstuv<- clean_coordinates(x = part_qrstuv,
                                 lat = "decimalLatitude",
                                 countries = "countryCode",
                                 species = "species",
-                                tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "seas"),
+                                tests = c("capitals", "centroids", "equal", "institutions", "zeros", "seas"),
                                 seas_ref=rnaturalearth::ne_download(scale = 50, type = 'land', category = 'physical', returnclass = "sf"),
                                 seas_buffer = 25)
 # Look at summary
@@ -139,7 +151,7 @@ flags_wxyz<- clean_coordinates(x = part_wxyz,
                                  lat = "decimalLatitude",
                                  countries = "countryCode",
                                  species = "species",
-                                 tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "seas"),
+                                 tests = c("capitals", "centroids", "equal", "institutions", "zeros", "seas"),
                                  seas_ref=rnaturalearth::ne_download(scale = 50, type = 'land', category = 'physical', returnclass = "sf"),
                                  seas_buffer = 25)
 # Look at summary
@@ -175,4 +187,8 @@ alldat_clean<-rbind(binded_ab, binded_c_thru_k, dat_cl_lmnop,
 
 # write into a csv
 write.csv(alldat_clean, "allocc_clean.csv")
+
+# create new test dataset
+
+data_subset<-filter(alldat_clean, species=="Abrus fruticulosus"|species=="Acacia acinacea"|species=="Abrus precatorious")
 
