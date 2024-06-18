@@ -14,10 +14,10 @@ setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024")
 
 # First, read in test df
 test<-read.csv("dat_test_clean.csv")
-df <- st_as_sf(x = test,                         
+test_df <- st_as_sf(x = test,                         
                coords = c("decimalLongitude", "decimalLatitude"))
 # Tell R to read coordinates as WGS84
-st_set_crs(df, 4326)->df_1
+st_set_crs(df, 4326)->test_df_1
 
 class(df_1)
 st_crs(df_1)
@@ -49,7 +49,7 @@ subset_polygon<-filter(spatial_polygons_sf, species=="Abrus fruticulosus"|specie
 # sf_use_s2(FALSE)
 
 # fix up the species names so they don't have a space inbetween
-df_1$species<-gsub(" ", "_", df_1$species)
+test_df_1$species<-gsub(" ", "_", test_df_1$species)
 subset_polygon$species<-gsub(" ", "_", subset_polygon$species)
 
 # p <- poly2nb(st_make_valid(subset_polygon))
@@ -63,11 +63,17 @@ subset_polygon$species<-gsub(" ", "_", subset_polygon$species)
 
 # Suck it, R, I wrote a for loop AND it works for once
 
+<<<<<<< HEAD
 #polygonslist <- mget(ls(pattern="polygon_*"), envir = globalenv())
 
 for(i in (unique(df_1$species))){
   this.species<- st_intersects(st_make_valid(subset_polygon[subset_polygon$species==i,]), df_1[df_1$species==i,], sparse=FALSE)
   assign(paste0("overlay", "_", i), this.species, envir = .GlobalEnv)}
+=======
+for(i in (unique(test_df_1$species))){
+  this.species<- st_intersects(st_make_valid(subset_polygon[subset_polygon$species==i,]), test_df_1[test_df_1$species==i,], sparse=TRUE)
+  assign(paste0("testoverlay", "_", i), this.species, envir = .GlobalEnv)}
+>>>>>>> 5a680cbdae2b340eee15aef0e2824c4643717cc2
 
 ## to compare speed on two different functions, use system.time() to
 ## look at difference
@@ -96,6 +102,11 @@ df_1 %>%
 
 # bind with overlay results
 cbind(overlayresults, counts)-> finaldf
+
+# Add in percents
+colnames(finaldf)[1] <- "no_occ_in_pol"
+finaldf$percent<-(finaldf$no_occ_in_pol/finaldf$count)*100
+mean(finaldf$percent)
 
 # Using a method I already know works to validate that sums() is correctly
 # grabbing true occurrences

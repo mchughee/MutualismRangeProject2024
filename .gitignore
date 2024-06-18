@@ -24,6 +24,20 @@ legume_pol_shape
 overlayingrasterandpointdata.R
 running_coordinatecleaner.R
 legume_polygons.csv
+<<<<<<< HEAD
 and_now_something_completely_different.R
 aiyeeee.R
 test_data_new_june2024_coords.csv
+=======
+allocc_clean.csv
+dat_clean_b.csv
+dat_clean_a.csv
+dat_clean_cdef.csv
+dat_clean_ghijk.csv
+dat_clean_lmnop.csv
+dat_clean_qrstuv.csv
+dat_clean_wxyz.csv
+finaldf_st_intersect.csv
+lessthan50percentcov.csv
+polygon_occ_coverage.csv
+>>>>>>> 5a680cbdae2b340eee15aef0e2824c4643717cc2
