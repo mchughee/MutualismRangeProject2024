@@ -3,10 +3,20 @@
 # Read in test data
 
 test_data<-read.csv("test_df.csv")
+abrus_frut<-subset(test_data, species=="Abrus fruticulosus")
+
+flags_a<- clean_coordinates(x = abrus_frut, 
+                            lon = "decimalLongitude",
+                            lat = "decimalLatitude",
+                            countries = "countryCode",
+                            species = "species",
+                            tests = c("capitals", "centroids", "equal", "institutions", "outliers", "zeros", "seas"),
+                            seas_ref=rnaturalearth::ne_download(scale = 50, type = 'land', category = 'physical', returnclass = "sf"),
+                            seas_buffer = 25)
 
 library(CoordinateCleaner)
 
-flags_one <- clean_coordinates(x = test_data, 
+flags_one <- clean_coordinates(x = abrus_frut, 
                                     lon = "decimalLongitude",
                                     lat = "decimalLatitude",
                                     countries = "countryCode",

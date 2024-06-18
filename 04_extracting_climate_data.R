@@ -43,15 +43,19 @@ setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024")
 # it would be a better fit
 
 # temp first
-temp_data<-terra::extract(temp, df_1)
-temp_df<-as.data.frame(temp_data)
+# temp_data<-terra::extract(temp, df_1)
+df_1$temp <-terra::extract(temp, df_1)
+#temp_df<-as.data.frame(temp_data)
 
 # precip second
-precip_data<-terra::extract(precip, df_1)
-precip_df<-as.data.frame(precip_data)
+# precip_data<-terra::extract(precip, df_1)
+df_1$precip <-terra::extract(precip, df_1)
+#precip_df<-as.data.frame(precip_data)
 
 # merge extracted data with the old dataframe containing points and attributes
 clim_df<-cbind(precip_df, temp_df, df_1)
+# cbind literally just puts columns together
+# try using df_1$temp <-terra::extract(temp, df_1)
 
 # old raster::extract code
 # climate_mean <- raster::extract(temp, # the raster that you wish to extract values from
@@ -63,11 +67,29 @@ clim_df<-cbind(precip_df, temp_df, df_1)
 
 # Checking to make sure I didn't get the coordinates messed up. Looks like  I didn't
 # still clustering around continents in the southern hemisphere
-plot(st_geometry(clim_df$geometry), col = sf.colors(1), border = 'grey', 
-     axes = TRUE)
+plot(precip)
+plot(st_geometry(df_1$geometry), col = sf.colors(1), border = 'grey', 
+     axes = TRUE, add=TRUE)
+
+df_1$precip<-as.numeric(df_1$precip)
+mean(df_1$precip, na.rm=TRUE)
+
+df_1$temp<-as.numeric(df_1$temp)
+mean(df_1$temp, na.rm=TRUE)
+
 
 ggplot()+
   geom_point(data=test, aes(x=decimalLongitude, y=decimalLatitude))
+
+world <- map_data('world')
+world<-st_as_sf(world, coords = c("long", "lat"))
+st_set_crs(world, 4326)->world
+
+
+ggplot() +
+  #geom_polygon(data = world, aes(x=long, y=lat, group=group), colour="darkgrey",fill="grey", alpha=1)+
+  geom_raster(data=precip)+
+  geom_sf(data = df_1$geometry, color = "red") 
 
 # Checking to see how points fall on top of climate data
 # Don't run this, it nearly broke R

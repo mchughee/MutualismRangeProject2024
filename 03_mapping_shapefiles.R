@@ -36,6 +36,7 @@ for (x in 1:length(legume_pol$polygon)) {
   legume_pol[x, "code"] <- legume_pol$polygon[[x]]@data$Code 
 }
 
+spatial_polygons <- do.call(rbind, legume_pol$`polygon`)
 spatial_polygons_df <- SpatialPolygonsDataFrame(spatial_polygons, data = legume_pol, match.ID = F)
 spatial_polygons_sf <- sf::st_as_sf(spatial_polygons_df)
 
@@ -53,14 +54,29 @@ subset_polygon$species<-gsub(" ", "_", subset_polygon$species)
 
 # p <- poly2nb(st_make_valid(subset_polygon))
 
+# Try to merge polygons by species
+#for(i in (unique(subset_polygon$species))){
+ # this.pol<- st_union(st_make_valid(subset_polygon[subset_polygon$species==i,]), by_feature=FALSE)
+  #assign(paste0("polygon", "_", i), this.pol, envir = .GlobalEnv)}
+
+#plot(polygon_Abrus_fruticulosus)
+
 # Suck it, R, I wrote a for loop AND it works for once
+
+#polygonslist <- mget(ls(pattern="polygon_*"), envir = globalenv())
 
 for(i in (unique(df_1$species))){
   this.species<- st_intersects(st_make_valid(subset_polygon[subset_polygon$species==i,]), df_1[df_1$species==i,], sparse=FALSE)
   assign(paste0("overlay", "_", i), this.species, envir = .GlobalEnv)}
 
+## to compare speed on two different functions, use system.time() to
+## look at difference
+## merge all polygons into one polygon? or one polygon for native,
+# one for invasive
+# function to merge them? Might make it faster to run!
+# use st_union
 
-# make list of st_intersect output objects
+# make list of files
 all <- mget(ls(pattern="overlay_*"), envir = globalenv())
 
 # calculate number of trues across polygons, i.e. the number of occurrences
@@ -95,12 +111,16 @@ occ_false<-rowSums(overlay_Abrus_fruticulosus == "FALSE")
 pol_frut<-subset(subset_polygon, species=="Abrus_fruticulosus")
 occ_frut<-subset(df_1, species=="Abrus_fruticulosus")
 
+plot(pol_frut)
+
 world <- map_data('world')
 world<-st_as_sf(world, coords = c("long", "lat"))
+st_set_crs(world, 4326)->world
+
 
 ggplot() +
-  geom_polygon(data = world, aes(x=long, y=lat, group=group), colour="darkgrey",fill="grey", alpha=1)+
-  geom_sf(data=subset(pol_frut), aes(fill = num_species))+
+  #geom_polygon(data = world, aes(x=long, y=lat, group=group), colour="darkgrey",fill="grey", alpha=1)+
+  geom_sf(data=subset(pol_frut))+
   geom_sf(data = occ_frut, color = "red", inherit.aes = T) 
 
 # Next, acacia acinacea
