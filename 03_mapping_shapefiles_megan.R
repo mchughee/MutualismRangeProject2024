@@ -1,0 +1,124 @@
+# Overlaying occurrence data with Pooja's shapefiles
+
+# Read in packages
+
+library(ggplot2)
+library(sf)
+library(raster)
+library(tidyverse)
+library(rnaturalearthdata)
+
+
+# First, read in test df
+points <- read.csv("dat_test_clean.csv") %>% 
+  # Getting rid of these junk columns, these arise from write.csv, good to use row.names = FALSE 
+  select(-X.1, -X) %>% 
+  # Seems like there are still duplicate points in here
+  distinct(species, decimalLatitude, decimalLongitude, .keep_all = T)
+
+# Quick vis of occurrences
+ggplot(points, aes(y = decimalLatitude, x = decimalLongitude, color = species)) +
+  geom_point()
+
+# Convert points to simplefeatures
+points_sf <- st_as_sf(x = points,
+                      # Specify which columns are coordinates
+                      coords = c("decimalLongitude", "decimalLatitude"), 
+                      # Tell R to read coordinates as WGS84
+                      crs = 4326) %>% 
+                      # Replace spaces in species names
+                      mutate(species = str_replace(species, " ", "_"))
+
+# Three species in this test set
+table(points_sf$species)
+
+
+# Read in polygons
+legume_pol <- readRDS("legume_range_polygons_data.rds") %>% 
+  # And fix the species names to match points
+  mutate(species = str_replace(species, " ", "_")) %>% 
+  # Filter to test species
+  filter(species %in% points_sf$species)
+
+
+# Convert to sf 
+# Use the column polygon, which is a list of spatial polygon dataframes
+poly_sf = legume_pol$polygon %>% 
+  # Convert each of these to sf
+  map(., st_as_sf) %>% 
+  # Make valid
+  map(., st_make_valid) %>% 
+  # Put the resulting list into a dataframe
+  enframe(name = NULL) %>% 
+  # Then convert the nested list items into columns (code, status, geometry)
+  unnest(cols = c(value)) %>% 
+  # then bind the original dataframe back on to this one
+  bind_cols(legume_pol, .) %>% 
+  # drop the old polygon column which contains spatialPolygonsDataframes
+  select(-polygon) %>% 
+  # Reconvert the whole thing to sf 
+  st_as_sf() %>% 
+  # Group by species and status
+  group_by(species, status) %>% 
+  # Merge polygons within these groups
+  summarize() %>% 
+  rename(species_polys = species, status_polys = status)
+
+points_sf$native_status = NA
+
+# I'm sure there's a better way to do this step but couldn't think of how
+# This approach feels pretty clunky
+# Tried a full join of points and polygons, then filtering so that species.x == species.y
+# But that method drops rows that don't fall in a polygon because species = NA
+
+i=1
+species_list = unique(points_sf$species)
+
+status_list = list()
+
+for (i in 1:length(species_list)) {
+  species_i = species_list[i]
+  points_i = points_sf %>% filter(species == species_i)
+  polygons_i = filter(poly_sf, species_polys == species_i)
+  join_i = st_join(points_i, polygons_i, join = st_intersects) %>% 
+    select(species_polys, status_polys) %>% 
+    group_by(geometry, species_polys) %>% 
+    summarize(status_polys = str_flatten(status_polys)) %>% 
+    mutate(species_from_status_check = species_i)
+  status_list[[i]] = join_i
+}
+
+status_df = status_list %>% 
+  enframe(name = NULL) %>% 
+  # Then convert the nested list items into columns (code, status, geometry)
+  unnest(cols = c(value))
+class(status_df)
+points_sf_with_statuses = left_join(points_sf, status_df)
+  
+
+ggplot() +
+  # geom_polygon(data = world, aes(x=long, y=lat, group=group), colour="darkgrey",fill="grey", alpha=1)+
+  geom_sf(data = poly_sf[3,], alpha = 0.2, fill = "blue")
+
+
+ggplot() +
+  # geom_polygon(data = world, aes(x=long, y=lat, group=group), colour="darkgrey",fill="grey", alpha=1)+
+  geom_sf(data = polygons_i, aes(fill = status_polys), alpha = 0.2) +
+  scale_fill_manual(values = c("red", "blue")) +
+  geom_sf(data = join_i, aes(color = status_polys)) +
+  lims(x = c(60, 140)) #+
+  # facet_wrap(.~status_polys)
+
+
+
+
+plot(polygons_i)
+
+# This works but it's too slow
+for (i in 1:nrow(points_sf)) {
+  species_i = points_sf$species[i]
+  polygons_i = filter(poly_sf, species == species_i)
+  join_i = st_join(points_sf[i,], polygons_i, join = st_intersects)
+  points_sf$native_status[i] = join_i$status
+  print(i); print(join_i$status)
+}
