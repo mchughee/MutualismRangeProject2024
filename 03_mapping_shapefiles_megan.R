@@ -105,6 +105,18 @@ status_df = status_list %>%
 
 points_sf_with_statuses = left_join(points_sf, status_df)
 
+# Generate percentages of points with each status
+status_counts = points_sf_with_statuses %>% 
+  group_by(species) %>% 
+  summarize(total = n(),
+            pct_NA = sum(is.na(status_polys))/total,
+            pct_N = sum(status_polys %in% "N")/total,
+            pct_U = sum(status_polys %in% "U")/total,
+            pct_I = sum(status_polys %in% "I")/total,
+            pct_mixed = sum(status_polys %in% c("UN", "NU", "IN", "NI", "UI", "IU"))/total) %>% 
+  group_by(species) %>% 
+  mutate(sum_pcts = rowSums(across(starts_with("pct"))))
+
 # Generate plots to inspect
 # Dunno if we'll want to do this for all species but good to do it for a bunch at first
 
@@ -112,9 +124,7 @@ world = map_data('world')
 
 for (i in 1:length(species_list)){
   species_j = species_list[i]
-  # Filter the points dataframe to only occurrences of that species
   points_j = points_sf_with_statuses %>% filter(species == species_j)
-  # Filter the polygons object to only polygons for that species
   polygons_j = filter(poly_sf, species_polys == species_j)
   ggplot() +
     geom_polygon(data = world, aes(x = long, y = lat, group = group), colour="darkgrey", fill = NA, alpha = 0.2) +
@@ -122,3 +132,5 @@ for (i in 1:length(species_list)){
     geom_sf(data = points_j, aes(color = status_polys), size = 0.5)
  ggsave(filename = str_c("polygon_plots/", species_j, ".pdf"), width = 14, height = 6)
 }
+
+
