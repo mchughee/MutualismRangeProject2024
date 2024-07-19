@@ -64,61 +64,61 @@ poly_sf = legume_pol$polygon %>%
   summarize() %>% 
   rename(species_polys = species, status_polys = status)
 
-points_sf$native_status = NA
-
 # I'm sure there's a better way to do this step but couldn't think of how
-# This approach feels pretty clunky
+# This approach feels a bit clunky
 # Tried a full join of points and polygons, then filtering so that species.x == species.y
 # But that method drops rows that don't fall in a polygon because species = NA
 
-i=1
+# Make a list of species
 species_list = unique(points_sf$species)
 
+# Make an empty list to store results
 status_list = list()
 
+# Check each species points against polygons for that species
 for (i in 1:length(species_list)) {
+  # Select species i
   species_i = species_list[i]
+  # Filter the points dataframe to only occurrences of that species
   points_i = points_sf %>% filter(species == species_i)
+  # Filter the polygons object to only polygons for that species
   polygons_i = filter(poly_sf, species_polys == species_i)
+  # Join these two features, which populates columns species_polys and status_polys with the species and status data of any polygon(s) that overlap a given point
   join_i = st_join(points_i, polygons_i, join = st_intersects) %>% 
+    # Then select only that information (geometry tags along as well because this is a sf object)
     select(species_polys, status_polys) %>% 
-    group_by(geometry, species_polys) %>% 
+    # Add on a species identity column (because species_polys is NA if no polygon overlaps)
+    mutate(species = species_i) %>% 
+    # We then need to deal with the cases of multiple overlapping polygons and resulting multiple statuses 
+    # Group by geometry (eg exact point location) and species identity
+    group_by(geometry, species) %>% 
+    # Concatenate all the statuses for each group
     summarize(status_polys = str_flatten(status_polys)) %>% 
-    mutate(species_from_status_check = species_i)
+    # Add on a species identity column (because species_polys is NA if no polygon overlaps)
+    mutate(species = species_i)
   status_list[[i]] = join_i
 }
 
 status_df = status_list %>% 
   enframe(name = NULL) %>% 
-  # Then convert the nested list items into columns (code, status, geometry)
   unnest(cols = c(value))
-class(status_df)
+
 points_sf_with_statuses = left_join(points_sf, status_df)
-  
 
-ggplot() +
-  # geom_polygon(data = world, aes(x=long, y=lat, group=group), colour="darkgrey",fill="grey", alpha=1)+
-  geom_sf(data = poly_sf[3,], alpha = 0.2, fill = "blue")
+# Generate plots to inspect
+# Dunno if we'll want to do this for all species but good to do it for a bunch at first
 
+world = map_data('world')
 
-ggplot() +
-  # geom_polygon(data = world, aes(x=long, y=lat, group=group), colour="darkgrey",fill="grey", alpha=1)+
-  geom_sf(data = polygons_i, aes(fill = status_polys), alpha = 0.2) +
-  scale_fill_manual(values = c("red", "blue")) +
-  geom_sf(data = join_i, aes(color = status_polys)) +
-  lims(x = c(60, 140)) #+
-  # facet_wrap(.~status_polys)
-
-
-
-
-plot(polygons_i)
-
-# This works but it's too slow
-for (i in 1:nrow(points_sf)) {
-  species_i = points_sf$species[i]
-  polygons_i = filter(poly_sf, species == species_i)
-  join_i = st_join(points_sf[i,], polygons_i, join = st_intersects)
-  points_sf$native_status[i] = join_i$status
-  print(i); print(join_i$status)
+for (i in 1:length(species_list)){
+  species_j = species_list[i]
+  # Filter the points dataframe to only occurrences of that species
+  points_j = points_sf_with_statuses %>% filter(species == species_j)
+  # Filter the polygons object to only polygons for that species
+  polygons_j = filter(poly_sf, species_polys == species_j)
+  ggplot() +
+    geom_polygon(data = world, aes(x = long, y = lat, group = group), colour="darkgrey", fill = NA, alpha = 0.2) +
+    geom_sf(data = polygons_j, aes(fill = status_polys), alpha = 0.2) +
+    geom_sf(data = points_j, aes(color = status_polys), size = 0.5)
+ ggsave(filename = str_c("polygon_plots/", species_j, ".pdf"), width = 14, height = 6)
 }
