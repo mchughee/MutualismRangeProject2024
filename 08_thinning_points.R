@@ -70,3 +70,4 @@ as.data.frame(dist)
 sum(count(dist<1))
 sum(count(dist>=1))
 
+
