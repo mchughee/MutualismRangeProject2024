@@ -1,6 +1,6 @@
 ### Bringing in bioclim data to extract temps and precips from occurrence points
 
-setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024")
+#setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024")
 
 library(sf)
 library(terra)
@@ -9,19 +9,19 @@ library(raster)
 library(maps)
 
 # read in csv folder containing cleaned data points
-test<-read.csv("dat_test_clean.csv")
+df<-read.csv("allocc_clean.csv")
 # force into a simple features object
-df <- st_as_sf(x = test,                         
-               coords = c("decimalLongitude", "decimalLatitude")
-)
+df_2<-st_as_sf(x = df,                         
+               coords = c("decimalLongitude", "decimalLatitude"))
 # kinda sketch here, but the occurrence points do not have an encoded crs. 
 # I think gbif uses wgs84 (aka 4326) crs (most data does), and I was worried about
 # it not lining up properly with wgs84 polygons, so I just made R read it as wgs84
-st_set_crs(df, 4326)->df_1
+df_1<-st_set_crs(df_2, 4326)
 
 
 # Next, read in climate raster data
-setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024/wc2.1_30s_bio")
+# don't need this step in symbiont
+# setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024/wc2.1_30s_bio")
 # climfiles<-list.files(pattern = "*.tif")
 temp<-raster("wc2.1_30s_bio_1.tif")
 precip<-raster("wc2.1_30s_bio_12.tif")
@@ -35,7 +35,8 @@ plot(temp)
 plot(precip)
 
 # Now, reset working directory
-setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024")
+# following step not needed on symbiont
+# setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024")
 
 # extracting climate data-- initially, I tried using raster::extract, but it 
 # required me to pick a function like mean or max-- I don't need a function! 
@@ -43,6 +44,7 @@ setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024")
 # it would be a better fit
 
 # temp first
+<<<<<<< HEAD
 # temp_data<-terra::extract(temp, df_1)
 df_1$temp <-terra::extract(temp, df_1)
 #temp_df<-as.data.frame(temp_data)
@@ -56,15 +58,38 @@ df_1$precip <-terra::extract(precip, df_1)
 clim_df<-cbind(precip_df, temp_df, df_1)
 # cbind literally just puts columns together
 # try using df_1$temp <-terra::extract(temp, df_1)
+=======
+#temp_data<-terra::extract(temp, df_1)
+#temp_df<-as.data.frame(temp_data)
 
-# old raster::extract code
-# climate_mean <- raster::extract(temp, # the raster that you wish to extract values from
-                                # df_1, # a point, or polygon spatial object
-                                # buffer=0.5,
-                                # fun = mean, # extract the MEAN value from each plot
-                                # sp = TRUE)
+df_1$temp <-terra::extract(temp, df_1)
+
+# precip second
+#precip_data<-terra::extract(precip, df_1)
+#precip_df<-as.data.frame(precip_data)
+
+df_1$precip <-terra::extract(precip, df_1)
+>>>>>>> 1481910 (symbiont push)
+
+# remove unnecessary data
+
+finaldf = dplyr::select(df_1, -c("kingdom", "phylum", "class", "order", "recordNumber",
+                                 "identifiedBy", "dateIdentified", "rightsHolder", 
+                                "typeStatus", "establishmentMeans", "depth", "depthAccuracy"))
+
+# save new dataframe (write as csv)
+write.csv(finaldf, "clim_data_june2024.csv")
+
+# check levels
+finaldf$species<-as.factor(finaldf$species)
+levels(finaldf$species)
+
+# write a smaller test dataset
+testdata<-subset(finaldf, species=="Acacia acinacea" | species=="Crotalaria mitchellii" | species=="Vicia cracca" |
+                   species== "Dalbgergia melanoxylon")
 
 
+<<<<<<< HEAD
 # Checking to make sure I didn't get the coordinates messed up. Looks like  I didn't
 # still clustering around continents in the southern hemisphere
 plot(precip)
@@ -77,10 +102,16 @@ mean(df_1$precip, na.rm=TRUE)
 df_1$temp<-as.numeric(df_1$temp)
 mean(df_1$temp, na.rm=TRUE)
 
+=======
+# write into a csv file
 
-ggplot()+
-  geom_point(data=test, aes(x=decimalLongitude, y=decimalLatitude))
+#write.csv(testdata, "test_data_new_june2024.csv", quote=TRUE, row.names = FALSE)
 
+st_write(testdata, "test_data_new_june2024_coords.csv", layer_options = "GEOMETRY=AS_XY")
+>>>>>>> 1481910 (symbiont push)
+
+
+<<<<<<< HEAD
 world <- map_data('world')
 world<-st_as_sf(world, coords = c("long", "lat"))
 st_set_crs(world, 4326)->world
@@ -97,4 +128,6 @@ ggplot() +
 # ggplot()+
   # geom_raster(precip, mapping = aes(x=x, y=y))+
   # geom_point(data=test, aes(x=decimalLongitude, y=decimalLatitude))
+=======
+>>>>>>> 1481910 (symbiont push)
 

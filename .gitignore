@@ -40,4 +40,11 @@ dat_clean_wxyz.csv
 finaldf_st_intersect.csv
 lessthan50percentcov.csv
 polygon_occ_coverage.csv
+<<<<<<< HEAD
 >>>>>>> 5a680cbdae2b340eee15aef0e2824c4643717cc2
+=======
+climdat_june_2024.csv
+test_data_new_june2024_coords.csv
+wc2.1_30s_bio_1.tif
+wc2.1_30s_bio_12.tif
+>>>>>>> 1481910 (symbiont push)
