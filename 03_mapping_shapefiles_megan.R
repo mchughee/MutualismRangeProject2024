@@ -10,9 +10,9 @@ library(rnaturalearthdata)
 
 
 # First, read in test df
-points <- read.csv("dat_test_clean.csv") %>% 
+points <- read.csv("twenty_sp.csv") %>% 
   # Getting rid of these junk columns, these arise from write.csv, good to use row.names = FALSE 
-  select(-X.1, -X) %>% 
+  dplyr::select(-X) %>% 
   # Seems like there are still duplicate points in here
   distinct(species, decimalLatitude, decimalLongitude, .keep_all = T)
 
@@ -45,24 +45,24 @@ legume_pol <- readRDS("legume_range_polygons_data.rds") %>%
 # Use the column polygon, which is a list of spatial polygon dataframes
 poly_sf = legume_pol$polygon %>% 
   # Convert each of these to sf
-  map(., st_as_sf) %>% 
+  purrr::map(., st_as_sf) %>% 
   # Make valid
-  map(., st_make_valid) %>% 
+  purrr::map(., st_make_valid) %>% 
   # Put the resulting list into a dataframe
-  enframe(name = NULL) %>% 
+  tibble::enframe(name = NULL) %>% 
   # Then convert the nested list items into columns (code, status, geometry)
-  unnest(cols = c(value)) %>% 
+  tidyr::unnest(cols = c(value)) %>% 
   # then bind the original dataframe back on to this one
-  bind_cols(legume_pol, .) %>% 
+  dplyr::bind_cols(legume_pol, .) %>% 
   # drop the old polygon column which contains spatialPolygonsDataframes
-  select(-polygon) %>% 
+  dplyr:: select(-polygon) %>% 
   # Reconvert the whole thing to sf 
-  st_as_sf() %>% 
+  sf::st_as_sf() %>% 
   # Group by species and status
-  group_by(species, status) %>% 
+  dplyr::group_by(species, status) %>% 
   # Merge polygons within these groups
-  summarize() %>% 
-  rename(species_polys = species, status_polys = status)
+  dplyr::summarize() %>% 
+  dplyr::rename(species_polys = species, status_polys = status)
 
 # I'm sure there's a better way to do this step but couldn't think of how
 # This approach feels a bit clunky
@@ -86,7 +86,7 @@ for (i in 1:length(species_list)) {
   # Join these two features, which populates columns species_polys and status_polys with the species and status data of any polygon(s) that overlap a given point
   join_i = st_join(points_i, polygons_i, join = st_intersects) %>% 
     # Then select only that information (geometry tags along as well because this is a sf object)
-    select(species_polys, status_polys) %>% 
+    dplyr::select(species_polys, status_polys) %>% 
     # Add on a species identity column (because species_polys is NA if no polygon overlaps)
     mutate(species = species_i) %>% 
     # We then need to deal with the cases of multiple overlapping polygons and resulting multiple statuses 
@@ -105,6 +105,7 @@ status_df = status_list %>%
 
 points_sf_with_statuses = left_join(points_sf, status_df)
 
+#detach(package:plyr, unload=TRUE)
 # Generate percentages of points with each status
 status_counts = points_sf_with_statuses %>% 
   group_by(species) %>% 

@@ -63,17 +63,17 @@ subset_polygon$species<-gsub(" ", "_", subset_polygon$species)
 
 # Suck it, R, I wrote a for loop AND it works for once
 
-<<<<<<< HEAD
+
 #polygonslist <- mget(ls(pattern="polygon_*"), envir = globalenv())
 
 for(i in (unique(df_1$species))){
   this.species<- st_intersects(st_make_valid(subset_polygon[subset_polygon$species==i,]), df_1[df_1$species==i,], sparse=FALSE)
   assign(paste0("overlay", "_", i), this.species, envir = .GlobalEnv)}
-=======
+
 for(i in (unique(test_df_1$species))){
   this.species<- st_intersects(st_make_valid(subset_polygon[subset_polygon$species==i,]), test_df_1[test_df_1$species==i,], sparse=TRUE)
   assign(paste0("testoverlay", "_", i), this.species, envir = .GlobalEnv)}
->>>>>>> 5a680cbdae2b340eee15aef0e2824c4643717cc2
+
 
 ## to compare speed on two different functions, use system.time() to
 ## look at difference
