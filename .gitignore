@@ -54,3 +54,6 @@ dat_test_clean.csv
 spatial_thin_log.txt
 spatsample_thinning.R
 twenty_sp.csv
+thinned_Abr_fru
+thinned_Aca_aci
+thinned_Lot_ped
