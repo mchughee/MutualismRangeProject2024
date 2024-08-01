@@ -1,11 +1,10 @@
 # Thinning points with spatsample instead of spthin
 
 # First, read in packages and data
-library(rworldmap)
 library(terra)
 
 # Using the twenty species dataframe for right now, but replace with full data when the time comes
-occ<-read.csv("twenty_sp.csv")
+occ<-read.csv("allocc_clean.csv")
 occ$species<-gsub(" ", "_", occ$species)
 
 # Read in bioclim data as a spatraster for use with terra
@@ -16,15 +15,21 @@ precip<-rast("wc2.1_30s_bio_12.tif", crs("+proj=longlat +datum=WGS84"))
 # tell R where the long/lat is in the dataframe and the crs
 # Code snippet from Tyler Smith at AAFC
 
-occs_ls <- vect(occ, geom = c("decimalLongitude",
+occs_ls <- terra::vect(occ, geom = c("decimalLongitude",
                               "decimalLatitude"),
                 crs = "+proj=longlat +datum=WGS84")
 
 # use spatsample (terra) to thin data to one observation per cell BUT per species
 
-for(i in (unique(occs_ls$species))){
-  this.species<- spatSample(occs_ls[occs_ls$species==i,], size=1, strata=temp)
-  assign(paste0("thin", "_", i), this.species, envir = .GlobalEnv)}
+
+results<-NULL
+  for(i in (unique(occs_ls$species))){
+    this.species<- spatSample(occs_ls[occs_ls$species==i,], size=1, strata=temp)
+    my_sf<-sf::st_as_sf(this.species)
+    results<-rbind(results, my_sf)
+    print(i)}
+    sf::st_write(results, "thinned_data.csv")
+  
 
 # For loop is long, but gets the job done
 
@@ -37,7 +42,10 @@ sum(occ$species=="Lotus_pedunculatus")
 
 # Check that the function worked by calculating distances between points
 
-thin_mat<-terra::nearby(thin_Lotus_pedunculatus, y=NULL, distance=1, symmetrical=TRUE)
+thin_mat<-terra::distance(thin_Acacia_acinacea, unit="km",symmetrical=FALSE)
+
+
+# thin_mat<-terra::nearby(thin_Lotus_pedunculatus, y=NULL, distance=1, symmetrical=TRUE)
 
 # Like, 0.0something percent are less than a km apart; my guess is that this is due to thinning per km raster cell,
 # which means that in some cases, they are just a little less than 1 km apart
@@ -59,5 +67,4 @@ my_df$temp <-terra::extract(temp, my_df)
 my_df$precip <-terra::extract(precip, my_df)
 
 # Nice and easy! Now we have a thinned dataframe with all species, with their associated climate data
-
 
