@@ -24,3 +24,6 @@ thin$precip <-raster::extract(precip, thin)
 
 # write into st object
 sf::st_write(thin, "thinned_data_climate.csv", layer_options = "GEOMETRY=AS_XY")
+
+
+

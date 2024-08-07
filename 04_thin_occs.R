@@ -52,5 +52,5 @@ st_set_crs(thinned, 4326)->thinned
 thinned$temp <-raster::extract(temp, thinned)
 thinned$precip <-raster::extract(precip, thinned)
 
-# Nice and easy! Now we have a thinned dataframe ready for use
+# Nice and easy! Now we have a thinned dataframe
 
