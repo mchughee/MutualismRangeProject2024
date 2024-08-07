@@ -2,6 +2,8 @@
 
 # First, read in packages and data
 library(terra)
+library(sf)
+library(dplyr)
 
 # Using the twenty species dataframe for right now, but replace with full data when the time comes
 occ<-read.csv("allocc_clean.csv")
@@ -28,43 +30,20 @@ results<-NULL
     my_sf<-sf::st_as_sf(this.species)
     results<-rbind(results, my_sf)
     print(i)}
-    sf::st_write(results, "thinned_data.csv")
-  
 
-# For loop is long, but gets the job done
+    results1<-results %>% dplyr::select(-c(X.1, X))
+    sf::st_write(results1, "thinned_data.csv", layer_options = "GEOMETRY=AS_XY")
+# Why does st_write not include geometry points?? This is literally the only reason to write a
+# dataframe as an sf object!!!!!!!!!!!!!!!!!!
 
-
-# Now, let's look at the spatvectors generated for one species
-values(thin_Lotus_pedunculatus)
-length(thin_Lotus_pedunculatus)
-sum(occ$species=="Lotus_pedunculatus")
-
-
-# Check that the function worked by calculating distances between points
-
-thin_mat<-terra::distance(thin_Acacia_acinacea, unit="km",symmetrical=FALSE)
-
-
-# thin_mat<-terra::nearby(thin_Lotus_pedunculatus, y=NULL, distance=1, symmetrical=TRUE)
-
-# Like, 0.0something percent are less than a km apart; my guess is that this is due to thinning per km raster cell,
-# which means that in some cases, they are just a little less than 1 km apart
-
-# merge all spatvectors into one big list
-
-files<-mget(ls(pattern="thin_*"), envir = globalenv())
-
-# Tell R to apply the st_as_sf function to each item in the "files" list
-my_sf<-lapply(names(files), function(x) sf::st_as_sf(files[[x]]))
-
-# bind together each sf dataframe in the "files" list
-my_df <- do.call(rbind, my_sf)
-
+# Write results object into csv file
+write.csv(results, "thinned_with_geometry.csv")
+thinned_with_geometry <- read_csv("thinned_with_geometry.csv")
 
 # Extract climate data
 
-my_df$temp <-terra::extract(temp, my_df)
-my_df$precip <-terra::extract(precip, my_df)
+thinned_with_geometry$temp <-terra::extract(temp, thinned_with_geometry)
+thinned_with_geometry$precip <-terra::extract(precip, thinned_with_geometry)
 
 # Nice and easy! Now we have a thinned dataframe with all species, with their associated climate data
 
