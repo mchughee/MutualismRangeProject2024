@@ -1,4 +1,4 @@
-### Read in packages
+### Read in required packages
 library(dplyr)
 library(tidyr)
 

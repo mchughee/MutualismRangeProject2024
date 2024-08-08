@@ -1,4 +1,4 @@
-# Extracting climate data for thinned occurrences
+# Extracting climate data for thinned occurrence data
 
 # read in packages
 library(raster)

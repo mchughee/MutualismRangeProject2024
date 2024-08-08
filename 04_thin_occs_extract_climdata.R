@@ -36,14 +36,3 @@ results<-NULL
 # Why does st_write not include geometry points?? This is literally the only reason to write a
 # dataframe as an sf object!!!!!!!!!!!!!!!!!!
 
-# Write results object into csv file
-write.csv(results, "thinned_with_geometry.csv")
-thinned_with_geometry <- read_csv("thinned_with_geometry.csv")
-
-# Extract climate data
-
-thinned_with_geometry$temp <-terra::extract(temp, thinned_with_geometry)
-thinned_with_geometry$precip <-terra::extract(precip, thinned_with_geometry)
-
-# Nice and easy! Now we have a thinned dataframe with all species, with their associated climate data
-
