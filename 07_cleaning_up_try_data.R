@@ -77,28 +77,59 @@ levels(pollclean$OrigValueStr)
 sum(duplicated(pollclean$species))
 # 594 duplicates!!
 
-status_counts = pollclean %>% 
-  summarize(total = n(),
-            #pct_NA = sum(is.na(OrigValueStr))/total,
-            pct_biotic = sum(OrigValueStr %in% "biotic")/total,
-            pct_abiotic = sum(OrigValueStr %in% "abiotic")/total,
-            pct_ab_bi = sum(OrigValueStr %in% "biotic" & OrigValueStr %in% "abiotic")/total
-            #pct_bi_bi = sum(OrigValueStr %in% "biotic" & OrigValueStr %in% "biotic")/total,
-            #pct_ab_ab = sum(OrigValueStr %in% "abiotic" & OrigValueStr %in% "abiotic")/total)
-            )%>% 
-  mutate(sum_pcts = rowSums(across(starts_with("pct"))))
+# k, fork, let's look at which species are abiotically reproducing
 
-# Okay, looks like there's duplicates of the species but no conflicts
-# remove those dupes!!!!
+pollclean$species<-as.factor(pollclean$species)
 
-poll_df = pollclean[!duplicated(pollclean$species),]
+abiotic<-pollclean %>% subset(OrigValueStr=="abiotic") %>% droplevels()
+biotic<-pollclean %>% subset(OrigValueStr=="biotic") %>% droplevels()
 
 
-overlap_poll_df<-intersect(overlap, poll_df$species)
 
-setdiff(overlap, poll_df$species)
+unique(abiotic$species)
 
-write.csv(poll_df, "try_pollination_data_clean.csv")
+
+intersect(abiotic$species, biotic$species)
+setdiff(abiotic$species, biotic$species)
+
+sum()
+
+# there are a couple to several observations of each species, with conflicting reports of them being
+# biotically vs abiotically pollinated hahaha yikes
+
+# write some code that will conditionally choose one pollination mode to keep
+
+for (i in unique(pollclean$species)){
+  mutate(OrigValueStr=case_when(sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")>sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")~pollclean[pollclean$species==i,]$OrigValueStr=="biotic",
+            sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")<sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")~pollclean[pollclean$species==i,]$OrigValueStr=="abiotic",
+            sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")==sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")~pollclean[pollclean$species==i,]$OrigValueStr=="conflicted")
+)}
+
+for (i in unique(pollclean$species)){
+if(sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")>sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")){
+  pollclean[pollclean$species==i,]$OrigValueStr=="biotic"
+}
+if(sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")<sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")){
+  pollclean[pollclean$species==i,]$OrigValueStr=="abiotic"
+}
+if(sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")==sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")){
+  pollclean[pollclean$species==i,]$OrigValueStr=="conflicted"
+}}
+
+pollclean$OrigValueStr<-as.factor(pollclean$OrigValueStr)
+for (i in unique(pollclean$species)){
+  mutate(OrigValueStr=case_when(sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")>sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")~"biotic",
+                                sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")<sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")~"abiotic",
+                                sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")==sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")~"conflicted")
+  )}
+
+
+
+
+
+
+
+
 
 
 
