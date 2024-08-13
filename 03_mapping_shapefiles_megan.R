@@ -10,20 +10,20 @@ library(rnaturalearthdata)
 
 
 # First, read in test df
-points <- read.csv("twenty_sp.csv") %>% 
+points <- read.csv("thinned_data_climate.csv") %>% 
   # Getting rid of these junk columns, these arise from write.csv, good to use row.names = FALSE 
-  dplyr::select(-X) %>% 
+  #dplyr::select(-X) %>% 
   # Seems like there are still duplicate points in here
-  distinct(species, decimalLatitude, decimalLongitude, .keep_all = T)
+  distinct(species, Y, X, .keep_all = T)
 
 # Quick vis of occurrences
-ggplot(points, aes(y = decimalLatitude, x = decimalLongitude, color = species)) +
-  geom_point()
+#ggplot(points, aes(y = Y, x = X, color = species)) +
+ # geom_point()
 
 # Convert points to simplefeatures
 points_sf <- st_as_sf(x = points,
                       # Specify which columns are coordinates
-                      coords = c("decimalLongitude", "decimalLatitude"), 
+                      coords = c("X", "Y"), 
                       # Tell R to read coordinates as WGS84
                       crs = 4326) %>% 
                       # Replace spaces in species names
@@ -131,7 +131,7 @@ for (i in 1:length(species_list)){
     geom_polygon(data = world, aes(x = long, y = lat, group = group), colour="darkgrey", fill = NA, alpha = 0.2) +
     geom_sf(data = polygons_j, aes(fill = status_polys), alpha = 0.2) +
     geom_sf(data = points_j, aes(color = status_polys), size = 0.5)
- ggsave(filename = str_c("polygon_plots/", species_j, ".pdf"), width = 14, height = 6)
+ ggsave(filename = str_c("polygon_plots_thinnedat/", species_j, ".pdf"), width = 14, height = 6)
 }
 
 
