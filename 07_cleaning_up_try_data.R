@@ -5,11 +5,15 @@ library(terra)
 library(sf)
 library(tidyverse)
 
+setwd("C:/Users/erinm/Downloads")
+
 # Read in this freaking data
 try<-read.delim("TRY_29_Data/35503.txt")
 head(try)
 
-pollination_syndrome<-subset(try, DataName=="Pollination syndrome (pollen vector)")
+pollination_syndrome<-subset(try, DataName=="Pollination syndrome (pollen vector)"|DataName=="Pollination syndrom 2"|
+                               DataName=="Pollination syndrom: abiotic"|DataName=="Pollination syndrom: insects"|
+                               DataName=="Pollination syndrom: vertebrates")
 pollination_syndrome<-as.data.frame(pollination_syndrome)
 
 # Read in dataset with my species
@@ -56,16 +60,22 @@ pollclean <- pollination_syndrome1 %>%
       OrigValueStr=="Entomophily"|OrigValueStr=="general insect"|
       OrigValueStr=="insect"|OrigValueStr=="insects often"|
       OrigValueStr=="syrphids"~ "biotic",
-      OrigValueStr=="cleistogamy often"|OrigValueStr=="selfed"|OrigValueStr=="selfing often"|
+    OrigValueStr=="cleistogamy often"|OrigValueStr=="selfed"|OrigValueStr=="selfing often"|
       OrigValueStr=="selfing always"| OrigValueStr=="self"|OrigValueStr=="selfing the rule"~"abiotic",
-      OrigValueStr=="anemogamous/entomogamous"|OrigValueStr=="selfing at failure of outcrossing"|
+    OrigValueStr=="anemogamous/entomogamous"|OrigValueStr=="selfing at failure of outcrossing"|
       OrigValueStr=="selfing rare"|OrigValueStr=="selfing unknown"|
       OrigValueStr=="3"|OrigValueStr=="cleistogamy rare"|
       OrigValueStr=="insects rare"|OrigValueStr=="insects uknown"|
-      OrigValueStr=="selfing never"|OrigValueStr=="selfing possible"~"NA")) %>% 
-      filter(OrigValueStr=="biotic"|OrigValueStr=="abiotic") %>% 
-      droplevels()
-  
+      OrigValueStr=="selfing never"|OrigValueStr=="selfing possible"~"NA",
+    DataName=="Pollination syndrom: vertebrates" & OrigValueStr=="yes"~"biotic",
+    DataName=="Pollination syndrom: vertebrates" & OrigValueStr=="no"~"NA",
+    DataName=="Pollination syndrom: insects" & OrigValueStr=="yes"~"biotic",
+    DataName=="Pollination syndrom: insects" & OrigValueStr=="no"~"NA",
+    DataName=="Pollination syndrom: abiotic" & OrigValueStr=="yes"~"abiotic",
+    DataName=="Pollination syndrom: abiotic" & OrigValueStr=="no"~"biotic")) %>% 
+  filter(OrigValueStr=="biotic"|OrigValueStr=="abiotic") %>% 
+  droplevels()
+
 # Check that I've dropped the NA values
 pollclean$OrigValueStr<-as.factor(pollclean$OrigValueStr)
 
@@ -74,8 +84,9 @@ levels(pollclean$OrigValueStr)
 # Remove duplicates!
 
 # how many duplicated species are there?
+pollclean$species<-as.factor(pollclean$species)
 sum(duplicated(pollclean$species))
-# 594 duplicates!!
+# 604 duplicates!!
 
 # k, fork, let's look at which species are abiotically reproducing
 
@@ -92,47 +103,37 @@ unique(abiotic$species)
 intersect(abiotic$species, biotic$species)
 setdiff(abiotic$species, biotic$species)
 
-sum()
-
 # there are a couple to several observations of each species, with conflicting reports of them being
 # biotically vs abiotically pollinated hahaha yikes
 
 # write some code that will conditionally choose one pollination mode to keep
 
 for (i in unique(pollclean$species)){
-  mutate(OrigValueStr=case_when(sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")>sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")~pollclean[pollclean$species==i,]$OrigValueStr=="biotic",
-            sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")<sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")~pollclean[pollclean$species==i,]$OrigValueStr=="abiotic",
-            sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")==sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")~pollclean[pollclean$species==i,]$OrigValueStr=="conflicted")
-)}
-
-for (i in unique(pollclean$species)){
-if(sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")>sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")){
-  pollclean[pollclean$species==i,]$OrigValueStr=="biotic"
-}
-if(sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")<sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")){
-  pollclean[pollclean$species==i,]$OrigValueStr=="abiotic"
-}
-if(sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")==sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")){
-  pollclean[pollclean$species==i,]$OrigValueStr=="conflicted"
-}}
-
-pollclean$OrigValueStr<-as.factor(pollclean$OrigValueStr)
-for (i in unique(pollclean$species)){
-  mutate(OrigValueStr=case_when(sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")>sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")~"biotic",
-                                sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")<sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")~"abiotic",
-                                sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")==sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")~"conflicted")
-  )}
+  if(sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")>sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")){
+    pollclean[pollclean$species==i,]$OrigValueStr<-"biotic"
+  }
+  if(sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")<sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")){
+    pollclean[pollclean$species==i,]$OrigValueStr<-"abiotic"
+  }
+  if(sum(pollclean[pollclean$species==i,]$OrigValueStr=="biotic")==sum(pollclean[pollclean$species==i,]$OrigValueStr=="abiotic")){
+    pollclean[pollclean$species==i,]$OrigValueStr<-"conflicted"
+  }}
 
 
+pollclean1<-pollclean %>%
+  #arrange(species) %>%
+  group_by(species) %>%
+  slice(1) %>%
+  ungroup() %>%
+  arrange(species)
 
 
+duplicated(pollclean1$species)
 
+subset(pollclean1, OrigValueStr=="abiotic")
 
+subset(pollclean1, OrigValueStr=="conflicted")
 
+subset(pollclean1, OrigValueStr=="biotic")
 
-
-
-
-
-
-
+setdiff(pollclean1$species, pollination_syndrome1$species)
