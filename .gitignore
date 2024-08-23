@@ -73,3 +73,7 @@ polygon_plots_reclass
 reclassfied_polygons_aug2024
 reclassified_polygons_maps
 st_intersection_plots
+point_reclass_check
+reclassified_polygons_aug2024
+thinned_data_reclass.csv
+twentysp_thinned_data_reclass.csv
