@@ -2,7 +2,7 @@
 
 #install.packages("devtools")
 library(devtools)
-devtools::install_github("jinyizju/V.PhyloMaker")
+#devtools::install_github("jinyizju/V.PhyloMaker")
 library("V.PhyloMaker")
 library(tidyverse)
 
@@ -27,6 +27,7 @@ sp_list$genus.relative<-NA
 
 tree <- phylo.maker(sp.list = sp_list,
                     tree = GBOTB.extended,
-                    nodes=nodes.info.1,
+                    nodes=nodes.info.2,
                     scenarios="S1")
-write.tree(tree$scenario.1, "phylogeny_all.tre")
+
+write.tree(tree$scenario.1, "phylogeny_all_buildnodes2.tre")

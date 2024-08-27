@@ -77,3 +77,8 @@ point_reclass_check
 reclassified_polygons_aug2024
 thinned_data_reclass.csv
 twentysp_thinned_data_reclass.csv
+checking_if_pointreclass_worked_full
+phylogeny_all_buildnodes.tre
+phylogeny_all_buildnodes2.tre
+thinned_data_reclass_full.csv
+threesp_thinned_data_reclass.csv
