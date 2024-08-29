@@ -71,5 +71,5 @@ for (i in unique(data_sub$species)){
 
 ggplot() +
   geom_polygon(data = world, aes(x = long, y = lat, group = group), colour="darkgrey", fill = NA, alpha = 0.2) +
-  geom_sf(data = prec[5,], aes(fill = shape[5,]$stts_pl), alpha = 0.2)
+  geom_sf(data = ono, aes(fill = ono$stts_pl), alpha = 0.2)
 

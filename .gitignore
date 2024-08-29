@@ -82,3 +82,7 @@ phylogeny_all_buildnodes.tre
 phylogeny_all_buildnodes2.tre
 thinned_data_reclass_full.csv
 threesp_thinned_data_reclass.csv
+powo_polygons_sorted.geojson
+wcvp_dwca
+wcvp_names_and_distribution_special_issue_28_feb_2022
+wgsrpd-master

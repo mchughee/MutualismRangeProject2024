@@ -139,7 +139,7 @@ for (i in 1:length(species_list)){
 }
 
 
-st_collection_extract(results, "POLYGON")
+p<-st_collection_extract(results, "POLYGON")
 st_cast()
 st_write(p, "reclassified_polygons.shp")
 

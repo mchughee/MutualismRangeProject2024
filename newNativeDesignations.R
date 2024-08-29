@@ -83,7 +83,7 @@ table(ranges$locality)
 table(ranges$locationid)
 table(poly_sf4$Level3_cod)
 
-test
+#test
 
 range_codes = unique(ranges$locationid)
 
