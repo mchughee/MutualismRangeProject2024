@@ -1,4 +1,4 @@
-# Overlaying occurrence data with Pooja's shapefiles
+# Investigating why there ARE STILL SPECIES WITH >100% COVERAGE IN POWO POLYGONS
 
 # Read in packages
 
@@ -12,15 +12,7 @@ library(rnaturalearthdata)
 poly_sf = st_read("powo_polygons/powo_polygons_sorted.shp")
 
 # First, read in test df
-points <- read.csv("thindat_climadd_soilgridsadd.csv") %>% 
-  # Getting rid of these junk columns, these arise from write.csv, good to use row.names = FALSE 
-  #dplyr::select(-X) %>% 
-  # Seems like there are still duplicate points in here
-  distinct(species, Y, X, .keep_all = T)
-
-# Quick vis of occurrences
-#ggplot(points, aes(y = Y, x = X, color = species)) +
- # geom_point()
+points <- read.csv("thindat_climadd_soilgridsadd.csv") 
 
 # Convert points to simplefeatures
 points_sf <- st_as_sf(x = points,
@@ -28,25 +20,16 @@ points_sf <- st_as_sf(x = points,
                       coords = c("X", "Y"), 
                       # Tell R to read coordinates as WGS84
                       crs = 4326) %>% 
-                      # Replace spaces in species names
-                      mutate(species = str_replace(species, " ", "_")) %>% 
-                      filter(species %in% poly_sf$spcs_nm)
+  # Replace spaces in species names
+  mutate(species = str_replace(species, " ", "_")) %>% 
+  filter(species %in% poly_sf$spcs_nm)
 
 # Three species in this test set
 table(points_sf$species)
 
 
-# Read in polygons
-#legume_pol <- readRDS("legume_range_polygons_data.rds") %>% 
-  # And fix the species names to match points
- # mutate(species = str_replace(species, " ", "_")) %>% 
-  # Filter to test species
-  #filter(species %in% points_sf$species)
-
-
-# Convert to sf 
-# Use the column polygon, which is a list of spatial polygon dataframes
-#poly_sf = legume_pol$polygon %>% 
+# Code for when working with powo polygons
+poly_sf = poly_sf %>% 
   # Convert each of these to sf
   #purrr::map(., st_as_sf) %>% 
   # Make valid
@@ -62,37 +45,11 @@ table(points_sf$species)
   # Reconvert the whole thing to sf 
   #sf::st_as_sf() %>% 
   # Group by species and status
-  #dplyr::group_by(species, status) %>% 
+  #dplyr::group_by(spcs_nm, intrdcd) %>% 
   # Merge polygons within these groups
   #dplyr::summarize() %>% 
-  #dplyr::rename(species_polys = species, status_polys = status)
+  dplyr::rename(species_polys = spcs_nm, status_polys = intrdcd)
 
-# Code for when working with powo polygons
-poly_sf = poly_sf$geometry %>% 
-# Convert each of these to sf
-#purrr::map(., st_as_sf) %>% 
-# Make valid
-#purrr::map(., st_make_valid) %>% 
-# Put the resulting list into a dataframe
-#tibble::enframe(name = NULL) %>% 
-# Then convert the nested list items into columns (code, status, geometry)
-#tidyr::unnest(cols = c(value)) %>% 
-# then bind the original dataframe back on to this one
-#dplyr::bind_cols(legume_pol, .) %>% 
-# drop the old polygon column which contains spatialPolygonsDataframes
-#dplyr:: select(-polygon) %>% 
-# Reconvert the whole thing to sf 
-#sf::st_as_sf() %>% 
-# Group by species and status
-dplyr::group_by(species, status) %>% 
-# Merge polygons within these groups
-dplyr::summarize() %>% 
-dplyr::rename(species_polys = species, status_polys = status)
-
-# I'm sure there's a better way to do this step but couldn't think of how
-# This approach feels a bit clunky
-# Tried a full join of points and polygons, then filtering so that species.x == species.y
-# But that method drops rows that don't fall in a polygon because species = NA
 
 # Make a list of species
 species_list = unique(points_sf$species)
@@ -100,6 +57,7 @@ species_list = unique(points_sf$species)
 # Make an empty list to store results
 status_list = list()
 
+sf_use_s2(FALSE)
 # Check each species points against polygons for that species
 for (i in 1:length(species_list)) {
   # Select species i
@@ -136,12 +94,14 @@ status_counts = points_sf_with_statuses %>%
   group_by(species) %>% 
   summarize(total = n(),
             pct_NA = sum(is.na(status_polys))/total,
-            pct_N = sum(status_polys %in% "N")/total,
-            pct_U = sum(status_polys %in% "U")/total,
-            pct_I = sum(status_polys %in% "I")/total,
-            pct_mixed = sum(status_polys %in% c("UN", "NU", "IN", "NI", "UI", "IU"))/total) %>% 
+            pct_0 = sum(status_polys %in% "0")/total,
+            pct_1 = sum(status_polys %in% "1")/total,
+            pct_mixed = sum(status_polys %in% c("10", "01", "11", "00"))/total) %>% 
   group_by(species) %>% 
   mutate(sum_pcts = rowSums(across(starts_with("pct"))))
+
+problems<-subset(status_counts, pct_mixed>0.01)
+
 
 # Generate plots to inspect
 # Dunno if we'll want to do this for all species but good to do it for a bunch at first
@@ -156,7 +116,7 @@ for (i in 1:length(species_list)){
     geom_polygon(data = world, aes(x = long, y = lat, group = group), colour="darkgrey", fill = NA, alpha = 0.2) +
     geom_sf(data = polygons_j, aes(fill = status_polys), alpha = 0.2) +
     geom_sf(data = points_j, aes(color = status_polys), size = 0.5)
- ggsave(filename = str_c("polygon_plots_thinnedat/", species_j, ".pdf"), width = 14, height = 6)
+  ggsave(filename = str_c("polygon_plots_thinnedat/", species_j, ".pdf"), width = 14, height = 6)
 }
 
 

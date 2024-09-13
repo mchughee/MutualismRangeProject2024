@@ -21,6 +21,7 @@ ranges = read_delim("wcvp_dwca/wcvp_distribution.csv", delim = "|") %>%
   # Remove additional string from location codes
   mutate(locationid = str_remove(locationid, "TDWG:"))
 
+
 # read in special issue data
 plant_dist = read_delim("wcvp_names_and_distribution_special_issue_28_feb_2022/wcvp_distribution.txt", delim = "|")
 
@@ -50,6 +51,7 @@ plant_dist1$species_name <- names$species_names[match(plant_dist1$plant_name_id,
 
 # Read in polys for level 3 geometry
 poly_sf3 = geojson_sf("wgsrpd-master/geojson/level3.geojson")
+st_crs(poly_sf3)
 
 # Make sure that the geometries in plant_dist1 and level3.geojson match up!
 plant_dist1$area_code_l3[plant_dist1$area_code_l3 %in% poly_sf3$LEVEL3_COD]
@@ -94,11 +96,12 @@ ggplot() +
 
 # writing the distribution polygons into a df
 
-powo_polygons<-st_as_sf(plant_dist1, sf_column_name="geometry", crs="4326")
+powo_polygons<-st_as_sf(plant_dist1, sf_column_name="geometry")
 
-sf::st_write(powo_polygons,"powo_polygons_sorted.geojson")
+#sf::st_write(powo_polygons,"powo_polygons_sorted.shp")
 
 p<-st_collection_extract(powo_polygons, "POLYGON")
-sf::st_write(p,"powo_polygons_sorted.geojson")
+
+sf::st_write(p,"powo_polygons_sorted.shp")
 
 

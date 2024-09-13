@@ -13,7 +13,7 @@ library(rnaturalearthdata)
 # setwd("C:/Users/erinm/OneDrive/Documents/Mutualism_Range_Project_2024")
 
 # First, read in test df
-datall<-read.csv("allocc_clean.csv")
+datall<-read.csv("thindat_climadd_soilgridsadd.csv")
 df <- st_as_sf(x = datall,                         
                coords = c("decimalLongitude", "decimalLatitude"))
 # Tell R to read coordinates as WGS84
@@ -73,7 +73,8 @@ overlayresults<-as.data.frame(do.call(rbind, results))
   #summarize(count=n(), species=species)->counts
 # above code does not work due to summarize being DEPRECATED (!)
 
-counts<-df_1 %>% 
+counts<-points_sf %>% 
+  filter(species %in% poly_sf$spcs_nm) %>% 
   group_by(species) %>% 
   tally()
 
@@ -83,7 +84,6 @@ cbind(overlayresults, counts)-> finaldf
 # rename columns and drop the geometry column that got preserved for god knows what reason
 names(finaldf)[names(finaldf) == 'V1'] <- 'num_in_polygon'
 names(finaldf)[names(finaldf) == 'n'] <- 'num_total'
-drops <- c("geometry")
 finaldf <- subset(finaldf, select = -c(geometry))
 
 # calculate percentages
