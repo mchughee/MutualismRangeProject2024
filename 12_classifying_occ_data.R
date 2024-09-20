@@ -7,7 +7,7 @@ library(tidyverse)
 library(ggplot2)
 
 # First, read in data set (test for now!)
-shape <- st_read("reclassified_polygons_aug2024/reclassified_polygons.shp")
+shape <- st_read("powo_polygons/powo_polygons_sorted.shp")
 
 # Read in occurrence data
 points <- read.csv("thindat_climadd_soilgridsadd.csv")
@@ -28,6 +28,10 @@ for(i in (unique(points_sf$species))){
   this.species<- st_join(points_sf[points_sf$species==i,], shape[shape$spcs_pl==i,], left = TRUE, largest=TRUE)
   results<-rbind(results, this.species)
   print(i)}
+
+for (i in (unique(points_sf$species))){
+  if 
+}
 
 
 # Drop unnecessary columns

@@ -29,8 +29,24 @@ overlap[6,]$reason_for_fit<-"ornamental!"
 overlap[7,]$reason_for_fit<-"just looks like bad depiction of range to me"
 overlap[8,]$reason_for_fit<-"fit of north american introduced polygons is bad...in florida now"
 overlap[9,]$reason_for_fit<-"just a bad fit...native to west africa, some points falling just outside pols"
-overlap[10,]$reason_for_fit<-
+overlap[10,]$reason_for_fit<-"extra points in mongolia"
+overlap[11,]$reason_for_fit<-"occs falling into ocean, i fear"
+overlap[12,]$reason_for_fit<-"native to s. europe as well, but polygons only cover north africa"
+overlap[13,]$reason_for_fit<-"expansion/introduction into northern europe?"
+overlap[14,]$reason_for_fit<-"shitty polygons"
+overlap[15,]$reason_for_fit<-"yikes! basically all points in canada not in polygons, even though part of known range"
+overlap[16,]$reason_for_fit<-"used as an ornamental in africa"
+overlap[17,]$reason_for_fit<-"native to india, but bunch of occs in australia"
+overlap[18,]$reason_for_fit<-"lots of occs in us, has usda page, looks like maybe recent introduction from se asia"
+overlap[19,]$reason_for_fit<-"okay, this is a hybrid ornamental. why is it in the dataset?"
+overlap[20,]$reason_for_fit<-"teeny polygon for species native to se australia and nz"
+overlap[21,]$reason_for_fit<-"native to phillipines, but used widely as an ornamental, I suspect"
+overlap[22,]$reason_for_fit<-"shitty polygons"
+overlap[23,]$reason_for_fit<-"native to middle east, widely cultivated as forage crop"
+overlap[24,]$reason_for_fit<-"native to middle east, widely cultivated as forage crop"
+overlap[25,]$reason_for_fit<-"aka blue fenugreek, suspect it is cultivated for use in europe"
+overlap[26,]$reason_for_fit<-"shitty polygons...lots of occs in northern europe, polygons cover southern europe"
+overlap[27,]$reason_for_fit<-"native to se mediterranean, lots of occs in northern europe"
+overlap[28,]$reason_for_fit<-"not many occs and many are falling outside of pols"
 
-
-
-  
+write.csv(overlap, "poor_fit_ildis_powo_both.csv")  

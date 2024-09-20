@@ -30,30 +30,32 @@ points_sf <- st_as_sf(x = points,
   mutate(species = str_replace(species, " ", "_"))
 
 # Read in our polygons-- thanks Megan for the code
-legume_pol <- readRDS("legume_range_polygons_data.rds") %>% 
+#legume_pol <- readRDS("legume_range_polygons_data.rds") %>% 
   # And fix the species names to match points
-  mutate(species = str_replace(species, " ", "_")) %>% 
+ # mutate(species = str_replace(species, " ", "_")) %>% 
   # Filter to test species
-  filter(species %in% points_sf$species)
+  #filter(species %in% points_sf$species)
+
+poly_sf <- st_read("powo_polygons/powo_polygons_sorted.shp")
 
 
 # Convert to sf 
 # Use the column polygon, which is a list of spatial polygon dataframes
 poly_sf = legume_pol$polygon %>% 
   # Convert each of these to sf
-  purrr::map(., st_as_sf) %>% 
+ # purrr::map(., st_as_sf) %>% 
   # Make valid
   purrr::map(., st_make_valid) %>% 
   # Put the resulting list into a dataframe
-  tibble::enframe(name = NULL) %>% 
+  #tibble::enframe(name = NULL) %>% 
   # Then convert the nested list items into columns (code, status, geometry)
-  tidyr::unnest(cols = c(value)) %>% 
+  #tidyr::unnest(cols = c(value)) %>% 
   # then bind the original dataframe back on to this one
-  dplyr::bind_cols(legume_pol, .) %>% 
+  #dplyr::bind_cols(legume_pol, .) %>% 
   # drop the old polygon column which contains spatialPolygonsDataframes
-  dplyr:: select(-polygon) %>% 
+  #dplyr:: select(-polygon) %>% 
   # Reconvert the whole thing to sf 
-  sf::st_as_sf() %>% 
+  #sf::st_as_sf() %>% 
   # Group by species and status
   dplyr::group_by(species, status) %>% 
   # Merge polygons within these groups
@@ -64,8 +66,8 @@ poly_sf = legume_pol$polygon %>%
 ### Okayyyyyy what to do next...let's use st_intersection to get the continents each polygon is on!
 
 results<-NULL
-for(i in (unique(poly_sf$species_polys))){
- this.species<- st_intersection(st_make_valid(poly_sf[poly_sf$species_polys==i,]), continents)
+for(i in (unique(poly_sf$spcs_nm))){
+ this.species<- st_intersection(st_make_valid(poly_sf[poly_sf$spcs_nm==i,]), continents)
   results<-rbind(results, this.species)
   print(i)}
 
@@ -79,12 +81,15 @@ for(i in (unique(poly_sf$species_polys))){
 
 results_unchanged<-results
 
+results<-results_unchanged
+
 # Write a little loop that tells R if a species has a native polygon on one continent, the entire continent
 # should be classified as native. Thanks to Kevin for help writing this.
+results$intrdcd<-as.factor(results$intrdcd)
 
 for (i in (1:nrow(results))){
-  if (results[i,]$status_polys=="N"){
-    results[results$CONTINENT==results[i,]$CONTINENT & results$species_polys==results[i,]$species_polys,]$status_polys<-"N"
+  if (results[i,]$intrdcd=="0"){
+    results[results$CONTINENT==results[i,]$CONTINENT & results$spcs_nm==results[i,]$spcs_nm,]$intrdcd<-"0"
   }}
 # Get those points!!
 
