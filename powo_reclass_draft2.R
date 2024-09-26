@@ -10,7 +10,7 @@ library(ggplot2)
 continents<-st_read("World_Continents_316565891929102346/World_Continents.shp")
 continents<-st_transform(continents, crs=4326)
 st_crs(continents)
-plot(continents)
+#plot(continents)
 
 # Get points so we can find the species we want
 
@@ -29,8 +29,10 @@ points_sf <- st_as_sf(x = points,
 poly_sf <- st_read("powo_polygons/powo_polygons_sorted.shp")
 
 # subset data
-points_sf<-subset(points_sf, species=="Abrus_fruticulosus" | species=="Acacia_acinacea" | species=="Ononis_spinosa")
-poly_sf<-subset(poly_sf, spcs_nm=="Abrus_fruticulosus" | spcs_nm=="Acacia_acinacea" | spcs_nm=="Ononis_spinosa")
+points_sf<-subset(points_sf, species=="Abrus_fruticulosus" | species=="Acacia_acinacea" | species=="Ononis_spinosa"|
+                    species=="Lupinus_nootkatensis"|species=="Trifolium_medium")
+poly_sf<-subset(poly_sf, spcs_nm=="Abrus_fruticulosus" | spcs_nm=="Acacia_acinacea" | spcs_nm=="Ononis_spinosa"|
+                  spcs_nm=="Lupinus_nootkatensis"|spcs_nm=="Trifolium_medium")
 
 # Find the continent that each
 sf_use_s2(FALSE)
@@ -94,8 +96,20 @@ for (i in (1:nrow(new_points1))){
 
 # And vice versa
 for (i in (1:nrow(new_points1))){
-  invasive_points<-filter(new_points1, species==new_points1[1,]$species & intrdcd=="1")
+  invasive_points<-filter(new_points1, species==new_points1[i,]$species & intrdcd=="1")
   if (is.na(new_points1[i,]$intrdcd)){
+    if(new_points1[i,]$continent_from_point_cont_overlay %in% invasive_points$continent_from_point_cont_overlay){
+      new_points1[i,]$intrdcd<-"1"
+    }
+    else new_points1[i,]$intrdcd}}
+
+
+for (i in (1:nrow(new_points1))){
+  native_points<-filter(new_points1, species==new_points1[i,]$species & intrdcd=="0")
+  if (is.na(new_points1[i,]$intrdcd)){
+    if(new_points1[i,]$continent_from_point_cont_overlay %in% native_points$continent_from_point_cont_overlay){
+      new_points1[i,]$intrdcd<-"0"
+    }
     if(new_points1[i,]$continent_from_point_cont_overlay %in% invasive_points$continent_from_point_cont_overlay){
       new_points1[i,]$intrdcd<-"1"
     }
@@ -103,13 +117,13 @@ for (i in (1:nrow(new_points1))){
 
 new_points1$intrdcd<-as.factor(new_points1$intrdcd)
 
+for(i in unique(new_points1$species)){
+  species_j<-i
 ggplot() +
   geom_sf(data = continents, aes(geometry=geometry), colour="darkgrey", fill = NA, alpha = 0.2) +
-  geom_sf(data = new_points1[new_points1$species=="Abrus_fruticulosus",], aes(geometry=geometry, color = intrdcd), alpha = 0.2)+
-  geom_sf(data = poly_sf[poly_sf$spcs_nm=="Abrus_fruticulosus",], aes(geometry=geometry, fill = intrdcd), alpha = 0.2)
-
-
-
+  geom_sf(data = new_points1[new_points1$species==i,], aes(geometry=geometry, color = intrdcd), alpha = 0.2)+
+  geom_sf(data = poly_sf[poly_sf$spcs_nm==i,], aes(geometry=geometry, fill = intrdcd), alpha = 0.2)
+  ggsave(filename = str_c("reclass_points_sept2324/", species_j, ".pdf"), width = 14, height = 6)}
 
 
 
