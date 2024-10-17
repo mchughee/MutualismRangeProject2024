@@ -27,7 +27,7 @@ sp_list$genus.relative<-NA
 
 tree <- phylo.maker(sp.list = sp_list,
                     tree = GBOTB.extended,
-                    nodes=nodes.info.2,
+                    nodes=nodes.info.1,
                     scenarios="S1")
 
-write.tree(tree$scenario.1, "phylogeny_all_buildnodes2.tre")
+write.tree(tree$scenario.1, "phylogeny_all_buildnodes1.tre")

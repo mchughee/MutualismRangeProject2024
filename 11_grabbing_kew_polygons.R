@@ -7,7 +7,7 @@ library(sf)
 #install.packages("shapefiles")
 library(shapefiles)
 
-# read in taxon and filter to fabs
+# read in taxon and filter to fabaceae
 plants = read_delim("wcvp_dwca/wcvp_taxon.csv", delim = "|") %>% 
   # Filter to legumes
   filter(family == "Fabaceae") %>% 
@@ -22,16 +22,17 @@ ranges = read_delim("wcvp_dwca/wcvp_distribution.csv", delim = "|") %>%
   mutate(locationid = str_remove(locationid, "TDWG:"))
 
 
-# read in special issue data
+# read in special issue data from plants of the world
 plant_dist = read_delim("wcvp_names_and_distribution_special_issue_28_feb_2022/wcvp_distribution.txt", delim = "|")
 
+# Read in species names
 names = read_delim("wcvp_names_and_distribution_special_issue_28_feb_2022/wcvp_names.txt", delim = "|") %>% 
   filter(family == "Fabaceae", taxon_rank=="Species", taxon_status=="Accepted")
 
 # Read in a dataset with my species!
 my_sp<-read.csv("summary_df_august2024.csv")
 
-# Make plant names in "names" the same format as I have
+# Make plant names in powo "names" file the same format as I have, with the _ between sp and genus
 
 names$species_names<-ifelse(names$species=="NA", "NA", paste(names$genus,names$species))
 
@@ -41,15 +42,18 @@ names$species_names<-gsub(" ", "_", names$species_names)
 names<-names %>% filter(names$species_names %in% my_sp$species)
 
 2910-2895
-# 15 species do not have les polygons!
+# 15 species do not have polygons!
 
-# Okay, let's try to get these associated plant distributions up and running
+# Okay, let's try to get these associated plant distributions up and running, first 
+# by filtering to just the species that are in my dataset
 plant_dist1<-plant_dist %>% filter(plant_name_id %in% names$plant_name_id)
 
 # pull species names from "names" dataset to make plant distributions easier to work with
+# basically, using the unique species id in both datasets to match the species name to its
+# distributions
 plant_dist1$species_name <- names$species_names[match(plant_dist1$plant_name_id, names$plant_name_id)]
 
-# Read in polys for level 3 geometry
+# Read in polys for level 3 geometry, as I've never looked at these before
 poly_sf3 = geojson_sf("wgsrpd-master/geojson/level3.geojson")
 st_crs(poly_sf3)
 
@@ -103,5 +107,7 @@ powo_polygons<-st_as_sf(plant_dist1, sf_column_name="geometry")
 p<-st_collection_extract(powo_polygons, "POLYGON")
 
 sf::st_write(p,"powo_polygons_sorted.shp")
+# These are under powo_polygons (I think I renamed to make it more straightfoward to find these...
+# had the opposite effect, I fear!)
 
 

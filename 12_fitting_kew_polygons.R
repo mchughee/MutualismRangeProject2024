@@ -4,8 +4,7 @@ library(sf)
 library(tidyverse)
 library(ggplot2)
 library(geojsonsf)
-#install.packages("spdep")
-#library(spdep)
+
 
 # Read in occurrence data
 points <- read.csv("thindat_climadd_soilgridsadd.csv")
@@ -17,8 +16,6 @@ points_sf <- st_as_sf(x = points,
                       # Tell R to read coordinates as WGS84
                       crs = 4326)
 
-#points_utm<-st_transform(points_sf, crs = st_crs("+proj=utm +datum=WGS84"))
-#st_crs(points_utm)
 
 # Pull in the new polygons
 poly_sf = st_read("powo_polygons/powo_polygons_sorted.shp")
@@ -30,12 +27,10 @@ points_filtered<-points_sf %>% filter(species %in% poly_sf$spcs_nm)
 points_filtered$species<-as.factor(points_filtered$species)
 levels(points_filtered$species)
 
-# Trying to get polygons to be valid
-#poly_sf<-st_make_valid(poly_sf)
-#nb2 <- poly2nb(st_make_valid(poly_sf))
 
 # Okay, now time to run through the big loop I made in 03 to check how good the fit is for
 # all the points and the polygons for each species
+# turning geodesic geometry off
 sf_use_s2(FALSE)
 for(i in (unique(points_filtered$species))){
   this.species<- st_intersects(st_make_valid(poly_sf[poly_sf$spcs_nm==i,]), points_filtered[points_filtered$species==i,], sparse=FALSE)
@@ -89,7 +84,8 @@ lesser_headache<-subset(finaldf, percent_cover<50)
 lesser_headache<-lesser_headache %>% select(-geometry)
 write.csv(lesser_headache, "list_powo_pols_lessthan100.csv")
 
-# Running mapping code
+# Running mapping code to check out if turning on planar (so turning OFF geodesic) is
+# affecting the points
 world = map_data('world')
 
 giant_headache<-st_as_sf(giant_headache, sf_column_name="geometry")
