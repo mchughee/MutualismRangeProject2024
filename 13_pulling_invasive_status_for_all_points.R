@@ -3,7 +3,7 @@
 # plus, calculating niche breadth for native vs invasive points
 
 library(tidyverse)
-library(sf)
+library
 
 # read in occurrence data
 points <- read.csv("thindat_climadd_soilgridsadd.csv")
@@ -53,6 +53,7 @@ status1<-status %>% select(-c(mediaType, lastInterpreted, establishmentMeans,
                               typeStatus, rightsHolder, recordNumber, depth,
                               depthAccuracy, individualCount, infraspecificEpithet))
 
-# Write new dataframe with the invasive status for every point!
+
 sf::st_write(status1, "invasiveclass_thindat_climadd_soilgridsadd.csv", layer_options = "GEOMETRY=AS_XY")
+
 

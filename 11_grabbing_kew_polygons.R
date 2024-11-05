@@ -1,4 +1,5 @@
-## Grabbing polygons for my species from Plants of the World Online
+## Erin attempting to get polygons for all legume species from Kew's 
+# Plants of the World. "well, it's not rocket science"--me
 
 library(tidyverse)
 library(geojsonsf)
