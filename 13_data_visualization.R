@@ -14,26 +14,11 @@ dat$mutualism<-ifelse(dat$EFN==1 | dat$Domatia==1 | dat$fixer==1, "1", "0")
 
 factor_list<-c("EFN", "Domatia", "fixer")
 
-# order data by precip_maxquant
+
+# make popsicle plots for niche breadth-- this is what kind of works
 for (i in factor_list){
   dat[,i]<-as.factor(dat[,i])
-  dat %>%
-  mutate(species = fct_reorder(species, precip_maxquant)) %>% #rank(dat[, i]))) %>%
-  ggplot() +
-  aes(x=species, y=precip_maxquant, colour=dat[,i], group=dat[, 1])+
-  geom_point()+
-  geom_segment(aes(x=species, y=precip_minquant, yend=precip_maxquant))+
-  scale_x_discrete()+
-  theme(axis.text.x=element_blank())+
-  ylab("precipitation niche breadth (mm/year)")+
-  scale_colour_manual(values=c("#2A788EFF", "#7AD151FF"))+
-  labs(color=i)
-  ggsave(filename = str_c("data_viz/","precipmax", "_", i, "_", "nichebreadth", ".pdf"), width = 14, height = 6)}
-
-
-for (i in factor_list){
-  dat[,i]<-as.factor(dat[,i])
-  #mutate(species = fct_reorder(species, rank(dat[, i]))) %>%
+  mutate(species = fct_reorder(species, rank(dat[, i]))) %>%
   dat$species<-as.factor(dat$species)
   dat %>% arrange(species, temp_range) %>% 
   ggplot() +
@@ -63,7 +48,7 @@ for (i in factor_list){
   labs(color=i)
   ggsave(filename = str_c("data_viz/","nitro", "_", i, "_", "nichebreadth", ".pdf"), width = 14, height = 6)}
 
-
+# Stuff that doesn't do anything
 dat %>%
 #mutate(species = fct_reorder(species, rank(dat[, i]))) %>%
 ggplot() +
@@ -198,5 +183,5 @@ cowplot::plot_grid(EFN, Domatia, fixer,
                    labels=c("A", "B", "C", "D", "E", "F", "G", "H", "I"))
 
 
-# What about plotting max vs min temperature for the species
+
 
