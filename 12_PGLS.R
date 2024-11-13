@@ -7,9 +7,8 @@ library(tidyverse)
 library(visreg)
 library(MASS)
 
-# Removing these weird species with 0-little niche breadth at all- something is going on here
-# I fear: 
-
+# Removing these weird species with 0-little niche breadth at all, and writing 
+# it into a new file that I can read in at any time (very exciting stuff):
 data_2<-data_1 %>% filter(n>=25)
 write.csv(data_2, "pgls_final_data.csv")
 # we will read this in next
@@ -42,7 +41,10 @@ hist(data_1$temp_range)
 
 hist(log(data_1$temp_range))
 
+hist(scale(data_1$temp_range))
+
 data_1$log_temp_range<-(log(data_1$temp_range))
+data_1$scale_temp_range<-(scale(data_1$temp_range))
 
 # precip data
 hist(data_1$precip_range)
@@ -65,9 +67,9 @@ hist(scale(data_1$uses_num_uses))
 
 # median latitude
 hist(scale(data_1$median_lat))
-data_1$scaled_lat<-scale(data_1$median_lat)
 
 # number of occurrences
+hist(data_1$n)
 hist(log(data_1$n))
 data_1$log_n<-log(data_1$n)
 
@@ -75,28 +77,23 @@ data_1$log_n<-log(data_1$n)
 
 # First check that the residuals do not, in fact, have equal variance
 
-precip_range <- gls(log_precip_range ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n + scaled_lat,
+precip_range <- gls(log_precip_range ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n + median_lat,
                     data=data_1, 
                     correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
 summary(precip_range)
 
+plot(precip_range)
+
 plot(precip_range, resid(., type = "p") ~ fitted(.) | species, abline = 0)
 
-# plot the residuals
 
-qqnorm(precip_range, abline = c(0,1))
-
-plot(z)
-
-v <- vcv(corPagel(1, tree_pruned, fixed=FALSE)) 
-z <- lm.gls(log_precip_range~EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n+scaled_lat, data_1, v = v)
 
 # pgls for temp range
 
-temp_range <- gls(log_temp_range ~ EFN + Domatia + fixer + woody + uses_num_uses
-                  + annual + log_n + scaled_lat,
-                  data=data_2, 
+temp_range <- gls(temp_range ~ EFN + Domatia + fixer + woody + uses_num_uses
+                  + annual + log_n + median_lat,
+                  data=data_1, 
                   correlation=corPagel(1, mytree, form=~species), method="ML")
 
 summary(temp_range)
@@ -107,14 +104,12 @@ plot(temp_range)
 
 # pgls for temp range
 
-nitro_range <- gls(log_nitro_range ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n + scaled_lat,
+nitro_range <- gls(log_nitro_range ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n + median_lat,
 
-                   data=data_2, 
+                   data=data_1, 
 
                    correlation=corPagel(1, mytree, form=~species), method="ML")
 
 summary(nitro_range)
 
-qqnorm(temp_range, abline = c(0,1))
-
-plot(temp_range)
+plot(nitro_range)

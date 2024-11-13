@@ -3,6 +3,9 @@ library(tidyverse)
 library(ggplot2)
 library(cowplot)
 library(viridis)
+#install.packages('ghibli')
+library(ghibli)
+library(reshape2)
 
 # read in data
 dat<-read.csv("pgls_final_data.csv")
@@ -91,7 +94,7 @@ theme_classic()+
 xlab("Extrafloral nectaries")+
 ylab("Precipitation breadth \n (mm/year)")+
 scale_x_discrete(labels=c("no", "yes"))+
-scale_fill_viridis(discrete=TRUE)+
+scale_fill_ghibli_d("LaputaMedium", direction = -1)+
 theme(axis.title.x=element_blank())
 
 
@@ -101,7 +104,7 @@ theme_classic()+
 xlab("Domatia")+
 ylab("Precipitation breadth \n (mm/year)")+
 scale_x_discrete(labels=c("no", "yes"))+
-scale_fill_viridis(discrete=TRUE)+
+  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
 theme(axis.title.x=element_blank())+
 theme(axis.title.y=element_blank())
 
@@ -112,7 +115,7 @@ theme_classic()+
 xlab("Nitrogen-fixing bacteria")+
 ylab("Precipitation breadth \n (mm/year)")+
 scale_x_discrete(labels=c("no", "yes"))+
-scale_fill_viridis(discrete=TRUE)+
+scale_fill_ghibli_d("LaputaMedium", direction = -1)+
 theme(axis.title.x=element_blank())+
 theme(axis.title.y=element_blank())
 
@@ -123,7 +126,7 @@ theme_classic()+
 xlab("Extrafloral nectaries")+
 ylab("Temperature breadth \n (degrees)")+
 scale_x_discrete(labels=c("no", "yes"))+
-scale_fill_viridis(discrete=TRUE)+
+scale_fill_ghibli_d("LaputaMedium", direction = -1)+
 theme(axis.title.x=element_blank())
 
 Domatia_temp<-ggplot(dat, aes(x=Domatia, y=temp_range, fill=Domatia))+
@@ -132,7 +135,7 @@ theme_classic()+
 xlab("Domatia")+
 ylab("Temperature breadth \n (degrees)")+
 scale_x_discrete(labels=c("no", "yes"))+
-scale_fill_viridis(discrete=TRUE)+
+scale_fill_ghibli_d("LaputaMedium", direction = -1)+
 theme(axis.title.x=element_blank())+
 theme(axis.title.y=element_blank())
 
@@ -143,7 +146,7 @@ theme_classic()+
 xlab("Nitrogen-fixing bacteria")+
 ylab("Temperature breadth \n (degrees)")+
 scale_x_discrete(labels=c("no", "yes"))+
-scale_fill_viridis(discrete=TRUE)+
+scale_fill_ghibli_d("LaputaMedium", direction = -1)+
 theme(axis.title.x=element_blank())+
 theme(axis.title.y=element_blank())
 
@@ -155,7 +158,7 @@ theme_classic()+
 xlab("Extrafloral nectaries")+
 ylab("Nitrogen breadth \n (cg/kg)")+
 scale_x_discrete(labels=c("no", "yes"))+
-scale_fill_viridis(discrete=TRUE)
+scale_fill_ghibli_d("LaputaMedium", direction = -1)
 
 
 Domatia_nitro<-ggplot(dat, aes(x=Domatia, y=nitro_range, fill=Domatia))+
@@ -164,7 +167,7 @@ theme_classic()+
 xlab("Domatia")+
 ylab("Nitrogen breadth \n (cg/kg)")+
 scale_x_discrete(labels=c("no", "yes"))+
-scale_fill_viridis(discrete=TRUE)+
+scale_fill_ghibli_d("LaputaMedium", direction = -1)+
 theme(axis.title.y=element_blank())
 
 fixer_nitro<-ggplot(dat, aes(x=fixer, y=nitro_range, fill=fixer))+
@@ -173,7 +176,7 @@ theme_classic()+
 xlab("Nitrogen-fixing bacteria")+
 ylab("Nitrogen breadth \n (cg/kg)")+
 scale_x_discrete(labels=c("no", "yes"))+
-scale_fill_viridis(discrete=TRUE)+
+scale_fill_ghibli_d("LaputaMedium", direction = -1)+
 theme(axis.title.y=element_blank())
 
 cowplot::plot_grid(EFN, Domatia, fixer, 
@@ -181,6 +184,26 @@ cowplot::plot_grid(EFN, Domatia, fixer,
                    EFN_nitro, Domatia_nitro, fixer_nitro,
                    nrow=3, ncol=3, hjust=0.3,
                    labels=c("A", "B", "C", "D", "E", "F", "G", "H", "I"))
+
+
+### Making boxplots for max precipitation
+
+data_precip<-dat %>% dplyr::select(species, precip_maxquant,
+                                 precip_minquant, EFN, Domatia,
+                                 fixer)
+  
+data_p_melt<-reshape2::melt(data_precip, id.vars=c("species", "EFN", "Domatia", "fixer"), measure.vars=c("precip_maxquant"))
+
+ggplot(data_p_melt, aes(x=EFN, y=value, fill=EFN))+
+  geom_boxplot()+
+  theme_classic()+
+  xlab("EFN")+
+  ylab("Maximum precipitation per year (mm)")+
+  #scale_x_discrete(labels=c("no", "yes"))+
+  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
+  theme(axis.title.y=element_blank())
+  
+
 
 
 
