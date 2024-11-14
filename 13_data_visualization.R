@@ -17,54 +17,6 @@ dat$mutualism<-ifelse(dat$EFN==1 | dat$Domatia==1 | dat$fixer==1, "1", "0")
 
 factor_list<-c("EFN", "Domatia", "fixer")
 
-
-# make popsicle plots for niche breadth-- this is what kind of works
-for (i in factor_list){
-  dat[,i]<-as.factor(dat[,i])
-  mutate(species = fct_reorder(species, rank(dat[, i]))) %>%
-  dat$species<-as.factor(dat$species)
-  dat %>% arrange(species, temp_range) %>% 
-  ggplot() +
-  aes(x=species, y=temp_range, colour=dat[,i]) +
-  geom_point()+
-  geom_segment(aes(x=species, y=0, yend=temp_range))+
-  scale_x_discrete()+
-  theme(axis.text.x=element_blank())+
-  ylab("temperature niche breadth (degrees)")+
-  scale_colour_manual(values=c("#2A788EFF", "#7AD151FF"))+
-  labs(color=i)
-  ggsave(filename = str_c("data_viz/","temp", "_", i, "_", "nichebreadth", ".pdf"), width = 14, height = 6)}
-
-
-for (i in factor_list){
-  dat[,i]<-as.factor(dat[,i])
-  dat %>%
-  mutate(species = fct_reorder(species, rank(dat[, i]))) %>%
-  ggplot() +
-  aes(x=species, y=nitro_range, colour=dat[,i]) +
-  geom_point()+
-  geom_segment(aes(x=species, y=0, yend=nitro_range))+
-  scale_x_discrete()+
-  theme(axis.text.x=element_blank())+
-  ylab("nitrogen niche breadth (cg/kg)")+
-  scale_colour_manual(values=c("#2A788EFF", "#7AD151FF"))+
-  labs(color=i)
-  ggsave(filename = str_c("data_viz/","nitro", "_", i, "_", "nichebreadth", ".pdf"), width = 14, height = 6)}
-
-# Stuff that doesn't do anything
-dat %>%
-#mutate(species = fct_reorder(species, rank(dat[, i]))) %>%
-ggplot() +
-#aes(x=species, y=nitro_range, colour=dat[,i]) +
-(aes(fct_reorder(species, nitro_range, .desc = TRUE), nitro_range, colour = fixer)) +
-geom_point()+
-geom_segment(aes(x=species, y=0, yend=nitro_range))+
-scale_x_discrete()+
-theme(axis.text.x=element_blank())+
-ylab("nitrogen niche breadth (cg/kg)")+
-scale_colour_manual(values=c("#2A788EFF", "#7AD151FF"))+
-labs(color=i)
-
 # popsicle plot for occurrence number vs species
 
 mutualism_plot<-dat %>%
@@ -188,20 +140,171 @@ cowplot::plot_grid(EFN, Domatia, fixer,
 
 ### Making boxplots for max precipitation
 
-data_precip<-dat %>% dplyr::select(species, precip_maxquant,
-                                 precip_minquant, EFN, Domatia,
-                                 fixer)
-  
-data_p_melt<-reshape2::melt(data_precip, id.vars=c("species", "EFN", "Domatia", "fixer"), measure.vars=c("precip_maxquant"))
+data_short<-dat %>% dplyr::select(species, precip_maxquant,
+                                 precip_minquant, temp_maxquant,
+                                 temp_minquant, nitro_maxquant,
+                                 nitro_minquant,
+                                 EFN, Domatia,
+                                 fixer, mutualism)
 
-ggplot(data_p_melt, aes(x=EFN, y=value, fill=EFN))+
+## Calculate averages for each variable
+#dat$average_tempmax<-mean(dat$temp_maxquant)
+#dat$average_tempmin<-mean(dat$temp_minquant)
+
+#dat$average_precipmax<-mean(dat$precip_maxquant)
+#dat$average_precipmin<-mean(dat$precip_minquant)
+
+#dat$average_nitromax<-mean(dat$nitro_maxquant)
+#dat$average_nitromin<-mean(dat$nitro_minquant)
+
+## Then use these to convert each species' niche axes into percentages-- that way,
+## we can have standardized measures on the y-axes
+
+#dat$temp_max_per<-(dat$temp_maxquant/dat$average_tempmax)*100
+#dat$temp_min_per<-(dat$temp_minquant/dat$average_tempmin)*100
+
+#dat$precip_max_per<-(dat$precip_maxquant/dat$average_precipmax)*100
+#dat$precip_min_per<-(dat$precip_minquant/dat$average_precipmin)*100
+
+#dat$nitro_max_per<-(dat$nitro_maxquant/dat$average_nitromax)*100
+#dat$nitro_min_per<-(dat$nitro_minquant/dat$average_nitromin)*100
+
+  
+data_melt<-reshape2::melt(data_short, id.vars=c("species", "EFN", "Domatia", "fixer", "mutualism"),
+                           measure.vars=c("precip_maxquant",
+                                          "precip_minquant", "temp_maxquant",
+                                          "temp_minquant", "nitro_maxquant",
+                                          "nitro_minquant"))
+
+data_melt$EFN<-as.factor(data_melt$EFN)
+data_melt$Domatia<-as.factor(data_melt$Domatia)
+data_melt$fixer<-as.factor(data_melt$fixer)
+
+EFN_temp<-data_melt %>% 
+  subset(variable=="temp_minquant" | variable=="temp_maxquant") %>% 
+  ggplot()+
+  aes(x=EFN, y=value, fill=variable)+
   geom_boxplot()+
   theme_classic()+
   xlab("EFN")+
-  ylab("Maximum precipitation per year (mm)")+
-  #scale_x_discrete(labels=c("no", "yes"))+
+  ylab("average annual temperature")+
+  scale_x_discrete(labels=c("no", "yes"))+
   scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  theme(axis.title.y=element_blank())
+  theme(legend.position="none")
+
+
+EFN_precip<-data_melt %>% 
+  subset(variable=="precip_minquant" | variable=="precip_maxquant") %>% 
+  ggplot()+
+  aes(x=EFN, y=value, fill=variable)+
+  geom_boxplot()+
+  theme_classic()+
+  xlab("EFN")+
+  ylab("annual precipitation (mm)")+
+  scale_x_discrete(labels=c("no", "yes"))+
+  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
+  theme(legend.position="none")
+
+EFN_nitro<-data_melt %>% 
+  subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
+  ggplot()+
+  aes(x=EFN, y=value, fill=variable)+
+  geom_boxplot()+
+  theme_classic()+
+  xlab("EFN")+
+  ylab("Nitrogen breadth \n (cg/kg)")+
+  scale_x_discrete(labels=c("no", "yes"))+
+  scale_fill_ghibli_d("LaputaMedium", direction = -1)
+  #theme(legend.position="none")
+
+
+# Domatia
+
+domatia_temp<-data_melt %>% 
+  subset(variable=="temp_minquant" | variable=="temp_maxquant") %>% 
+  ggplot()+
+  aes(x=Domatia, y=value, fill=variable)+
+  geom_boxplot()+
+  theme_classic()+
+  xlab("Domatia")+
+  ylab("average annual temperature")+
+  scale_x_discrete(labels=c("no", "yes"))+
+  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
+  theme(legend.position="none")
+
+
+domatia_precip<-data_melt %>% 
+  subset(variable=="precip_minquant" | variable=="precip_maxquant") %>% 
+  ggplot()+
+  aes(x=Domatia, y=value, fill=variable)+
+  geom_boxplot()+
+  theme_classic()+
+  xlab("Domatia")+
+  ylab("annual precipitation (mm)")+
+  scale_x_discrete(labels=c("no", "yes"))+
+  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
+  theme(legend.position="none")
+
+domatia_nitro<-data_melt %>% 
+  subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
+  ggplot()+
+  aes(x=Domatia, y=value, fill=variable)+
+  geom_boxplot()+
+  theme_classic()+
+  xlab("Domatia")+
+  ylab("Nitrogen breadth \n (cg/kg)")+
+  scale_x_discrete(labels=c("no", "yes"))+
+  scale_fill_ghibli_d("LaputaMedium", direction = -1)
+#theme(legend.position="none")
+
+
+
+# Fixer
+
+fixer_temp<-data_melt %>% 
+  subset(variable=="temp_minquant" | variable=="temp_maxquant") %>% 
+  ggplot()+
+  aes(x=fixer, y=value, fill=variable)+
+  geom_boxplot()+
+  theme_classic()+
+  xlab("Fixer")+
+  ylab("average annual temperature")+
+  scale_x_discrete(labels=c("no", "yes"))+
+  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
+  theme(legend.position="none")
+
+
+fixer_precip<-data_melt %>% 
+  subset(variable=="precip_minquant" | variable=="precip_maxquant") %>% 
+  ggplot()+
+  aes(x=fixer, y=value, fill=variable)+
+  geom_boxplot()+
+  theme_classic()+
+  xlab("Fixer")+
+  ylab("annual precipitation (mm)")+
+  scale_x_discrete(labels=c("no", "yes"))+
+  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
+  theme(legend.position="none")
+
+fixer_nitro<-data_melt %>% 
+  subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
+  ggplot()+
+  aes(x=fixer, y=value, fill=variable)+
+  geom_boxplot()+
+  theme_classic()+
+  xlab("Fixer")+
+  ylab("Nitrogen breadth \n (cg/kg)")+
+  scale_x_discrete(labels=c("no", "yes"))+
+  scale_fill_ghibli_d("LaputaMedium", direction = -1)
+#theme(legend.position="none")
+  
+
+cowplot::plot_grid(EFN_precip, EFN_temp, EFN_nitro,
+                   domatia_precip, domatia_temp, domatia_nitro,
+                   fixer_precip, fixer_temp, fixer_nitro, nrow=3, ncol=3)
+
+
+
   
 
 

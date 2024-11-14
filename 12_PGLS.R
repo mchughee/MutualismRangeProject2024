@@ -9,8 +9,8 @@ library(MASS)
 
 # Removing these weird species with 0-little niche breadth at all, and writing 
 # it into a new file that I can read in at any time (very exciting stuff):
-data_2<-data_1 %>% filter(n>=25)
-write.csv(data_2, "pgls_final_data.csv")
+#data_2<-data_1 %>% filter(n>=25)
+#write.csv(data_2, "pgls_final_data.csv")
 # we will read this in next
 
 # Read back in PGLS dataframe
@@ -113,3 +113,53 @@ nitro_range <- gls(log_nitro_range ~ EFN + Domatia + fixer + woody + uses_num_us
 summary(nitro_range)
 
 plot(nitro_range)
+
+
+
+
+
+
+### Running PGLS on maxquant data
+
+# First check that the residuals do not, in fact, have equal variance
+
+hist(log(data_1$precip_maxquant))
+
+precip_maxquant <- gls(log(precip_maxquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n + median_lat,
+                    data=data_1, 
+                    correlation=corPagel(1, tree_pruned, form=~species), method="ML")
+
+summary(precip_maxquant)
+
+plot(precip_maxquant)
+
+plot(precip_maxquant, resid(., type = "p") ~ fitted(.) | species, abline = 0)
+
+
+
+# pgls for temp range
+hist(data_1$temp_maxquant)
+
+temp_maxquant <- gls(temp_range ~ EFN + Domatia + fixer + woody + uses_num_uses
+                  + annual + log_n + median_lat,
+                  data=data_1, 
+                  correlation=corPagel(1, mytree, form=~species), method="ML")
+
+summary(temp_range)
+
+qqnorm(temp_range, abline = c(0,1))
+
+plot(temp_range)
+
+# pgls for temp range
+
+nitro_range <- gls(log_nitro_range ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n + median_lat,
+                   
+                   data=data_1, 
+                   
+                   correlation=corPagel(1, mytree, form=~species), method="ML")
+
+summary(nitro_range)
+
+plot(nitro_range)
+
