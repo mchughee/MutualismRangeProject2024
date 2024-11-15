@@ -3,9 +3,7 @@ library(ape)
 library(phytools)
 library(nlme)
 library(tidyverse)
-#remotes::install_github("pbreheny/visreg")
-library(visreg)
-library(MASS)
+
 
 # Removing these weird species with 0-little niche breadth at all, and writing 
 # it into a new file that I can read in at any time (very exciting stuff):
@@ -133,33 +131,96 @@ summary(precip_maxquant)
 
 plot(precip_maxquant)
 
-plot(precip_maxquant, resid(., type = "p") ~ fitted(.) | species, abline = 0)
+hist(residuals(precip_maxquant))
 
 
 
 # pgls for temp range
-hist(data_1$temp_maxquant)
+data_1$scale_tempmax<-scale(data_1$temp_maxquant, scale=TRUE)
 
-temp_maxquant <- gls(temp_range ~ EFN + Domatia + fixer + woody + uses_num_uses
+temp_maxquant <- gls(scale_tempmax ~ EFN + Domatia + fixer + woody + uses_num_uses
                   + annual + log_n + median_lat,
                   data=data_1, 
                   correlation=corPagel(1, mytree, form=~species), method="ML")
 
-summary(temp_range)
+summary(temp_maxquant)
 
-qqnorm(temp_range, abline = c(0,1))
+hist(residuals(temp_maxquant))
 
-plot(temp_range)
+qqnorm(temp_maxquant, abline = c(0,1))
 
-# pgls for temp range
+plot(temp_maxquant)
 
-nitro_range <- gls(log_nitro_range ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n + median_lat,
+# pgls for nitro range
+hist(log(data_1$nitro_maxquant))
+
+nitro_maxquant <- gls(log(nitro_maxquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n + median_lat,
                    
                    data=data_1, 
                    
                    correlation=corPagel(1, mytree, form=~species), method="ML")
 
-summary(nitro_range)
+summary(nitro_maxquant)
 
-plot(nitro_range)
+plot(nitro_maxquant)
 
+hist(residuals(nitro_maxquant))
+
+qqnorm(nitro_maxquant, abline = c(0,1))
+
+
+
+
+### Running PGLS on minquant data
+
+# First check that the residuals do not, in fact, have equal variance
+
+hist(log(data_1$precip_minquant))
+
+precip_minquant <- gls(log(precip_minquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n + median_lat,
+                       data=data_1, 
+                       correlation=corPagel(1, tree_pruned, form=~species), method="ML")
+
+summary(precip_minquant)
+
+plot(precip_minquant)
+
+hist(residuals(precip_minquant))
+
+qqnorm(precip_minquant, abline = c(0,1))
+
+
+
+# pgls for temp minquant
+# this is where I left off
+hist(data_1$temp_minquant)
+
+temp_minquant <- gls(temp_minquant ~ EFN + Domatia + fixer + woody + uses_num_uses
+                     + annual + log_n + median_lat,
+                     data=data_1, 
+                     correlation=corPagel(1, mytree, form=~species), method="ML")
+
+summary(temp_maxquant)
+
+hist(residuals(temp_maxquant))
+
+qqnorm(temp_maxquant, abline = c(0,1))
+
+plot(temp_maxquant)
+
+# pgls for temp range
+hist(log(data_1$nitro_maxquant))
+
+nitro_maxquant <- gls(log(nitro_maxquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n + median_lat,
+                      
+                      data=data_1, 
+                      
+                      correlation=corPagel(1, mytree, form=~species), method="ML")
+
+summary(nitro_maxquant)
+
+plot(nitro_maxquant)
+
+hist(residuals(nitro_maxquant))
+
+qqnorm(nitro_maxquant, abline = c(0,1))

@@ -190,7 +190,8 @@ EFN_temp<-data_melt %>%
   ylab("average annual temperature")+
   scale_x_discrete(labels=c("no", "yes"))+
   scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  theme(legend.position="none")
+  theme(legend.position="none")+
+  theme(axis.title.x=element_blank())
 
 
 EFN_precip<-data_melt %>% 
@@ -199,11 +200,12 @@ EFN_precip<-data_melt %>%
   aes(x=EFN, y=value, fill=variable)+
   geom_boxplot()+
   theme_classic()+
-  xlab("EFN")+
+  #xlab("EFN")+
   ylab("annual precipitation (mm)")+
   scale_x_discrete(labels=c("no", "yes"))+
   scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  theme(legend.position="none")
+  theme(legend.position="none")+
+  theme(axis.title.x=element_blank())
 
 EFN_nitro<-data_melt %>% 
   subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
@@ -214,8 +216,8 @@ EFN_nitro<-data_melt %>%
   xlab("EFN")+
   ylab("Nitrogen breadth \n (cg/kg)")+
   scale_x_discrete(labels=c("no", "yes"))+
-  scale_fill_ghibli_d("LaputaMedium", direction = -1)
-  #theme(legend.position="none")
+  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
+  theme(legend.position="none")
 
 
 # Domatia
@@ -226,11 +228,12 @@ domatia_temp<-data_melt %>%
   aes(x=Domatia, y=value, fill=variable)+
   geom_boxplot()+
   theme_classic()+
-  xlab("Domatia")+
+  #xlab("Domatia")+
   ylab("average annual temperature")+
   scale_x_discrete(labels=c("no", "yes"))+
   scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  theme(legend.position="none")
+  theme(legend.position="none")+
+  theme(axis.title.x=element_blank(), axis.title.y = element_blank())
 
 
 domatia_precip<-data_melt %>% 
@@ -239,11 +242,12 @@ domatia_precip<-data_melt %>%
   aes(x=Domatia, y=value, fill=variable)+
   geom_boxplot()+
   theme_classic()+
-  xlab("Domatia")+
+  #xlab("Domatia")+
   ylab("annual precipitation (mm)")+
   scale_x_discrete(labels=c("no", "yes"))+
   scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  theme(legend.position="none")
+  theme(legend.position="none")+
+  theme(axis.title.x=element_blank(), axis.title.y = element_blank())
 
 domatia_nitro<-data_melt %>% 
   subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
@@ -254,8 +258,9 @@ domatia_nitro<-data_melt %>%
   xlab("Domatia")+
   ylab("Nitrogen breadth \n (cg/kg)")+
   scale_x_discrete(labels=c("no", "yes"))+
-  scale_fill_ghibli_d("LaputaMedium", direction = -1)
-#theme(legend.position="none")
+  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
+  theme(legend.position="none")+
+  theme(axis.title.y = element_blank())
 
 
 
@@ -267,12 +272,12 @@ fixer_temp<-data_melt %>%
   aes(x=fixer, y=value, fill=variable)+
   geom_boxplot()+
   theme_classic()+
-  xlab("Fixer")+
+ # xlab("Fixer")+
   ylab("average annual temperature")+
   scale_x_discrete(labels=c("no", "yes"))+
   scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  theme(legend.position="none")
-
+  #theme(legend.position="none")+
+  theme(axis.title.x=element_blank(), axis.title.y = element_blank())
 
 fixer_precip<-data_melt %>% 
   subset(variable=="precip_minquant" | variable=="precip_maxquant") %>% 
@@ -280,11 +285,12 @@ fixer_precip<-data_melt %>%
   aes(x=fixer, y=value, fill=variable)+
   geom_boxplot()+
   theme_classic()+
-  xlab("Fixer")+
+  #xlab("Fixer")+
   ylab("annual precipitation (mm)")+
   scale_x_discrete(labels=c("no", "yes"))+
   scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  theme(legend.position="none")
+  #theme(legend.position="none")+
+  theme(axis.title.x=element_blank(), axis.title.y = element_blank())
 
 fixer_nitro<-data_melt %>% 
   subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
@@ -295,17 +301,16 @@ fixer_nitro<-data_melt %>%
   xlab("Fixer")+
   ylab("Nitrogen breadth \n (cg/kg)")+
   scale_x_discrete(labels=c("no", "yes"))+
-  scale_fill_ghibli_d("LaputaMedium", direction = -1)
-#theme(legend.position="none")
+  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
+  #theme(legend.position="none")+
+  theme(axis.title.y = element_blank())
   
 
-cowplot::plot_grid(EFN_precip, EFN_temp, EFN_nitro,
-                   domatia_precip, domatia_temp, domatia_nitro,
-                   fixer_precip, fixer_temp, fixer_nitro, nrow=3, ncol=3)
+cowplot::plot_grid(EFN_precip, domatia_precip, fixer_precip,
+                   EFN_temp, domatia_temp, fixer_temp,
+                   EFN_nitro, domatia_nitro, fixer_nitro, nrow=3, ncol=3)
 
 
-
-  
 
 
 
