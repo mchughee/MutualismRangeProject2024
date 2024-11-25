@@ -183,12 +183,12 @@ data_melt$fixer<-as.factor(data_melt$fixer)
 EFN_temp<-data_melt %>% 
   subset(variable=="temp_minquant" | variable=="temp_maxquant") %>% 
   ggplot()+
-  aes(x=EFN, y=value, fill=variable)+
+  aes(x=variable, y=value, fill=EFN)+
   geom_boxplot()+
   theme_classic()+
   xlab("EFN")+
   ylab("average annual temperature")+
-  scale_x_discrete(labels=c("no", "yes"))+
+  scale_x_discrete(labels=c("maximum", "minimum"))+
   scale_fill_ghibli_d("LaputaMedium", direction = -1)+
   theme(legend.position="none")+
   theme(axis.title.x=element_blank())
@@ -197,12 +197,12 @@ EFN_temp<-data_melt %>%
 EFN_precip<-data_melt %>% 
   subset(variable=="precip_minquant" | variable=="precip_maxquant") %>% 
   ggplot()+
-  aes(x=EFN, y=value, fill=variable)+
+  aes(x=variable, y=value, fill=EFN)+
   geom_boxplot()+
   theme_classic()+
   #xlab("EFN")+
   ylab("annual precipitation (mm)")+
-  scale_x_discrete(labels=c("no", "yes"))+
+  scale_x_discrete(labels=c("maximum", "minimum"))+
   scale_fill_ghibli_d("LaputaMedium", direction = -1)+
   theme(legend.position="none")+
   theme(axis.title.x=element_blank())
@@ -210,12 +210,12 @@ EFN_precip<-data_melt %>%
 EFN_nitro<-data_melt %>% 
   subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
   ggplot()+
-  aes(x=EFN, y=value, fill=variable)+
+  aes(x=variable, y=value, fill=EFN)+
   geom_boxplot()+
   theme_classic()+
   xlab("EFN")+
   ylab("Nitrogen breadth \n (cg/kg)")+
-  scale_x_discrete(labels=c("no", "yes"))+
+  scale_x_discrete(labels=c("maximum", "minimum"))+
   scale_fill_ghibli_d("LaputaMedium", direction = -1)+
   theme(legend.position="none")
 
@@ -225,12 +225,12 @@ EFN_nitro<-data_melt %>%
 domatia_temp<-data_melt %>% 
   subset(variable=="temp_minquant" | variable=="temp_maxquant") %>% 
   ggplot()+
-  aes(x=Domatia, y=value, fill=variable)+
+  aes(x=variable, y=value, fill=Domatia)+
   geom_boxplot()+
   theme_classic()+
   #xlab("Domatia")+
   ylab("average annual temperature")+
-  scale_x_discrete(labels=c("no", "yes"))+
+  scale_x_discrete(labels=c("maximum", "minimum"))+
   scale_fill_ghibli_d("LaputaMedium", direction = -1)+
   theme(legend.position="none")+
   theme(axis.title.x=element_blank(), axis.title.y = element_blank())
@@ -239,12 +239,12 @@ domatia_temp<-data_melt %>%
 domatia_precip<-data_melt %>% 
   subset(variable=="precip_minquant" | variable=="precip_maxquant") %>% 
   ggplot()+
-  aes(x=Domatia, y=value, fill=variable)+
+  aes(x=variable, y=value, fill=Domatia)+
   geom_boxplot()+
   theme_classic()+
   #xlab("Domatia")+
   ylab("annual precipitation (mm)")+
-  scale_x_discrete(labels=c("no", "yes"))+
+  scale_x_discrete(labels=c("maximum", "minimum"))+
   scale_fill_ghibli_d("LaputaMedium", direction = -1)+
   theme(legend.position="none")+
   theme(axis.title.x=element_blank(), axis.title.y = element_blank())
@@ -252,12 +252,12 @@ domatia_precip<-data_melt %>%
 domatia_nitro<-data_melt %>% 
   subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
   ggplot()+
-  aes(x=Domatia, y=value, fill=variable)+
+  aes(x=variable, y=value, fill=Domatia)+
   geom_boxplot()+
   theme_classic()+
   xlab("Domatia")+
   ylab("Nitrogen breadth \n (cg/kg)")+
-  scale_x_discrete(labels=c("no", "yes"))+
+  scale_x_discrete(labels=c("maximum", "minimum"))+
   scale_fill_ghibli_d("LaputaMedium", direction = -1)+
   theme(legend.position="none")+
   theme(axis.title.y = element_blank())
@@ -269,40 +269,42 @@ domatia_nitro<-data_melt %>%
 fixer_temp<-data_melt %>% 
   subset(variable=="temp_minquant" | variable=="temp_maxquant") %>% 
   ggplot()+
-  aes(x=fixer, y=value, fill=variable)+
+  aes(x=variable, y=value, fill=fixer)+
   geom_boxplot()+
   theme_classic()+
  # xlab("Fixer")+
   ylab("average annual temperature")+
-  scale_x_discrete(labels=c("no", "yes"))+
-  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  #theme(legend.position="none")+
-  theme(axis.title.x=element_blank(), axis.title.y = element_blank())
+  scale_x_discrete(labels=c("maximum", "minimum"))+
+  scale_fill_ghibli_d("LaputaMedium", direction = -1, labels=c("no", "yes"))+
+  theme(legend.title=element_blank())+
+  theme(axis.title.x=element_blank(), axis.title.y = element_blank())+
+  theme(legend.position="none")
 
 fixer_precip<-data_melt %>% 
   subset(variable=="precip_minquant" | variable=="precip_maxquant") %>% 
   ggplot()+
-  aes(x=fixer, y=value, fill=variable)+
+  aes(x=variable, y=value, fill=fixer)+
   geom_boxplot()+
   theme_classic()+
   #xlab("Fixer")+
   ylab("annual precipitation (mm)")+
-  scale_x_discrete(labels=c("no", "yes"))+
-  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  #theme(legend.position="none")+
+  scale_x_discrete(labels=c("maximum", "minimum"))+
+  scale_fill_ghibli_d("LaputaMedium", direction = -1, labels=c("no", "yes"))+
+  theme(legend.title=element_blank())+
   theme(axis.title.x=element_blank(), axis.title.y = element_blank())
+  #theme(legend.position="none")
 
 fixer_nitro<-data_melt %>% 
   subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
   ggplot()+
-  aes(x=fixer, y=value, fill=variable)+
+  aes(x=variable, y=value, fill=fixer)+
   geom_boxplot()+
   theme_classic()+
   xlab("Fixer")+
   ylab("Nitrogen breadth \n (cg/kg)")+
-  scale_x_discrete(labels=c("no", "yes"))+
+  scale_x_discrete(labels=c("maximum", "minimum"))+
   scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  #theme(legend.position="none")+
+  theme(legend.position="none")+
   theme(axis.title.y = element_blank())
   
 
@@ -311,7 +313,7 @@ cowplot::plot_grid(EFN_precip, domatia_precip, fixer_precip,
                    EFN_nitro, domatia_nitro, fixer_nitro, nrow=3, ncol=3)
 
 
-
+# Reaction norm plots
 
 
 

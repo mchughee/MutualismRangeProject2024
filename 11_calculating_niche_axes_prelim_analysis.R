@@ -13,6 +13,7 @@ points<-read.csv("invasiveclass_thindat_climadd_soilgridsadd.csv")
 points_1<-points %>% drop_na(precip) %>% drop_na(temp) %>%  drop_na(nitrogen)
 points_1<-points_1 %>% drop_na(intrdcd)
 
+
 # Group by species and invasive status (0 or 1) and get summarizing!
 summary_df<-points_1 %>% 
   group_by(species) %>% 
@@ -39,6 +40,7 @@ summary_df<-points_1 %>%
 
 duplicated(summary_df$species)
 
+
 summary_df$precip_range<-summary_df$precip_maxquant-summary_df$precip_minquant
 summary_df$temp_range<-summary_df$temp_maxquant-summary_df$temp_minquant
 summary_df$nitro_range<-summary_df$nitro_maxquant-summary_df$nitro_minquant
@@ -58,4 +60,14 @@ master_legume<-left_join(summary_df, traits, join_by(species==Phy), multiple="an
 
 master_thin<-master_legume %>% filter(n>=25)
 
+EFN1<-master_thin %>% filter(EFN==1)
+mean(EFN1$)
+
+
+
 write.csv(master_thin, "pgls_final_data.csv")
+
+
+
+
+
