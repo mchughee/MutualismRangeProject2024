@@ -15,6 +15,7 @@ library(ggplot2)
 
 # Read back in PGLS dataframe
 data<-read.csv("pgls_final_data.csv")
+data$mutualism<-ifelse(data$EFN==1 | data$Domatia==1 | data$fixer==1, "1", "0")
 
 
 # Bring in tree
@@ -87,7 +88,7 @@ data_1$fixer<-as.factor(data_1$fixer)
 
 # First check that the residuals do not, in fact, have equal variance
 
-precip_range <- gls(precip_range ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n + sqrt(abs_med_lat),
+precip_range <- gls(log(precip_range) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + n + abs_med_lat,
                     data=data_1, 
                     correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -155,8 +156,8 @@ fixer_precip_plot<-ggplot(precip_range_means_fixer, aes(x=fixer, y=emmeans_unlog
 
 # pgls for temp range
 
-temp_range <- gls(sqrt(temp_range) ~ EFN + Domatia + fixer + woody + uses_num_uses
-                  + annual + log_n + sqrt(abs_med_lat),
+temp_range <- gls(temp_range ~ EFN + Domatia + fixer + woody + uses_num_uses
+                  + annual + n + abs_med_lat,
                   data=data_1, 
                   correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -170,19 +171,19 @@ plot(temp_range)
 
 
 temp_range_means_EFN<-data.frame(emmeans(temp_range, ~EFN))
-temp_range_means_EFN$emmeans_unsq<-(temp_range_means_EFN$emmean)^2
-temp_range_means_EFN$clup_unsq<-(temp_range_means_EFN$upper.CL)^2
-temp_range_means_EFN$cldown_unsq<-(temp_range_means_EFN$lower.CL)^2
+temp_range_means_EFN$emmeans_unsq<-(temp_range_means_EFN$emmean)
+temp_range_means_EFN$clup_unsq<-(temp_range_means_EFN$upper.CL)
+temp_range_means_EFN$cldown_unsq<-(temp_range_means_EFN$lower.CL)
 
 temp_range_means_Domatia<-data.frame(emmeans(temp_range, ~Domatia))
-temp_range_means_Domatia$emmeans_unsq<-(temp_range_means_Domatia$emmean)^2
-temp_range_means_Domatia$clup_unsq<-(temp_range_means_Domatia$upper.CL)^2
-temp_range_means_Domatia$cldown_unsq<-(temp_range_means_Domatia$lower.CL)^2
+temp_range_means_Domatia$emmeans_unsq<-(temp_range_means_Domatia$emmean)
+temp_range_means_Domatia$clup_unsq<-(temp_range_means_Domatia$upper.CL)
+temp_range_means_Domatia$cldown_unsq<-(temp_range_means_Domatia$lower.CL)
 
 temp_range_means_fixer<-data.frame(emmeans(temp_range, ~fixer))
-temp_range_means_fixer$emmeans_unsq<-(temp_range_means_fixer$emmean)^2
-temp_range_means_fixer$clup_unsq<-(temp_range_means_fixer$upper.CL)^2
-temp_range_means_fixer$cldown_unsq<-(temp_range_means_fixer$lower.CL)^2
+temp_range_means_fixer$emmeans_unsq<-(temp_range_means_fixer$emmean)
+temp_range_means_fixer$clup_unsq<-(temp_range_means_fixer$upper.CL)
+temp_range_means_fixer$cldown_unsq<-(temp_range_means_fixer$lower.CL)
 
 EFN_temp_plot<-ggplot(temp_range_means_EFN, aes(x=EFN, y=emmeans_unsq))+
   geom_point(size=6)+
@@ -225,7 +226,7 @@ fixer_temp_plot<-ggplot(temp_range_means_fixer, aes(x=fixer, y=emmeans_unsq))+
 
 #### pgls for nitro range
 
-nitro_range <- gls(log(nitro_range) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n + sqrt(abs_med_lat),
+nitro_range <- gls(log(nitro_range) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + n + abs_med_lat,
 
                    data=data_1, 
 
@@ -296,5 +297,50 @@ fixer_nitro_plot<-ggplot(nitro_range_means_fixer, aes(x=fixer, y=emmeans_unlog))
 cowplot::plot_grid(EFN_precip_plot, Domatia_precip_plot, fixer_precip_plot,
                    EFN_temp_plot, Domatia_temp_plot, fixer_temp_plot,
                    EFN_nitro_plot, Domatia_nitro_plot, fixer_nitro_plot, nrow=3, ncol=3)
+
+
+
+### Running PGLS models, but just using mutualism as a factor
+
+precip_range_m <- gls(log(precip_range) ~ mutualism + woody + uses_num_uses + annual + n + abs_med_lat,
+                    data=data_1, 
+                    correlation=corPagel(1, tree_pruned, form=~species), method="ML")
+
+summary(precip_range_m)
+
+plot(precip_range_m)
+
+qqnorm(precip_range_m, abline = c(0,1))
+
+hist(residuals(precip_range_m))
+
+
+temp_range_m <- gls(temp_range ~ mutualism + woody + uses_num_uses
+                  + annual + n + abs_med_lat,
+                  data=data_1, 
+                  correlation=corPagel(1, tree_pruned, form=~species), method="ML")
+
+summary(temp_range_m)
+
+qqnorm(temp_range_m, abline = c(0,1))
+
+hist(residuals(temp_range_m))
+
+plot(temp_range_m)
+
+
+nitro_range_m <- gls(log(nitro_range) ~ mutualism + woody + uses_num_uses + annual + n + abs_med_lat,
+                   
+                   data=data_1, 
+                   
+                   correlation=corPagel(1, tree_pruned, form=~species), method="ML")
+
+summary(nitro_range_m)
+
+plot(nitro_range_m)
+
+hist(residuals(nitro_range_m))
+
+
 
 

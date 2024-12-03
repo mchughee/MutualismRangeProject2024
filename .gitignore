@@ -101,3 +101,6 @@ data_viz
 legume_data_for_PGLS.csv
 old_scripts_i'm_too_scared_to_throw_away
 pgls_final_data.csv
+compound_figures
+data_description_fig.pdf
+linear_models.R

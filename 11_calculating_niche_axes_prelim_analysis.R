@@ -60,8 +60,6 @@ master_legume<-left_join(summary_df, traits, join_by(species==Phy), multiple="an
 
 master_thin<-master_legume %>% filter(n>=25)
 
-EFN1<-master_thin %>% filter(EFN==1)
-mean(EFN1$)
 
 
 

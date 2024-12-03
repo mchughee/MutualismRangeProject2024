@@ -48,9 +48,9 @@ data_1$log_n<-log(data_1$n)
 ### Running PGLS on maxquant data
 
 hist(data_1$precip_maxquant)
-hist(sqrt(data_1$precip_maxquant))
+hist(log(data_1$precip_maxquant))
 
-precip_maxquant <- gls(sqrt(precip_maxquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n + sqrt(abs_med_lat),
+precip_maxquant <- gls(log(precip_maxquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + n + abs_med_lat,
                        data=data_1, 
                        correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -62,14 +62,14 @@ hist(residuals(precip_maxquant))
 
 qqnorm(precip_maxquant, abline = c(0,1))
 
-# pgls for temp range
+# pgls for temp maxquant
 data_1$scale_tempmax<-scale(data_1$temp_maxquant, scale=TRUE)
 hist(data_1$temp_maxquant)
 hist(sqrt(data_1$temp_maxquant))
 
 
 temp_maxquant <- gls(temp_maxquant ~ EFN + Domatia + fixer + woody + uses_num_uses
-                     + annual + log_n + sqrt(abs_med_lat),
+                     + annual + n + abs_med_lat,
                      data=data_1, 
                      correlation=corPagel(1, mytree, form=~species), method="ML")
 
@@ -84,7 +84,7 @@ plot(temp_maxquant)
 # pgls for nitro range
 hist(log(data_1$nitro_maxquant))
 
-nitro_maxquant <- gls(log(nitro_maxquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n + sqrt(abs_med_lat),
+nitro_maxquant <- gls(log(nitro_maxquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + n + abs_med_lat,
                       
                       data=data_1, 
                       
@@ -105,11 +105,10 @@ qqnorm(nitro_maxquant, abline = c(0,1))
 
 # First check that the residuals do not, in fact, have equal variance
 
-hist(sqrt(data_1$precip_minquant))
-shapiro.test(sqrt(data_1$precip_minquant))
+hist(log(data_1$precip_minquant))
 hist(data_1$precip_minquant)
 
-precip_minquant <- gls(sqrt(precip_minquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n + sqrt(abs_med_lat),
+precip_minquant <- gls(log(precip_minquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + n + abs_med_lat,
                        data=data_1, 
                        correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -134,7 +133,7 @@ hist(scale(data_1$temp_minquant, scale=TRUE))
 shapiro.test(data_1$temp_minquant)
 
 temp_minquant <- gls(temp_minquant ~ EFN + Domatia + fixer + woody + uses_num_uses
-                     + annual + log_n + sqrt(abs_med_lat),
+                     + annual + n + abs_med_lat,
                      data=data_1, 
                      correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -151,7 +150,7 @@ hist(data_1$nitro_minquant)
 hist(log(data_1$nitro_minquant))
 hist(sqrt(data_1$nitro_minquant))
 
-nitro_minquant <- gls(log(nitro_minquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + log_n + sqrt(abs_med_lat),
+nitro_minquant <- gls(log(nitro_minquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + n + abs_med_lat,
                       
                       data=data_1, 
                       
