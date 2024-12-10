@@ -74,8 +74,9 @@ cowplot::plot_grid(mutualism_plot, no_mutualism_plot, nrow=1, ncol=2)
 ggplot(dat, aes(x=))
 
 
-### Making boxplots for max/min precipitation
+### Making reaction norms for max/min precipitation
 
+# shorter version of dataframe with just what we need
 data_short<-dat %>% dplyr::select(species, precip_maxquant,
                                  precip_minquant, temp_maxquant,
                                  temp_minquant, nitro_maxquant,
@@ -83,7 +84,8 @@ data_short<-dat %>% dplyr::select(species, precip_maxquant,
                                  EFN, Domatia,
                                  fixer, mutualism)
 
-# use melt to make the dataframe longer  
+# use melt to make the dataframe longer (this way, can graph with
+# multiple measures on same axes)
 data_melt<-reshape2::melt(data_short, id.vars=c("species", "EFN", "Domatia", "fixer", "mutualism"),
                            measure.vars=c("precip_maxquant",
                                           "precip_minquant", "temp_maxquant",

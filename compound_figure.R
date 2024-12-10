@@ -131,7 +131,9 @@ ggplot() +
   labs(colour="status")+
   ylab(element_blank())+
   xlab(element_blank())+
-  theme(legend.text=element_text(size=12), legend.title=element_blank())
+  theme(legend.text=element_text(size=12), legend.title=element_blank(), 
+        text = element_text(size = 12))+
+  guides(colour = guide_legend(override.aes = list(size=4)))
 
   
 
