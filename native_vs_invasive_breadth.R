@@ -132,6 +132,26 @@ master_df$nat_precip_breadth<-master_df$tot_precip_range-master_df$intro_precip_
 master_df$intro_nitro_breadth<-master_df$tot_nitro_range-master_df$nitro_range
 master_df$nat_nitro_breadth<-master_df$tot_nitro_range-master_df$intro_nitro_range
 
+# t-test for native vs invasive ranges
+
+hist(log(master_legume$intro_precip_range))
+hist(log(master_legume$precip_range))
+t.test(log(master_legume$intro_precip_range), log(master_legume$precip_range), paired=TRUE)
+
+hist(master_legume$intro_temp_range)
+hist(master_legume$temp_range)
+t.test(master_legume$intro_temp_range, master_legume$temp_range, paired=TRUE)
+
+hist(log(master_legume$intro_nitro_range))
+hist(log(master_legume$nitro_range))
+t.test(master_legume$intro_nitro_range, master_legume$nitro_range, paired=TRUE)
+
+### Set factors as such
+master_legume$EFN<-as.factor(master_legume$EFN)
+master_legume$Domatia<-as.factor(master_legume$Domatia)
+master_legume$fixer<-as.factor(master_legume$fixer)
+
+
 # To do further analysis, let's smoosh this dataframe with the traits dataframe
 traits<-read.csv("legume_range_traits.csv")
 traits$species<-traits$Phy
@@ -158,6 +178,11 @@ data_short<- master_legume %>% dplyr::select(species, precip_maxquant,
                                   intro_precip_minquant, intro_temp_maxquant,
                                   intro_temp_minquant, intro_nitro_maxquant,
                                   intro_nitro_minquant, EFN, Domatia, fixer)
+
+# Make sure R is reading mutualism data as a factor and not an integer!
+data_short$EFN<-as.factor(data_short$EFN)
+data_short$Domatia<-as.factor(data_short$Domatia)
+data_short$fixer<-as.factor(data_short$fixer)
 
 # use melt to make the dataframe longer  
 data_melt<-reshape2::melt(data_short, id.vars=c("species","EFN", "Domatia", "fixer"),
@@ -242,170 +267,218 @@ data_melt$variable<-gsub("tot_", "", data_melt$variable)
   cowplot::plot_grid(precip, temp, nitro, ncol=3)
   
   
-  # graphs for each mutualism
+  #### graphs for each mutualism x status
   data_melt$EFN<-as.factor(data_melt$EFN)
   data_melt$Domatia<-as.factor(data_melt$Domatia)
   data_melt$fixer<-as.factor(data_melt$fixer)
   data_melt$variable<-as.factor(data_melt$variable)
   
-# Add extra column with status x trait column
- data_melt$EFN_interaction <- paste0(data_melt$EFN, "_", data_melt$variable)
- data_melt$fixer_interaction <- paste0(data_melt$fixer, "_", data_melt$variable)
- data_melt$Domatia_interaction <- paste0(data_melt$Domatia, "_", data_melt$variable)
-  
-  EFN_temp<-data_melt %>% 
-    subset(variable=="temp_minquant" | variable=="temp_maxquant") %>% 
-    group_by(variable, EFN, status, EFN_interaction) %>%
+  EFN_temp_min<-data_melt %>% 
+    subset(variable=="temp_minquant") %>% 
+    group_by(variable, EFN, status) %>%
     summarise(average = mean(value)) %>% 
-    ggplot(aes(x=variable, y=average, colour=factor(status)))+
-    geom_point(size=5, aes(shape=EFN))+
+    ggplot(aes(x=EFN, y=average, colour=status))+
+    geom_jitter(size=4, aes(shape=EFN))+
     #geom_line(aes(group=EFN_interaction)) +
     #geom_path(size=1.5, aes(group=EFN_interaction))+
     theme_classic()+
-    xlab("EFN")+
+    xlab("Min")+
     ylab("Temp")+
-    scale_x_discrete(labels=c("maximum", "minimum"))+
+    scale_x_discrete(labels=c("no EFN", "EFN"))+
     scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-    theme(legend.position="none")+
-    theme(axis.title.x=element_blank())
+    theme(legend.position="none")
+    #theme(axis.title.x=element_blank())
   
-  EFN_precip<-data_melt %>% 
-    subset(variable=="precip_minquant" | variable=="precip_maxquant") %>% 
-    group_by(variable, EFN, status, EFN_interaction) %>%
+  EFN_temp_max<-data_melt %>% 
+    subset(variable=="temp_minquant") %>% 
+    group_by(variable, EFN, status) %>%
     summarise(average = mean(value)) %>% 
-    ggplot(aes(x=variable, y=average, colour=factor(status)))+
-    geom_point(size=5, aes(shape=EFN))+
+    ggplot(aes(x=EFN, y=average, colour=status))+
+    geom_jitter(size=4, aes(shape=EFN))+
     #geom_line(aes(group=EFN_interaction)) +
     #geom_path(size=1.5, aes(group=EFN_interaction))+
     theme_classic()+
-    xlab("EFN")+
+    xlab("Max")+
+    ylab("Temp")+
+    scale_x_discrete(labels=c("no EFN", "EFN"))+
+    scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+    theme(legend.position="none")
+  #theme(axis.title.x=element_blank())
+  
+  EFN_precip_min<-data_melt %>% 
+    subset(variable=="precip_minquant") %>% 
+    group_by(variable, EFN, status) %>%
+    summarise(average = mean(value)) %>% 
+    ggplot(aes(x=EFN, y=average, colour=status))+
+    geom_jitter(size=4, aes(shape=EFN))+
+    #geom_line(aes(group=EFN_interaction)) +
+    #geom_path(size=1.5, aes(group=EFN_interaction))+
+    theme_classic()+
+    xlab("Min")+
     ylab("Precip")+
-    scale_x_discrete(labels=c("maximum", "minimum"))+
+    scale_x_discrete(labels=c("No EFN", "EFN"))+
     scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-    theme(legend.position="none")+
-    theme(axis.title.x=element_blank())
+    theme(legend.position="none")
+    #theme(axis.title.x=element_blank())
   
   
-  EFN_nitro<-data_melt %>% 
-    subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
-    group_by(variable, EFN, status, EFN_interaction) %>%
+  EFN_precip_max<-data_melt %>% 
+    subset(variable=="precip_maxquant") %>% 
+    group_by(variable, EFN, status) %>%
     summarise(average = mean(value)) %>% 
-    ggplot(aes(x=variable, y=average, colour=factor(status)))+
-    geom_point(size=5, aes(shape=EFN))+
+    ggplot(aes(x=EFN, y=average, colour=status))+
+    geom_jitter(size=4, aes(shape=EFN))+
     #geom_line(aes(group=EFN_interaction)) +
     #geom_path(size=1.5, aes(group=EFN_interaction))+
     theme_classic()+
-    xlab("EFN")+
-    ylab("Nitro")+
-    scale_x_discrete(labels=c("maximum", "minimum"))+
+    xlab("Max")+
+    ylab("Precip")+
+    scale_x_discrete(labels=c("No EFN", "EFN"))+
     scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-     theme(legend.position="none")
+    theme(legend.position="none")
+  #theme(axis.title.x=element_blank())
+  
+  
+  EFN_nitro_min<-data_melt %>% 
+    subset(variable=="nitro_minquant") %>% 
+    group_by(variable, EFN, status) %>%
+    summarise(average = mean(value)) %>% 
+    ggplot(aes(x=EFN, y=average, colour=status))+
+    geom_jitter(size=4, aes(shape=EFN))+
+    #geom_line(aes(group=EFN_interaction)) +
+    #geom_path(size=1.5, aes(group=EFN_interaction))+
+    theme_classic()+
+    xlab("Min")+
+    ylab("Nitro")+
+    scale_x_discrete(labels=c("No EFN", "EFN"))+
+    scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+    theme(legend.position="none")
    # theme(axis.title.x=element_blank())
   
   
- # domatia 
-  Domatia_temp<-data_melt %>% 
-    subset(variable=="temp_minquant" | variable=="temp_maxquant") %>% 
-    group_by(variable, Domatia, status) %>%
+  EFN_nitro_max<-data_melt %>% 
+    subset(variable=="nitro_maxquant") %>% 
+    group_by(variable, EFN, status) %>%
     summarise(average = mean(value)) %>% 
-    ggplot(aes(x=variable, y=average, colour=factor(status)))+
-    geom_point(size=5, aes(shape=Domatia))+
+    ggplot(aes(x=EFN, y=average, colour=status))+
+    geom_jitter(size=4, aes(shape=EFN))+
     #geom_line(aes(group=EFN_interaction)) +
     #geom_path(size=1.5, aes(group=EFN_interaction))+
     theme_classic()+
-    #xlab("EFN")+
-    ylab("Temp")+
-    scale_x_discrete(labels=c("maximum", "minimum"))+
-    scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-     theme(legend.position="none")+
-    theme(axis.title.x=element_blank())
-  
-  Domatia_precip<-data_melt %>% 
-    subset(variable=="precip_minquant" | variable=="precip_maxquant") %>% 
-    group_by(variable, Domatia, status) %>%
-    summarise(average = mean(value)) %>% 
-    ggplot(aes(x=variable, y=average, colour=factor(status)))+
-    geom_point(size=5, aes(shape=Domatia))+
-    #geom_line(aes(group=EFN_interaction)) +
-    #geom_path(size=1.5, aes(group=EFN_interaction))+
-    theme_classic()+
-    #xlab("EFN")+
-    ylab("Precip")+
-    scale_x_discrete(labels=c("maximum", "minimum"))+
-    scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-     theme(legend.position="none")+
-    theme(axis.title.x=element_blank())
-  
-  Domatia_nitro<-data_melt %>% 
-    subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
-    group_by(variable, Domatia, status) %>%
-    summarise(average = mean(value)) %>% 
-    ggplot(aes(x=variable, y=average, colour=factor(status)))+
-    geom_point(size=5, aes(shape=Domatia))+
-    #geom_line(aes(group=EFN_interaction)) +
-    #geom_path(size=1.5, aes(group=EFN_interaction))+
-    theme_classic()+
-    xlab("Domatia")+
+    xlab("Max")+
     ylab("Nitro")+
-    scale_x_discrete(labels=c("maximum", "minimum"))+
+    scale_x_discrete(labels=c("No EFN", "EFN"))+
     scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-     theme(legend.position="none")
-    #theme(axis.title.x=element_blank())
+    theme(legend.position="none")
+    #geom_jitter()
+  # theme(axis.title.x=element_blank())
+  
   
   # fixer 
-  fixer_temp<-data_melt %>% 
-    subset(variable=="temp_minquant" | variable=="temp_maxquant") %>% 
+  fixer_temp_min<-data_melt %>% 
+    subset(variable=="temp_minquant") %>% 
     group_by(variable, fixer, status) %>%
     summarise(average = mean(value)) %>% 
-    ggplot(aes(x=variable, y=average, colour=factor(status)))+
-    geom_point(size=5, aes(shape=fixer))+
+    ggplot(aes(x=fixer, y=average, colour=status))+
+    geom_jitter(size=4, aes(shape=fixer))+
     #geom_line(aes(group=EFN_interaction)) +
     #geom_path(size=1.5, aes(group=EFN_interaction))+
     theme_classic()+
-    #xlab("EFN")+
+    xlab("Min")+
     ylab("Temp")+
-    scale_x_discrete(labels=c("maximum", "minimum"))+
+    scale_x_discrete(labels=c("No fixer", "Fixer"))+
     scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-    theme(legend.position="none")+
-    theme(axis.title.x=element_blank())
-  
-  fixer_precip<-data_melt %>% 
-    subset(variable=="precip_minquant" | variable=="precip_maxquant") %>% 
-    group_by(variable, fixer, status) %>%
-    summarise(average = mean(value)) %>% 
-    ggplot(aes(x=variable, y=average, colour=factor(status)))+
-    geom_point(size=5, aes(shape=fixer))+
-    #geom_line(aes(group=EFN_interaction)) +
-    #geom_path(size=1.5, aes(group=EFN_interaction))+
-    theme_classic()+
-    #xlab("EFN")+
-    ylab("Precip")+
-    scale_x_discrete(labels=c("maximum", "minimum"))+
-    scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-    theme(legend.position="none")+
-    theme(axis.title.x=element_blank())
-  
-  fixer_nitro<-data_melt %>% 
-    subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
-    group_by(variable, fixer, status) %>%
-    summarise(average = mean(value)) %>% 
-    ggplot(aes(x=variable, y=average, colour=factor(status)))+
-    geom_point(size=5, aes(shape=fixer))+
-    #geom_line(aes(group=EFN_interaction)) +
-    #geom_path(size=1.5, aes(group=EFN_interaction))+
-    theme_classic()+
-    xlab("Fixer")+
-    ylab("Nitro")+
-    scale_x_discrete(labels=c("maximum", "minimum"))+
-    scale_colour_ghibli_d("YesterdayMedium", direction = -1)
-    # theme(legend.position="none")+
+    theme(legend.position="none")
     #theme(axis.title.x=element_blank())
   
+  fixer_temp_max<-data_melt %>% 
+    subset(variable=="temp_maxquant") %>% 
+    group_by(variable, fixer, status) %>%
+    summarise(average = mean(value)) %>% 
+    ggplot(aes(x=fixer, y=average, colour=status))+
+    geom_jitter(size=4, aes(shape=fixer))+
+    #geom_line(aes(group=EFN_interaction)) +
+    #geom_path(size=1.5, aes(group=EFN_interaction))+
+    theme_classic()+
+    xlab("Max")+
+    ylab("Temp")+
+    scale_x_discrete(labels=c("No fixer", "Fixer"))+
+    scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+    theme(legend.position="none")
+  #theme(axis.title.x=element_blank())
   
-  cowplot::plot_grid(EFN_precip, Domatia_precip, fixer_precip,
-                     EFN_temp, Domatia_temp, fixer_temp,
-                     EFN_nitro, Domatia_nitro, fixer_nitro, nrow=3, ncol=3)
+  fixer_precip_min<-data_melt %>% 
+    subset(variable=="precip_minquant") %>% 
+    group_by(variable, fixer, status) %>%
+    summarise(average = mean(value)) %>% 
+    ggplot(aes(x=fixer, y=average, colour=factor(status)))+
+    geom_jitter(size=4, aes(shape=fixer))+
+    #geom_line(aes(group=EFN_interaction)) +
+    #geom_path(size=1.5, aes(group=EFN_interaction))+
+    theme_classic()+
+    xlab("Min")+
+    ylab("Precip")+
+    scale_x_discrete(labels=c("No fixer", "Fixer"))+
+    scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+    theme(legend.position="none")
+    #theme(axis.title.x=element_blank())
+  
+  fixer_precip_max<-data_melt %>% 
+    subset(variable=="precip_maxquant") %>% 
+    group_by(variable, fixer, status) %>%
+    summarise(average = mean(value)) %>% 
+    ggplot(aes(x=fixer, y=average, colour=status))+
+    geom_jitter(size=4, aes(shape=fixer))+
+    #geom_line(aes(group=EFN_interaction)) +
+    #geom_path(size=1.5, aes(group=EFN_interaction))+
+    theme_classic()+
+    xlab("Max")+
+    ylab("Precip")+
+    scale_x_discrete(labels=c("No fixer", "Fixer"))+
+    scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+    theme(legend.position="none")
+  #theme(axis.title.x=element_blank())
+  
+  fixer_nitro_min<-data_melt %>% 
+    subset(variable=="nitro_minquant") %>% 
+    group_by(variable, fixer, status) %>%
+    summarise(average = mean(value)) %>% 
+    ggplot(aes(x=fixer, y=average, colour=status))+
+    geom_jitter(size=4, aes(shape=fixer))+
+    #geom_line(aes(group=EFN_interaction)) +
+    #geom_path(size=1.5, aes(group=EFN_interaction))+
+    theme_classic()+
+    xlab("Min")+
+    ylab("Nitro")+
+    scale_x_discrete(labels=c("No fixer", "Fixer"))+
+    scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+    theme(legend.position="none")
+    #theme(axis.title.x=element_blank())
+  
+  fixer_nitro_max<-data_melt %>% 
+    subset(variable=="nitro_maxquant") %>% 
+    group_by(variable, fixer, status) %>%
+    summarise(average = mean(value)) %>% 
+    ggplot(aes(x=fixer, y=average, colour=status))+
+    geom_jitter(size=4, aes(shape=fixer))+
+    #geom_line(aes(group=EFN_interaction)) +
+    #geom_path(size=1.5, aes(group=EFN_interaction))+
+    theme_classic()+
+    xlab("Max")+
+    ylab("Nitro")+
+    scale_x_discrete(labels=c("No fixer", "Fixer"))+
+    scale_colour_ghibli_d("YesterdayMedium", direction = -1)
+  # theme(legend.position="none")+
+  #theme(axis.title.x=element_blank())
   
   
+  cowplot::plot_grid(EFN_precip_min, EFN_precip_max, 
+                     EFN_temp_min, EFN_temp_max,
+                     EFN_nitro_min, EFN_nitro_max,
+                     fixer_precip_min, fixer_precip_max,
+                    fixer_temp_min, fixer_temp_max,
+                    fixer_nitro_min, fixer_nitro_max)
   
+  
+
   
