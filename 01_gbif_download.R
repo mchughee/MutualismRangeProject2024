@@ -1,27 +1,38 @@
+# Preparing to download GBIF data
+
+# Read in the packages we need
 library(rgbif)
+
+# taxize got kicked off of CRAN and the problem is still getting resolved
+# Until then, we're using this method of installing taxize
+install.packages("taxize", repos = c("https://ropensci.r-universe.dev", "https://cloud.r-project.org"))
 library(taxize)
 library(tidyverse)
 
-
+# Read in the data file that contains the names of hte species we're trying
+# to get occurrences for
 legume <- read.csv("legume_range_traits.csv")
 
+# make list of the species names
 species_names <- legume$Phy
 
 gbif_taxon_keys <- 
   species_names %>% 
   # MB: Pass names of species to gbif to get ID numbers (keys) associated with them
   get_gbifid_(method="backbone") %>% 
-  # MB: This returns a named list of data frames, one data frame per species with a number of rows equal to the number of possible matches
+  # MB: This returns a named list of data frames, one data frame per species with
+  #a number of rows equal to the number of possible matches
   imap(~ .x %>% mutate(original_sciname = .y)) %>%
-  # MB: This step adds a new column to each dataframe (.x) in the list that contains the original scientific name queried (the index/name of the list item, .y). THis column is called original_sciname
+  # MB: This step adds a new column to each dataframe (.x) in the list that contains
+  # the original scientific name queried (the index/name of the list item, .y). THis column is called original_sciname
   bind_rows()%>%
   filter(matchtype=="EXACT" & status=="ACCEPTED") %>% 
-  
-  
-  # MB: get rid of fuzzy matches (these have different spellings and are mostly the wrong species, e.g., Crudia amazonica vs. Clusia amazonica)
-  # MB: Important: do keys with the status "SYNONYM" give unique and legitimate occurrence points? Or will occurrences under synonymous names be returned by the accepted name? We should look this up or test it out. 
+  # MB: get rid of fuzzy matches (these have different spellings and are mostly 
+  #the wrong species, e.g., Crudia amazonica vs. Clusia amazonica)
+  # MB: Important: do keys with the status "SYNONYM" give unique and legitimate 
+  # occurrence points? Or will occurrences under synonymous names be returned by
+  # the accepted name? We should look this up or test it out. 
   filter(kingdom == "Plantae") %>%
-
   select(usagekey, original_sciname) %>%
   tibble()
 
@@ -35,26 +46,13 @@ for (i in 1:length(gbif_taxon_keys$usagekey)) {
 
 gbif_taxon_keys_filtered <- gbif_taxon_keys %>% filter(occ_count>=50)
 
-# ask gbif to pretty please prepare some downloads for me
+# ask gbif to pretty please prepare some downloads
 
-# for (i in 1:length(gbif_taxon_keys_filtered$usagekey)){
-#print(occ_download_queue(occ_download(pred_and(pred("taxonKey", gbif_taxon_keys_filtered$usagekey[i]), pred("hasCoordinate", TRUE)), user = "erin_m", pwd ='Dawson2023#', email = 'erinmchugh94@gmail.com', format = "SIMPLE_CSV")))
-# MB: Tried switching format from DWCA to SIMPLE_CSV which might be adequate for our purposes
-#print(gbif_taxon_keys_filtered$usagekey[i])
-#print(gbif_taxon_keys_filtered$original_sciname[i])
-#print(i)
-#}
-
-# let's try downloading without using a for loop
-
-# grab usagekeys from gbif_taxon_keys and make it into a little big vector
+# grab usagekeys from gbif_taxon_keys and make it into a vector
 
 taxon_keys <- gbif_taxon_keys_filtered$usagekey
 
-# occ_download_queue(
-# occ_download(pred_and(pred("taxonKey", taxon_keys[1:500]), pred("hasCoordinate", TRUE)),
-# format = "SIMPLE_CSV",
-# user = "erin_m", pwd ='Dawson2023#', email = 'erinmchugh94@gmail.com'))
+# Prepare download request-- this spins it up on the gbif website
 
 occ_download(
   pred_in("taxonKey", taxon_keys),
@@ -62,56 +60,32 @@ occ_download(
   user = "erin_m", pwd ='Dawson2023#', email = 'erinmchugh94@gmail.com'
 )
 
-# get downloads
+# Now, we can actually download the data from gbif
 
 occ_download_get(key="0008106-240229165702484", overwrite = FALSE)
 
-# unzipping the file
 
 # unzip files
-# identify the folders
+# identify the folders you want to move the zipped gbif download to
+# our current folder
 current.folder <- "/symbiont/erin.mchugh/Files"
+# and our new folder!
 new.folder <- "/symbiont/erin.mchugh/Files/legume_data/occurrence_data"
 
-# find the files that you want
+
+# find the files that you want-- there should be just one big zipped file
 list.of.files <- list.files(pattern="*.zip")
 
-# copy the files to the new folder
+# copy the file to the new folder
 file.copy(list.of.files, new.folder)
 
-file_names<- list.files("zip_files")
+# old code
+#file_names<- list.files("zip_files")
 
+# set our working directory to the folder with our zipped file
 setwd("/symbiont/erin.mchugh/Files/legume_data/occurrence_data")
+# unzip the file!
 unzip("0008106-240229165702484.zip")
 
-# Full version
-# occ_data <- read_delim("0008106-240229165702484.csv")
-
-head(occ_data)
-summary(occ_data)
-
-# transforming country codes from iso2c to iso3c (apparently this is required for using )
-# Skip this step for the test dataset because I think it was already done before it was written out
-occ_data$countryCode <- countrycode(occ_data$countryCode, 
-                                    origin =  'iso2c',
-                                    destination = 'iso3c')
-
-head(occ_data$countryCode)
-
-table(occ_data$species)
-
-
-# trying out some stuff
-# make test dataset
-occ_data$species<-as.character(occ_data$species)
-levels(occ_data$species)
-test<-filter(occ_data, (species=="Abrus fruticulosus") | (species=="Abrus precatorius") | (species=="Acacia acinacea")) %>% droplevels()
-
-# Remove NA values from test dataset
-test1<-test %>% group_by(species) %>% filter(!is.na(decimalLatitude), !is.na(decimalLongitude))
-head(test1$decimalLatitude)
-levels(test1$species)
-write.csv(test1, "test_df.csv")
-
-
-                  
+# Done! We now have a giant datase with all the occurrences we need, and
+# we've got it unzipped so it's ready to work with            
