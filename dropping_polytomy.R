@@ -14,22 +14,23 @@ plot(mytree)
 
 # get a cute tibble of the tree to figure out which specices
 # form this giant polytomy
-x<-as.tibble(mytree)
-subset(x, branch.length==84.763337)
+x<-as_tibble(mytree)
+
+# We can see that the polytomy is comprised of the first 139 rows
+# of the tibble, and every species in the polytomy has branch
+# length of 84.763337
+species_to_drop<-subset(x, branch.length==84.763337)
+
+# we're going to save the polytomy species as a nice little csv
+# to make them easy to drop from the species dataset
+write.csv(species_to_drop, "list_of_species_in_polytomy_jan2025.csv")
 
 # filter out species with a branch length that is 84.763337
-x1<-filter(x, branch.length!= 84.763337)
-
-polytomy_dropped<-as.phylo(x1, use.labels=TRUE)
-
-polytomy_dropped
-
-plot(polytomy_dropped)
 
 dropped<-drop.tip(mytree, 1:139)
 
-dropped
+check<-as_tibble(dropped)
 
 plot(dropped)
 
-write.tree(dropped, "droppity_drop_drop.tre")
+write.tree(dropped, "dropped_polytomy_polytomy_removed.tre")
