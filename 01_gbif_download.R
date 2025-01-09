@@ -88,10 +88,4 @@ setwd("/symbiont/erin.mchugh/Files/legume_data/occurrence_data")
 unzip("0008106-240229165702484.zip")
 
 # Done! We now have a giant datase with all the occurrences we need, and
-# we've got it unzipped so it's ready to work with
-
-
-
-
-
-                  
+# it's unzipped and ready to work with
