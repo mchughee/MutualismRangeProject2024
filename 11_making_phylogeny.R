@@ -5,13 +5,14 @@ library(devtools)
 #devtools::install_github("jinyizju/V.PhyloMaker")
 library("V.PhyloMaker")
 library(tidyverse)
+library(phytools)
 
 # setwd
 #setwd("C:/Users/erinm/Downloads")
 
 # read in dataset
-dat<-read.csv("thinned_data.csv")
-dat$species<-gsub("_", " ", dat$species)
+dat<-read_csv("invasiveclass_thindat_climadd_soilgridsadd.csv")
+#dat$species<-gsub("_", " ", dat$species)
 
 dat$species<-as.factor(dat$species)
 
@@ -30,4 +31,6 @@ tree <- phylo.maker(sp.list = sp_list,
                     nodes=nodes.info.1,
                     scenarios="S1")
 
-write.tree(tree$scenario.1, "phylogeny_all_buildnodes1.tre")
+plot(tree$scenario.1)
+
+write.tree(tree$scenario.1, "phylogeny_2771_buildnodes1.tre")

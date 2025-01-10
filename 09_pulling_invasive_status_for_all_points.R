@@ -3,10 +3,12 @@
 # plus, calculating niche breadth for native vs invasive points
 
 library(tidyverse)
-library
+library(sf)
 
 # read in occurrence data
-points <- read.csv("thindat_climadd_soilgridsadd.csv")
+points <- read_csv("thindat_climadd_soilgridsadd.csv")
+
+n_distinct(points$species)
 
 # Convert points to simplefeatures
 points_sf <- st_as_sf(x = points,
@@ -33,6 +35,8 @@ greater100<-read.csv("list_powo_pols_greaterthan100.csv")
 points_sf1<-points_sf %>% filter(species %in% poly_sf$spcs_nm) %>% 
   filter(!(species %in% greater100$species)) %>% 
   filter(!(species %in% less50$species))
+
+n_distinct(points_sf1$species)
 
 # overlay points with polygons to grab native or invasive status
 
