@@ -9,18 +9,13 @@ library(emmeans)
 library(ghibli)
 library(ggplot2)
 
-# Removing these weird species with 0-little niche breadth at all, and writing 
-# it into a new file that I can read in at any time (very exciting stuff):
-#data_2<-data_1 %>% filter(n>=25)
-#write.csv(data_2, "pgls_final_data.csv")
-# we will read this in next
 
 # Read back in PGLS dataframe
 data<-read.csv("pgls_final_data.csv")
 
 
 # Bring in tree
-mytree<-read.tree("phylogeny_buildnodes1_droppedspecies.tre")
+mytree<-read.tree("polytomy_removed.tre")
 
 
 # drop tips not in dataset (remember, we dropped species that had less than
@@ -28,9 +23,16 @@ mytree<-read.tree("phylogeny_buildnodes1_droppedspecies.tre")
 dropped_species<- setdiff(mytree$tip.label, data$species)
 tree_pruned <- drop.tip(mytree, dropped_species)
 
+# here, we'll trim down
+data1<-filter(data, data$species %in% tree_pruned$tip.label)
+# don't worry about the fact that it's 133 species dropped, not 139
+# when dropping species without occurrences, I think we ended up dropping
+# some species in the polytomy
+
+
 
 # make rows in data match rows in tree
-data_1 <- data[match(tree_pruned$tip.label,data$species),]
+data_1 <- data1[match(tree_pruned$tip.label,data1$species),]
 
 # Add in nitrogen range-- we didn't calculate this in the dataset
 data_1$nitro_range<-data_1$nitro_maxquant-data_1$nitro_minquant
@@ -38,11 +40,6 @@ data_1$nitro_range<-data_1$nitro_maxquant-data_1$nitro_minquant
 # calculate absolute median latitude
 data_1$abs_med_lat<-abs(data_1$median_lat)
 
-
-# transforming number of occurrences
-hist(data_1$n)
-hist(log(data_1$n))
-data_1$log_n<-log(data_1$n)
 
 
 ### Running PGLS on maxquant data

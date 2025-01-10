@@ -6,15 +6,17 @@ library(cowplot)
 
 
 # Read in my data
-points<-read.csv("invasiveclass_thindat_climadd_soilgridsadd.csv")
+points<-read_csv("invasiveclass_thindat_climadd_soilgridsadd.csv")
+n_distinct(points$species)
 
 
 # Drop points that have NA values for the niche axes and the intrdcd status
 points_1<-points %>% drop_na(precip) %>% drop_na(temp) %>%  drop_na(nitrogen)
+n_distinct(points_1$species)
 points_1<-points_1 %>% drop_na(intrdcd)
+n_distinct(points_1$species)
 
-
-# Group by species and invasive status (0 or 1) and get summarizing!
+# Group by species and get summarizing!
 summary_df<-points_1 %>% 
   group_by(species) %>% 
   reframe(n=n(),
@@ -58,10 +60,9 @@ traits$Phy<-gsub(" ", "_", traits$Phy)
 master_legume<-left_join(summary_df, traits, join_by(species==Phy), multiple="any")
 # Yay! Smooshed data!
 
+dropped_sp<-filter(master_legume, n<25)
+
 master_thin<-master_legume %>% filter(n>=25)
-
-
-
 
 write.csv(master_thin, "pgls_final_data.csv")
 

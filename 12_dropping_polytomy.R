@@ -8,7 +8,6 @@ library(ggtree)
 # Bring in tree
 mytree<-read.tree("phylogeny_2771_buildnodes1.tre")
 
-plot(mytree)
 
 # get a cute tibble of the tree to figure out which species
 # form this giant polytomy
