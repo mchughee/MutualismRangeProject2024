@@ -8,7 +8,7 @@ library(ghibli)
 library(nlme)
 
 # Read in my data
-points<-read.csv("invasiveclass_thindat_climadd_soilgridsadd.csv")
+points<-read_csv("invasiveclass_thindat_climadd_soilgridsadd.csv")
 
 
 # Drop points that have NA values for the niche axes and the intrdcd status

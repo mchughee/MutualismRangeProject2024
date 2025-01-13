@@ -78,8 +78,9 @@ qqnorm(temp_maxquant, abline = c(0,1))
 
 plot(temp_maxquant)
 
-# pgls for nitro range
+# pgls for nitro maxquant
 hist(log(data_1$nitro_maxquant))
+hist(data_1$nitro_maxquant)
 
 nitro_maxquant <- gls(log(nitro_maxquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + n + abs_med_lat,
                       
