@@ -507,6 +507,28 @@ cowplot::plot_grid(EFN_precip, Domatia_precip, fixer_precip,
                    EFN_temp, Domatia_temp, fixer_temp,
                    EFN_nitro, Domatia_nitro, fixer_nitro, nrow=3, ncol=3)
 
-  
+
+# new versions of figures
+
+EFN_temp_v2 <- ggplot(data=dat)+
+  geom_segment(aes(x=reorder(species, temp_maxquant), yend=temp_maxquant, y=temp_minquant, color=EFN))+
+  facet_wrap(~EFN, scales ="free_x")+
+  theme_cowplot()
+EFN_temp_v2
+
+EFN_temp_v3 <- ggplot(data=dat)+
+  geom_point(aes(x=reorder(species, temp_range), y=temp_range, color=EFN))+
+  #geom_point(aes(x=reorder(species, temp_maxquant), y=temp_minquant, color=EFN))+
+  facet_wrap(~EFN, scales ="free_x")+
+  theme_cowplot()
+EFN_temp_v3
+
+EFN_temp_v4 <- ggplot(data=dat)+
+  geom_point(aes(x=abs(median_lat), y=temp_range, color=EFN))+
+  geom_smooth(method="lm", aes(x=abs(median_lat), y=temp_range, color=EFN))+
+  #geom_point(aes(x=reorder(species, temp_maxquant), y=temp_minquant, color=EFN))+
+  #facet_wrap(~EFN, scales ="free_x")+
+  theme_cowplot()
+EFN_temp_v4
 
 
