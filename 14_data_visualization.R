@@ -126,7 +126,8 @@ Domatia_temp<-data_melt %>%
   xlab("Domatia")+
   ylab("average annual temperature")+
   scale_x_discrete(labels=c("maximum", "minimum"))+
-  scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+  #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+  scale_colour_manual(values=c("#26432FFF", "#92BBD9FF"))+
   theme(legend.position="none")+
   theme(axis.title.x=element_blank(), axis.title.y=element_blank())
 
@@ -144,7 +145,8 @@ Domatia_precip<-data_melt %>%
   xlab("Domatia")+
   ylab("Annual precipitation (mm)")+
   scale_x_discrete(labels=c("maximum", "minimum"))+
-  scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+  #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+  scale_colour_manual(values=c("#26432FFF", "#92BBD9FF"))+
   theme(legend.position="none")+
   theme(axis.title.x=element_blank(), axis.title.y=element_blank())
 
@@ -160,7 +162,8 @@ Domatia_nitro<-data_melt %>%
   xlab("Domatia")+
   ylab("Nitrogen breadth \n (cg/kg)")+
   scale_x_discrete(labels=c("maximum", "minimum"))+
-  scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+  #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+  scale_colour_manual(values=c("#26432FFF", "#92BBD9FF"))+
   theme(axis.title.y=element_blank())+
   theme(legend.position="none")
   #theme(axis.title.x=element_blank())
@@ -182,7 +185,8 @@ fixer_temp<-data_melt %>%
   xlab("Fixer")+
   ylab("average annual temperature")+
   scale_x_discrete(labels=c("maximum", "minimum"))+
-  scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+  #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+  scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
   theme(legend.position="none")+
   theme(axis.title.x=element_blank(), axis.title.y=element_blank())
 
@@ -200,8 +204,9 @@ fixer_precip<-data_melt %>%
   xlab("Fixer")+
   ylab("Annual precipitation (mm)")+
   scale_x_discrete(labels=c("maximum", "minimum"))+
-  scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("not present", "present"))+
+  #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("not present", "present"))+
   #theme(legend.position="none")+
+  scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
   theme(axis.title.x=element_blank(), axis.title.y=element_blank())+
  # guides(fill=guide_legend(title="Mutualism"))
   labs(colour = "Mutualism") 
@@ -218,7 +223,8 @@ fixer_nitro<-data_melt %>%
   xlab("Fixer")+
   ylab("Nitrogen breadth \n (cg/kg)")+
   scale_x_discrete(labels=c("maximum", "minimum"))+
-  scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+  #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+  scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
   theme(axis.title.y=element_blank())+
   theme(legend.position="none")
   #theme(axis.title.x=element_blank())

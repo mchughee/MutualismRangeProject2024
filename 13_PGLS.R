@@ -72,7 +72,8 @@ data_1$fixer<-as.factor(data_1$fixer)
 # First check that the residuals do not, in fact, have equal variance
 
 precip_range <- gls(log(precip_range) ~ EFN + Domatia + fixer + woody
-                    + uses_num_uses + annual + n + abs_med_lat,
+                    + uses_num_uses + annual + n + abs_med_lat+EFN*abs_med_lat+
+                      Domatia*abs_med_lat+fixer*abs_med_lat,
                     data=data_1, 
                     correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -89,7 +90,8 @@ hist(residuals(precip_range))
 # pgls for temp range
 
 temp_range <- gls(temp_range ~ EFN + Domatia + fixer + woody + uses_num_uses
-                  + annual + n + abs_med_lat,
+                  + annual + n + abs_med_lat+EFN*abs_med_lat+
+                    Domatia*abs_med_lat+fixer*abs_med_lat,
                   data=data_1, 
                   correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -105,7 +107,8 @@ plot(temp_range)
 
 #### pgls for nitro range
 
-nitro_range <- gls(log(nitro_range) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + n + abs_med_lat,
+nitro_range <- gls(log(nitro_range) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + n + abs_med_lat
+                   +EFN*abs_med_lat+Domatia*abs_med_lat+fixer*abs_med_lat,
 
                    data=data_1, 
 
