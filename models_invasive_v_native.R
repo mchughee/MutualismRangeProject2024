@@ -5,7 +5,7 @@ library(tidyverse)
 library(cowplot)
 library(ggplot2)
 library(ghibli)
-library(lme4)
+library(nlme)
 
 # Read in my data
 points<-read_csv("invasiveclass_thindat_climadd_soilgridsadd.csv")
@@ -17,11 +17,9 @@ points$species<-as.factor(points$species)
 levels(unique(points$species))
 # 2771 species in dataset
 
-
 # Drop points that have NA values for the niche axes and the intrdcd status
 points_1<-points %>% drop_na(precip) %>% drop_na(temp) %>%  drop_na(nitrogen)
 points_1<-points_1 %>% drop_na(intrdcd)
-
 
 # Group by species and invasive status (0 or 1) and get summarizing!
 # we have several measures of niche, latitude, etc.
@@ -59,6 +57,7 @@ summary_df$nitro_range<-summary_df$nitro_maxquant-summary_df$nitro_minquant
 # calculate absolute median latitude
 summary_df$abs_med_lat<-abs(summary_df$median_lat)
 
+
 # drop species with less than 25 occurrences
 # Yes, I did this for PGLS and now I'm doing it for separate native
 # and invasive ranges, but I think I need at least 25 occurrences for
@@ -68,23 +67,30 @@ summary_df<-summary_df %>% filter(n>=25)
 n_distinct(unique(summary_df$species))
 # There are now 2656 species in the dataset
 
-
 ## separate the summary_df into native and invasive range dataframes
 native_ranges<-summary_df %>% subset(intrdcd=="0")
 intro_ranges<-summary_df %>% subset(intrdcd=="1")
 
-
-
-
 # Okay bring in traits (what species have EFN, rhizobia, etc.)
 traits<-read.csv("legume_range_traits.csv")
+
 traits$species<-traits$Phy
 traits$species<-gsub(" ", "_", traits$species)
 
 # combine native and trait data to make df that we can use for analysis
 traits_native<-traits %>% filter(species %in% native_ranges$species)
 
+# Drop that freaking duplicate species that always has to be in the 
+# range traits df for SOME REASON
+duplicates <- traits_native[duplicated(traits_native$species), ]
+
+# pesky duplicate removal service!
+traits_native<-traits_native[!duplicated(traits_native$species), ]
+
+# combine species traits and species niche info
 native_data_traits<-left_join(native_ranges, traits_native, join_by(species==species), multiple="any")
+
+n_distinct(native_data_traits$species)
 
 # make dataset with invasive niche breadth-- i.e., total minus native 
 # frig, I really hate this dumb data wrangling! But that's okay
@@ -176,66 +182,153 @@ tree_pruned <- drop.tip(mytree, dropped_species)
 intro_niche<-filter(intro_niche, intro_niche$nat_species %in% tree_pruned$tip.label)
 # 286 species now-- so eight have been dropped
 
+setdiff(intro_niche$nat_species, tree_pruned$tip.label)
+
 ## Check that numeric values are being read as numeric
 intro_niche$nat_woody<-as.numeric(intro_niche$nat_woody)
 intro_niche$nat_uses_num_uses<-as.numeric(intro_niche$nat_uses_num_uses)
 intro_niche$nat_annual<-as.numeric(intro_niche$nat_annual)
 
+intro_niche$EFN<-as.factor(intro_niche$nat_EFN)
+intro_niche$fixer<-as.factor(intro_niche$nat_fixer)
+intro_niche$species<-as.factor(intro_niche$nat_species)
 
-## Run linear mixed-effects models! Yay!
+
+### Run models!! For introduced ranges first
 hist(intro_niche$introduced_precip_niche)
 
+
+precip_range <- gls(introduced_precip_niche ~ nat_EFN + nat_fixer + nat_woody
+                    + nat_uses_num_uses + nat_annual + nat_n + nat_abs_med_lat,
+                    data=intro_niche, 
+                    correlation=corPagel(1, tree_pruned, form=~nat_species), method="ML")
+
+summary(precip_range)
+
+plot(precip_range)
+
+qqnorm(precip_range, abline = c(0,1))
+
+hist(residuals(precip_range))
+
+
+
+# pgls for temp range
+
 hist(intro_niche$introduced_temp_niche)
-hist(log(intro_niche$introduced_temp_niche+14))
 
 
+temp_range <- gls(introduced_temp_niche ~ nat_EFN + nat_fixer + nat_woody
+                    + nat_uses_num_uses + nat_annual + nat_n + nat_abs_med_lat,
+                    data=intro_niche, 
+                    correlation=corPagel(1, tree_pruned, form=~nat_species), method="ML")
+
+summary(temp_range)
+
+plot(temp_range)
+
+qqnorm(temp_range, abline = c(0,1))
+
+hist(residuals(temp_range))
+
+
+
+#### pgls for nitro range
+
+hist(log(intro_niche$introduced_nitro_niche+244))
 hist(intro_niche$introduced_nitro_niche)
-hist(log(intro_niche$introduced_nitro_niche+243))
 
-#### Introduced linear models
-### Temp linear model-- introduced
-temp_intro <- lm(introduced_temp_niche ~  nat_EFN + nat_fixer 
-                   + nat_woody + nat_uses_num_uses + nat_annual + nat_n + 
-                     nat_abs_med_lat, intro_niche)
+nitro_range <- gls(log(introduced_nitro_niche+244) ~ nat_EFN + nat_fixer + nat_woody
+                  + nat_uses_num_uses + nat_annual + nat_n + nat_abs_med_lat,
+                  data=intro_niche, 
+                  correlation=corPagel(1, tree_pruned, form=~nat_species), method="ML")
 
-summary(temp_intro)
+summary(nitro_range)
 
+plot(nitro_range)
 
-### Precip linear model-- introduced
-precip_intro <- lm(introduced_precip_niche ~  nat_EFN + nat_fixer 
-                 + nat_woody + nat_uses_num_uses + nat_annual + nat_n + 
-                   nat_abs_med_lat, intro_niche)
+qqnorm(nitro_range, abline = c(0,1))
 
-summary(precip_intro)
-
-### nitro linear model-- introduced
-nitro_intro <- lm(introduced_nitro_niche ~  nat_EFN + nat_fixer 
-                   + nat_woody + nat_uses_num_uses + nat_annual + nat_n + 
-                     nat_abs_med_lat, intro_niche)
-
-summary(nitro_intro)
+hist(residuals(nitro_range))
 
 
+#### Native ranges next
 
-##### Linear models for native range
-### Temp linear model-- native
-temp_native <- lm(temp_range ~  EFN + fixer 
-                 + Domatia+woody + uses_num_uses + annual + n + 
-                   abs_med_lat, native_data_traits)
+# drop tips with species that aren't in the dataset
+dropped_nat_species<- setdiff(mytree$tip.label, native_data_traits$species)
+tree_nat_pruned <- drop.tip(mytree, dropped_nat_species)
 
-summary(temp_native)
+# Now vice versa-- since trimming the polytomy, there may be species our dataset
+# that are not represented on the tree
+setdiff(native_data_traits$species, tree_nat_pruned$tip.label)
+native_data_traits<-filter(native_data_traits, native_data_traits$species %in% 
+                             tree_nat_pruned$tip.label)
+
+# Check whether or not we have domatia in this dataset
+# Even if we do, it's probably so few that it's not worth it to keep them in the model
+
+levels(native_data_traits$Domatia)
+subset(native_data_traits, Domatia=="1")
+
+# Nope, never even mind!
+
+### Run models!!
+hist(native_data_traits$precip_range)
+hist(log(native_data_traits$precip_range))
+
+precip_range <- gls(log(precip_range) ~ EFN + fixer + Domatia+woody
+                    + uses_num_uses + annual + n + abs_med_lat,
+                    data=native_data_traits, 
+                    correlation=corPagel(1, tree_nat_pruned, form=~species), method="ML")
+
+summary(precip_range)
+
+plot(precip_range)
+
+qqnorm(precip_range, abline = c(0,1))
+
+hist(residuals(precip_range))
 
 
-### Precip linear model-- introduced
-precip_native <- lm(precip_range ~  EFN + fixer 
-                  + Domatia+woody + uses_num_uses + annual + n + 
-                    abs_med_lat, native_data_traits)
 
-summary(precip_native)
+# pgls for temp range
 
-### nitro linear model-- introduced
-nitro_native <- lm(nitro_range ~  EFN + fixer 
-                    + Domatia+ woody + uses_num_uses + annual + n + 
-                      abs_med_lat, native_data_traits)
+hist(native_data_traits$temp_range)
+hist(log(native_data_traits$temp_range))
 
-summary(nitro_native)
+temp_range <- gls(log(temp_range) ~ EFN + fixer + Domatia+woody
+                  + uses_num_uses + annual + n + abs_med_lat,
+                  data=native_data_traits, 
+                  correlation=corPagel(1, tree_nat_pruned, form=~species), method="ML")
+
+summary(temp_range)
+
+plot(temp_range)
+
+qqnorm(temp_range, abline = c(0,1))
+
+hist(residuals(temp_range))
+
+
+
+#### pgls for nitro range
+
+hist(native_data_traits$nitro_range)
+hist(log(native_data_traits$nitro_range))
+
+nitro_range <- gls(log(nitro_range) ~ EFN + fixer + Domatia+woody
+                  + uses_num_uses + annual + n + abs_med_lat,
+                  data=native_data_traits, 
+                  correlation=corPagel(1, tree_nat_pruned, form=~species), method="ML")
+
+summary(nitro_range)
+
+plot(nitro_range)
+
+qqnorm(nitro_range, abline = c(0,1))
+
+hist(residuals(nitro_range))
+
+
+
+
