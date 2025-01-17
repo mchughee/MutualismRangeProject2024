@@ -150,7 +150,7 @@ P <- add_sub(P, "absolute median latitude", hjust = 0.4, size=12)
 
 plot(P)
 
-dev.copy2jpg(file="latitude_v_breadth_fig.pdf", width = 7.5, height = 7.5)
+#dev.copy2pdf(file="latitude_v_breadth_fig.pdf", width = 7.5, height = 7.5)
 
 jpeg('latitude.jpg', quality=100, height=1800, width=1961, pointsize=14, res=600)
 plot(P)
