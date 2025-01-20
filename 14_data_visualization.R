@@ -209,6 +209,7 @@ fixer_precip<-data_melt %>%
   scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
   theme(axis.title.x=element_blank(), axis.title.y=element_blank())+
  # guides(fill=guide_legend(title="Mutualism"))
+  theme(legend.position="none")+
   labs(colour = "Mutualism") 
 
 fixer_nitro<-data_melt %>% 
@@ -230,13 +231,19 @@ fixer_nitro<-data_melt %>%
   #theme(axis.title.x=element_blank())
   
 
-cowplot::plot_grid(EFN_precip, Domatia_precip, fixer_precip,
+plot<-cowplot::plot_grid(EFN_precip, Domatia_precip, fixer_precip,
                    EFN_temp, Domatia_temp, fixer_temp,
                    EFN_nitro, Domatia_nitro, fixer_nitro, nrow=3, ncol=3)
 
+jpeg("maxmin.jpg", width=600, height=600)
+
+plot
+
+dev.off()
 
 
-### Using the melted dataframe to make a plot showing the data
+### Using the melted dataframe to make plots showing hte 
+### distribution of the data
 
 
 data_melt_ID<-reshape2::melt(data_short, id.vars=c("species"),
@@ -244,297 +251,98 @@ data_melt_ID<-reshape2::melt(data_short, id.vars=c("species"),
 
 data_melt_ID$value<-as.factor(data_melt_ID$value)
 
-ggplot(data_melt_ID, aes(x = variable, fill = value)) + 
+mutualism_plot<-ggplot(data_melt_ID, aes(x = variable, fill = value)) + 
   geom_bar()+
   theme_classic()+
   xlab("Mutualism type")+
   ylab("Number of species")+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1, labels = c("Does not have trait", "Has trait"))+
+  scale_fill_ghibli_d("YesterdayMedium", direction = -1, labels = c("Does not have mutualism", "Has mutualism"))+
   scale_x_discrete(labels=c("EFN", "domatia", "fixer"))+
   labs(fill=element_blank())
+
+### Plot showing invasive vs native
+points<-read_csv("invasiveclass_thindat_climadd_soilgridsadd.csv")
+str(points)
+head(points)
+# The "warning" message here is about the dateIdentified not being in the 
+# correct format, which like, I don't care about, so I'm ignoring
+points$species<-as.factor(points$species)
+levels(unique(points$species))
+# 2771 species in dataset
+
+# Drop points that have NA values for the niche axes and the intrdcd status
+points_1<-points %>% drop_na(precip) %>% drop_na(temp) %>%  drop_na(nitrogen)
+points_1<-points_1 %>% drop_na(intrdcd)
+
+# Group by species and invasive status (0 or 1) and get summarizing!
+# we have several measures of niche, latitude, etc.
+summary_df<-points_1 %>% 
+  group_by(species, intrdcd) %>% 
+  reframe(n=n(),
+          precip_maxquant=quantile(precip, 0.95), 
+          precip_minquant=quantile(precip, 0.05),
+          precip_mean=mean(precip),
+          precip_median=median(precip),
+          nitro_maxquant=quantile(nitrogen, 0.95),
+          nitro_minquant=quantile(nitrogen, 0.05),
+          nitro_mean=mean(nitrogen),
+          nitro_median=median(nitrogen),
+          temp_maxquant=quantile(temp, 0.95),
+          temp_minquant=quantile(temp, 0.05),
+          temp_mean=mean(temp),
+          temp_median=median(temp),
+          max_lat=max(Y),
+          min_lat=min(Y),
+          mean_lat=mean(Y),
+          median_lat=median(Y),
+          quant95=quantile(Y, 0.95),
+          quant005=quantile(Y, 0.05)
+  )
+
+summary_df<-summary_df %>% filter(n>=25)
+n_distinct(unique(summary_df$species))
+# There are now 2656 species in the dataset
+
+## separate the summary_df into native and invasive range dataframes
+native_ranges<-summary_df %>% subset(intrdcd=="0")
+intro_ranges<-summary_df %>% subset(intrdcd=="1")
+
+colnames(intro_ranges) <- paste0('intro_', colnames(intro_ranges))
+intro_niche<-left_join(native_ranges, intro_ranges, join_by(species==intro_species), multiple="any")
+
+intro_niche$bothranges<-ifelse(intro_niche$intrdcd=="0" & intro_niche$intro_intrdcd=="1", "1", "0")
+intro_niche$bothranges[is.na(intro_niche$bothranges)] <- "0"
+
+
+invasive<-ggplot(data=intro_niche, aes(x=bothranges, fill=bothranges))+
+  geom_bar()+
+  theme_classic()+
+  scale_x_discrete(labels= c("native range only", "both native and introduced"))+
+  ylab("Number of species")+
+  scale_fill_manual(values=c("#CD4F38FF","#E48C2AFF"), labels = c("Does not have trait", "Has trait"))+
+  labs(fill=element_blank())+
+  theme(legend.position="none")
+# Jesus, that was a lot of work for one plot! Onwards and upwards I guess
+
+### absolute median latitude plot
+
+dat$abs_med_lat<-abs(dat$median_lat)
+
+latitude_hist<-ggplot(data=dat, aes(x=abs_med_lat, fill=mutualism))+
+  geom_histogram()+
+  theme_classic()+
+  scale_fill_ghibli_d("YesterdayMedium", direction = -1)
+
+
+cowplot::plot_grid(mutualism_plot, invasive, latitude_hist, nrow=1, ncol=3)
+  
+  
+  
+
+
  
-dev.copy2pdf(file="data_description_fig.pdf", width = 7, height = 5)
-
-### Make boxplots
-### EFN first
-
-EFN_temp<-data_melt %>% 
-  subset(variable=="temp_minquant" | variable=="temp_maxquant") %>% 
-  ggplot()+
-  aes(x=variable, y=value, fill=EFN)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("EFN")+
-  ylab("Average annual temperature (C)")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
-  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  theme(legend.position="none")+
-  theme(axis.title.x=element_blank())
-
-
-EFN_precip<-data_melt %>% 
-  subset(variable=="precip_minquant" | variable=="precip_maxquant") %>% 
-  ggplot()+
-  aes(x=variable, y=value, fill=EFN)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("EFN")+
-  ylab("Annual precipitation (mm)")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
-  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  theme(legend.position="none")+
-  theme(axis.title.x=element_blank())
-
-EFN_nitro<-data_melt %>% 
-  subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
-  ggplot()+
-  aes(x=variable, y=value, fill=EFN)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("EFN")+
-  ylab("Average soil nitrogen (cg/kg)")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
-  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  theme(legend.position="none")
-  #theme(axis.title.x=element_blank())
-
-
-### EFN first
-
-Domatia_temp<-data_melt %>% 
-  subset(variable=="temp_minquant" | variable=="temp_maxquant") %>% 
-  ggplot()+
-  aes(x=variable, y=value, fill=Domatia)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("Domatia")+
-  ylab("Average annual temperature (C)")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
-  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  theme(legend.position="none")+
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank())
-
-
-Domatia_precip<-data_melt %>% 
-  subset(variable=="precip_minquant" | variable=="precip_maxquant") %>% 
-  ggplot()+
-  aes(x=variable, y=value, fill=Domatia)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("Domatia")+
-  ylab("Annual precipitation (mm)")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
-  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  theme(legend.position="none")+
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank())
-
-Domatia_nitro<-data_melt %>% 
-  subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
-  ggplot()+
-  aes(x=variable, y=value, fill=Domatia)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("Domatia")+
-  ylab("Average soil nitrogen (cg/kg)")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
-  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  theme(legend.position="none")+
-  theme(axis.title.y=element_blank())
-  #theme(axis.title.x=element_blank())
-
-
-### EFN first
-
-fixer_temp<-data_melt %>% 
-  subset(variable=="temp_minquant" | variable=="temp_maxquant") %>% 
-  ggplot()+
-  aes(x=variable, y=value, fill=fixer)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("fixer")+
-  ylab("average annual temperature (C)")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
-  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  theme(legend.position="none")+
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank())
-
-
-fixer_precip<-data_melt %>% 
-  subset(variable=="precip_minquant" | variable=="precip_maxquant") %>% 
-  ggplot()+
-  aes(x=variable, y=value, fill=fixer)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("fixer")+
-  ylab("annual precipitation (mm)")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
-  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  theme(legend.position="none")+
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank())
-
-fixer_nitro<-data_melt %>% 
-  subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
-  ggplot()+
-  aes(x=variable, y=value, fill=fixer)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("Fixer")+
-  ylab("Average soil nitrogen (cg/kg)")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
-  scale_fill_ghibli_d("LaputaMedium", direction = -1)+
-  theme(legend.position="none")+
-  theme(axis.title.y=element_blank())
-  #theme(axis.title.x=element_blank())
 
 
 
-cowplot::plot_grid(EFN_precip, Domatia_precip, fixer_precip,
-                   EFN_temp, Domatia_temp, fixer_temp,
-                   EFN_nitro, Domatia_nitro, fixer_nitro, nrow=3, ncol=3)
-
-### boxplots for actual niche breadth by mutualism type
-
-### Make boxplots
-### EFN first
-
-EFN_temp<-ggplot(data=dat)+
-  aes(x=EFN, y=temp_range, group=EFN, fill=EFN)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("EFN")+
-  ylab("Average annual temperature (C)")+
-  scale_x_discrete(labels=c("No EFN", "EFN"))+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(legend.position="none")+
-  theme(axis.title.x=element_blank())
-
-
-EFN_precip<-ggplot(data=dat)+
-  aes(x=EFN, y=precip_range, group=EFN, fill=EFN)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("EFN")+
-  ylab("Annual precipitation (mm)")+
-  scale_x_discrete(labels=c("No EFN", "EFN"))+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(legend.position="none")+
-  theme(axis.title.x=element_blank())
-
-EFN_nitro<-ggplot(data=dat)+
-  aes(x=EFN, y=nitro_range, group=EFN, fill=EFN)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("EFN")+
-  ylab("Average soil nitrogen (cg/kg)")+
-  scale_x_discrete(labels=c("No EFN", "EFN"))+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(legend.position="none")
-  #theme(axis.title.x=element_blank())
-
-# Domatia
-
-Domatia_temp<-ggplot(data=dat)+
-  aes(x=Domatia, y=temp_range, group=Domatia, fill=Domatia)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("Domatia")+
-  ylab("Average annual temperature (C)")+
-  scale_x_discrete(labels=c("No domatia", "Domatia"))+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(legend.position="none")+
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank())
-
-
-Domatia_precip<-ggplot(data=dat)+
-  aes(x=Domatia, y=precip_range, group=Domatia, fill=Domatia)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("Domatia")+
-  ylab("Annual precipitation (mm)")+
-  scale_x_discrete(labels=c("No domatia", "Domatia"))+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(legend.position="none")+
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank())
-
-Domatia_nitro<-ggplot(data=dat)+
-  aes(x=Domatia, y=nitro_range, group=Domatia, fill=Domatia)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("Domatia")+
-  ylab("Average soil nitrogen (cg/kg)")+
-  scale_x_discrete(labels=c("No domatia", "Domatia"))+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(legend.position="none")+
-  theme(axis.title.y=element_blank())
-  #theme(axis.title.x=element_blank())
-
-
-# Fixer
-
-fixer_temp<-ggplot(data=dat)+
-  aes(x=fixer, y=temp_range, group=fixer, fill=fixer)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("Fixer")+
-  ylab("Average annual temperature (C)")+
-  scale_x_discrete(labels=c("No fixer", "Fixer"))+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(legend.position="none")+
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank())
-
-
-fixer_precip<-ggplot(data=dat)+
-  aes(x=fixer, y=precip_range, group=fixer, fill=fixer)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("Fixer")+
-  ylab("Annual precipitation (mm)")+
-  scale_x_discrete(labels=c("No fixer", "Fixer"))+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(legend.position="none")+
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank())
-
-fixer_nitro<-ggplot(data=dat)+
-  aes(x=fixer, y=nitro_range, group=fixer, fill=fixer)+
-  geom_boxplot()+
-  theme_classic()+
-  xlab("Fixer")+
-  ylab("Average soil nitrogen (cg/kg)")+
-  scale_x_discrete(labels=c("No fixer", "Fixer"))+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(legend.position="none")+
-  theme(axis.title.y=element_blank())
-  #theme(axis.title.x=element_blank())
-
-
-
-
-cowplot::plot_grid(EFN_precip, Domatia_precip, fixer_precip,
-                   EFN_temp, Domatia_temp, fixer_temp,
-                   EFN_nitro, Domatia_nitro, fixer_nitro, nrow=3, ncol=3)
-
-
-# new versions of figures
-
-EFN_temp_v2 <- ggplot(data=dat)+
-  geom_segment(aes(x=reorder(species, temp_maxquant), yend=temp_maxquant, y=temp_minquant, color=EFN))+
-  facet_wrap(~EFN, scales ="free_x")+
-  theme_cowplot()
-EFN_temp_v2
-
-EFN_temp_v3 <- ggplot(data=dat)+
-  geom_point(aes(x=reorder(species, temp_range), y=temp_range, color=EFN))+
-  #geom_point(aes(x=reorder(species, temp_maxquant), y=temp_minquant, color=EFN))+
-  facet_wrap(~EFN, scales ="free_x")+
-  theme_cowplot()
-EFN_temp_v3
-
-EFN_temp_v4 <- ggplot(data=dat)+
-  geom_point(aes(x=abs(median_lat), y=temp_range, color=EFN))+
-  geom_smooth(method="lm", aes(x=abs(median_lat), y=temp_range, color=EFN))+
-  #geom_point(aes(x=reorder(species, temp_maxquant), y=temp_minquant, color=EFN))+
-  #facet_wrap(~EFN, scales ="free_x")+
-  theme_cowplot()
-EFN_temp_v4
 
 

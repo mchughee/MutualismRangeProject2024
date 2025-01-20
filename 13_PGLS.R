@@ -64,7 +64,7 @@ min(data_1$nitro_range)
 
 
 
-# Let's run a gls model for precip range
+# make sure R is reading our factors as factors!!!
 data_1$EFN<-as.factor(data_1$EFN)
 data_1$Domatia<-as.factor(data_1$Domatia)
 data_1$fixer<-as.factor(data_1$fixer)
@@ -72,7 +72,7 @@ data_1$fixer<-as.factor(data_1$fixer)
 # First check that the residuals do not, in fact, have equal variance
 
 precip_range <- gls(log(precip_range) ~ EFN + Domatia + fixer + woody
-                    + uses_num_uses + annual + n + abs_med_lat+EFN*abs_med_lat+
+                    + uses_num_uses + annual + n + poly(abs_med_lat, 2)+EFN*abs_med_lat+
                       Domatia*abs_med_lat+fixer*abs_med_lat,
                     data=data_1, 
                     correlation=corPagel(1, tree_pruned, form=~species), method="ML")

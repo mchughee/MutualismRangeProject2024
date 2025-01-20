@@ -152,6 +152,8 @@ plot(P)
 
 #dev.copy2pdf(file="latitude_v_breadth_fig.pdf", width = 7.5, height = 7.5)
 
-jpeg('latitude.jpg', quality=100, height=1800, width=1961, pointsize=14, res=600)
+jpeg("latitudefig.jpg", width=900, height=900)
+
 plot(P)
+
 dev.off()
