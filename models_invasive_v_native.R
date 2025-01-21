@@ -194,8 +194,9 @@ intro_niche$species<-as.factor(intro_niche$nat_species)
 
 # remove native latitude column and add in introduced column
 
-intro_niche<- subset(intro_niche, select=-c(nat_abs_med_lat))
-intro_niche$intro_abs_med_lat <- intro_ranges$abs_med_lat[match(intro_niche$species, intro_ranges$species)]
+#intro_niche<- subset(intro_niche, select=-c(nat_abs_med_lat))
+intro_niche$intro_abs_med_lat <- 
+  intro_ranges$abs_med_lat[match(intro_niche$species, intro_ranges$species)]
 
 
 ### Run models!! For introduced ranges first
@@ -207,7 +208,8 @@ precip_range <- gls(introduced_precip_niche ~ nat_EFN + nat_fixer + nat_woody +
                     poly(intro_abs_med_lat, 2)+nat_EFN*poly(intro_abs_med_lat, 2)+
                     nat_fixer*poly(intro_abs_med_lat, 2),
                     data=intro_niche, 
-                    correlation=corPagel(1, tree_pruned, form=~nat_species), method="ML")
+                    correlation=corPagel(0.487, tree_pruned, form=~nat_species, fixed=TRUE),
+                    method="ML")
 
 summary(precip_range)
 
@@ -229,7 +231,8 @@ temp_range <- gls(introduced_temp_niche ~ nat_EFN + nat_fixer + nat_woody +
                       poly(intro_abs_med_lat, 2)+nat_EFN*poly(intro_abs_med_lat, 2)+
                       nat_fixer*poly(intro_abs_med_lat, 2),
                       data=intro_niche, 
-                      correlation=corPagel(1, tree_pruned, form=~nat_species), method="ML")
+                      correlation=corPagel(0.504, tree_pruned, form=~nat_species, fixed=TRUE), 
+                  method="ML")
 
 summary(temp_range)
 
@@ -246,12 +249,13 @@ hist(residuals(temp_range))
 hist(log(intro_niche$introduced_nitro_niche+244))
 hist(intro_niche$introduced_nitro_niche)
 
-nitro_range <- gls(log(introduced_nitro_niche+244) ~ nat_EFN + nat_fixer + nat_woody +
+nitro_range <- gls(introduced_nitro_niche ~ nat_EFN + nat_fixer + nat_woody +
                     nat_uses_num_uses + nat_annual + nat_n +
                     poly(intro_abs_med_lat, 2)+nat_EFN*poly(intro_abs_med_lat, 2)+
                     nat_fixer*poly(intro_abs_med_lat, 2),
                   data=intro_niche, 
-                  correlation=corPagel(1, tree_pruned, form=~nat_species), method="ML")
+                  correlation=corPagel(0.511, tree_pruned, form=~nat_species, fixed=TRUE),
+                  method="ML")
 
 summary(nitro_range)
 
@@ -262,7 +266,8 @@ qqnorm(nitro_range, abline = c(0,1))
 hist(residuals(nitro_range))
 
 
-#### Native ranges next
+###############################################################
+### Native ranges next
 
 # drop tips with species that aren't in the dataset
 dropped_nat_species<- setdiff(mytree$tip.label, native_data_traits$species)
@@ -286,18 +291,22 @@ subset(native_data_traits, Domatia=="1")
 hist(native_data_traits$precip_range)
 hist(log(native_data_traits$precip_range))
 
-precip_range <- gls(log(precip_range) ~ EFN + fixer + Domatia+woody
-                    + uses_num_uses + annual + n + abs_med_lat,
+nat_precip_range <- gls(precip_range ~ EFN + fixer + Domatia+woody
+                    + uses_num_uses + annual + n + poly(abs_med_lat, 2) +
+                      EFN*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2)+
+                      Domatia*poly(abs_med_lat, 2),
                     data=native_data_traits, 
-                    correlation=corPagel(1, tree_nat_pruned, form=~species), method="ML")
+                    correlation=corPagel(0.487, tree_nat_pruned, form=~species, fixed=TRUE),
+                    method="ML")
 
-summary(precip_range)
 
-plot(precip_range)
+summary(nat_precip_range)
 
-qqnorm(precip_range, abline = c(0,1))
+plot(nat_precip_range)
 
-hist(residuals(precip_range))
+qqnorm(nat_precip_range, abline = c(0,1))
+
+hist(residuals(nat_precip_range))
 
 
 
@@ -306,18 +315,21 @@ hist(residuals(precip_range))
 hist(native_data_traits$temp_range)
 hist(log(native_data_traits$temp_range))
 
-temp_range <- gls(log(temp_range) ~ EFN + fixer + Domatia+woody
-                  + uses_num_uses + annual + n + abs_med_lat,
-                  data=native_data_traits, 
-                  correlation=corPagel(1, tree_nat_pruned, form=~species), method="ML")
+nat_temp_range <- gls(temp_range ~ EFN + fixer + Domatia+woody
+                        + uses_num_uses + annual + n + poly(abs_med_lat, 2) +
+                          EFN*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2)+
+                          Domatia*poly(abs_med_lat, 2),
+                        data=native_data_traits, 
+                        correlation=corPagel(0.504, tree_nat_pruned, form=~species, fixed=TRUE),
+                        method="ML")
 
-summary(temp_range)
+summary(nat_temp_range)
 
-plot(temp_range)
+plot(nat_temp_range)
 
-qqnorm(temp_range, abline = c(0,1))
+qqnorm(nat_temp_range, abline = c(0,1))
 
-hist(residuals(temp_range))
+hist(residuals(nat_temp_range))
 
 
 
@@ -326,19 +338,28 @@ hist(residuals(temp_range))
 hist(native_data_traits$nitro_range)
 hist(log(native_data_traits$nitro_range))
 
-nitro_range <- gls(log(nitro_range) ~ EFN + fixer + Domatia+woody
-                  + uses_num_uses + annual + n + abs_med_lat,
-                  data=native_data_traits, 
-                  correlation=corPagel(1, tree_nat_pruned, form=~species), method="ML")
+nat_nitro_range <- gls(nitro_range ~ EFN + fixer + Domatia+woody
+                         + uses_num_uses + annual + n + poly(abs_med_lat, 2) +
+                           EFN*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2)+
+                           Domatia*poly(abs_med_lat, 2),
+                         data=native_data_traits, 
+                         correlation=corPagel(0.511, tree_nat_pruned, form=~species, fixed=TRUE),
+                         method="ML")
 
-summary(nitro_range)
+summary(nat_nitro_range)
 
-plot(nitro_range)
+plot(nat_nitro_range)
 
-qqnorm(nitro_range, abline = c(0,1))
+qqnorm(nat_nitro_range, abline = c(0,1))
 
-hist(residuals(nitro_range))
+hist(residuals(nat_nitro_range))
 
+
+#######################################################################
+
+# let's save our dataframes for future use!
+write.csv(intro_niche, "introduced_niche_analysis_df.csv")
+write.csv(native_data_traits, "native_niche_analysis_df.csv")
 
 
 
