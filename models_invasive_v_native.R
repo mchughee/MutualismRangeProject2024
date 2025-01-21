@@ -9,7 +9,6 @@ library(nlme)
 
 # Read in my data
 points<-read_csv("invasiveclass_thindat_climadd_soilgridsadd.csv")
-str(points)
 head(points)
 # The "warning" message here is about the dateIdentified not being in the 
 # correct format, which like, I don't care about, so I'm ignoring
@@ -193,13 +192,20 @@ intro_niche$EFN<-as.factor(intro_niche$nat_EFN)
 intro_niche$fixer<-as.factor(intro_niche$nat_fixer)
 intro_niche$species<-as.factor(intro_niche$nat_species)
 
+# remove native latitude column and add in introduced column
+
+intro_niche<- subset(intro_niche, select=-c(nat_abs_med_lat))
+intro_niche$intro_abs_med_lat <- intro_ranges$abs_med_lat[match(intro_niche$species, intro_ranges$species)]
+
 
 ### Run models!! For introduced ranges first
 hist(intro_niche$introduced_precip_niche)
 
 
-precip_range <- gls(introduced_precip_niche ~ nat_EFN + nat_fixer + nat_woody
-                    + nat_uses_num_uses + nat_annual + nat_n + nat_abs_med_lat,
+precip_range <- gls(introduced_precip_niche ~ nat_EFN + nat_fixer + nat_woody +
+                    nat_uses_num_uses + nat_annual + nat_n +
+                    poly(intro_abs_med_lat, 2)+nat_EFN*poly(intro_abs_med_lat, 2)+
+                    nat_fixer*poly(intro_abs_med_lat, 2),
                     data=intro_niche, 
                     correlation=corPagel(1, tree_pruned, form=~nat_species), method="ML")
 
@@ -218,10 +224,12 @@ hist(residuals(precip_range))
 hist(intro_niche$introduced_temp_niche)
 
 
-temp_range <- gls(introduced_temp_niche ~ nat_EFN + nat_fixer + nat_woody
-                    + nat_uses_num_uses + nat_annual + nat_n + nat_abs_med_lat,
-                    data=intro_niche, 
-                    correlation=corPagel(1, tree_pruned, form=~nat_species), method="ML")
+temp_range <- gls(introduced_temp_niche ~ nat_EFN + nat_fixer + nat_woody +
+                      nat_uses_num_uses + nat_annual + nat_n+
+                      poly(intro_abs_med_lat, 2)+nat_EFN*poly(intro_abs_med_lat, 2)+
+                      nat_fixer*poly(intro_abs_med_lat, 2),
+                      data=intro_niche, 
+                      correlation=corPagel(1, tree_pruned, form=~nat_species), method="ML")
 
 summary(temp_range)
 
@@ -238,8 +246,10 @@ hist(residuals(temp_range))
 hist(log(intro_niche$introduced_nitro_niche+244))
 hist(intro_niche$introduced_nitro_niche)
 
-nitro_range <- gls(log(introduced_nitro_niche+244) ~ nat_EFN + nat_fixer + nat_woody
-                  + nat_uses_num_uses + nat_annual + nat_n + nat_abs_med_lat,
+nitro_range <- gls(log(introduced_nitro_niche+244) ~ nat_EFN + nat_fixer + nat_woody +
+                    nat_uses_num_uses + nat_annual + nat_n +
+                    poly(intro_abs_med_lat, 2)+nat_EFN*poly(intro_abs_med_lat, 2)+
+                    nat_fixer*poly(intro_abs_med_lat, 2),
                   data=intro_niche, 
                   correlation=corPagel(1, tree_pruned, form=~nat_species), method="ML")
 

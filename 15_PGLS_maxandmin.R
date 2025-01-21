@@ -40,6 +40,11 @@ data_1$nitro_range<-data_1$nitro_maxquant-data_1$nitro_minquant
 # calculate absolute median latitude
 data_1$abs_med_lat<-abs(data_1$median_lat)
 
+# make sure R is reading our factors as factors!!!
+data_1$EFN<-as.factor(data_1$EFN)
+data_1$Domatia<-as.factor(data_1$Domatia)
+data_1$fixer<-as.factor(data_1$fixer)
+
 
 
 ### Running PGLS on maxquant data
@@ -47,7 +52,9 @@ data_1$abs_med_lat<-abs(data_1$median_lat)
 hist(data_1$precip_maxquant)
 hist(log(data_1$precip_maxquant))
 
-precip_maxquant <- gls(log(precip_maxquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + n + abs_med_lat,
+precip_maxquant <- gls(log(precip_maxquant) ~ EFN + Domatia + fixer + woody + uses_num_uses +
+                         annual + n + poly(abs_med_lat, 2)+EFN*poly(abs_med_lat, 2)+
+                         Domatia*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2),
                        data=data_1, 
                        correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -62,11 +69,12 @@ qqnorm(precip_maxquant, abline = c(0,1))
 # pgls for temp maxquant
 data_1$scale_tempmax<-scale(data_1$temp_maxquant, scale=TRUE)
 hist(data_1$temp_maxquant)
-hist(sqrt(data_1$temp_maxquant))
-
+hist(log(data_1$temp_maxquant))
+# pov when you do the transformation and it makes the data look WORSE
 
 temp_maxquant <- gls(temp_maxquant ~ EFN + Domatia + fixer + woody + uses_num_uses
-                     + annual + n + abs_med_lat,
+                     + annual + n + poly(abs_med_lat, 2)+EFN*poly(abs_med_lat, 2)+
+                       Domatia*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2),
                      data=data_1, 
                      correlation=corPagel(1, mytree, form=~species), method="ML")
 
@@ -82,7 +90,9 @@ plot(temp_maxquant)
 hist(log(data_1$nitro_maxquant))
 hist(data_1$nitro_maxquant)
 
-nitro_maxquant <- gls(log(nitro_maxquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + n + abs_med_lat,
+nitro_maxquant <- gls(log(nitro_maxquant) ~ EFN + Domatia + fixer + woody + 
+                        uses_num_uses + annual + n + poly(abs_med_lat, 2)+EFN*poly(abs_med_lat, 2)+
+                        Domatia*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2),
                       
                       data=data_1, 
                       
@@ -106,7 +116,9 @@ qqnorm(nitro_maxquant, abline = c(0,1))
 hist(log(data_1$precip_minquant))
 hist(data_1$precip_minquant)
 
-precip_minquant <- gls(log(precip_minquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + n + abs_med_lat,
+precip_minquant <- gls(log(precip_minquant) ~ EFN + Domatia + fixer + woody + 
+                         uses_num_uses + annual + n + poly(abs_med_lat, 2)+EFN*poly(abs_med_lat, 2)+
+                         Domatia*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2),
                        data=data_1, 
                        correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -131,7 +143,8 @@ hist(scale(data_1$temp_minquant, scale=TRUE))
 shapiro.test(data_1$temp_minquant)
 
 temp_minquant <- gls(temp_minquant ~ EFN + Domatia + fixer + woody + uses_num_uses
-                     + annual + n + abs_med_lat,
+                     + annual + n + poly(abs_med_lat, 2)+EFN*poly(abs_med_lat, 2)+
+                       Domatia*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2),
                      data=data_1, 
                      correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -148,7 +161,9 @@ hist(data_1$nitro_minquant)
 hist(log(data_1$nitro_minquant))
 hist(sqrt(data_1$nitro_minquant))
 
-nitro_minquant <- gls(log(nitro_minquant) ~ EFN + Domatia + fixer + woody + uses_num_uses + annual + n + abs_med_lat,
+nitro_minquant <- gls(log(nitro_minquant) ~ EFN + Domatia + fixer + woody + 
+                        uses_num_uses + annual + n + poly(abs_med_lat, 2)+EFN*poly(abs_med_lat, 2)+
+                        Domatia*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2),
                       
                       data=data_1, 
                       
