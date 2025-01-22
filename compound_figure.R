@@ -19,7 +19,7 @@ points_1<-points_1 %>% drop_na(intrdcd)
 # subset data to our focal species
 Lupinus_nootkatensis<-subset(points_1, species=="Lupinus_nootkatensis")
 
-# Make precipitation frequency
+# Make precipitation frequency plot
 q_precip <- quantile(Lupinus_nootkatensis$precip, probs = c(0.05, 0.95))
 
 ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(precip))+
@@ -27,9 +27,9 @@ ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(precip))+
   theme_classic()+
   xlab("Annual precipitation (mm)")+
   ylab("Density")+
-  geom_vline(xintercept = q_precip[1])+
-  geom_vline(xintercept = q_precip[2])+
-  theme(axis.title=element_text(size=14))
+  geom_vline(xintercept = q_precip[1], size=1)+
+  geom_vline(xintercept = q_precip[2], size=1)+
+  theme(axis.title=element_text(size=16))
 
 dev.copy2pdf(file="precip_histo.pdf", width = 7, height = 5)
 
@@ -42,9 +42,9 @@ ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(temp))+
   theme_classic()+
   xlab("Average annual temperature (degrees Celsius)")+
   ylab("Density")+
-  geom_vline(xintercept = q_temp[1])+
-  geom_vline(xintercept = q_temp[2])+
-  theme(axis.title=element_text(size=14))
+  geom_vline(xintercept = q_temp[1], size=1)+
+  geom_vline(xintercept = q_temp[2], size=1)+
+  theme(axis.title=element_text(size=16))
 
 dev.copy2pdf(file="temp_histo.pdf", width = 7, height = 5)
 
@@ -57,9 +57,9 @@ ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(nitrogen))+
   theme_classic()+
   xlab("Average soil nitrogen (cg/kg)")+
   ylab("Density")+
-  geom_vline(xintercept = q_nitro[1])+
-  geom_vline(xintercept = q_nitro[2])+
-  theme(axis.title=element_text(size=14))
+  geom_vline(xintercept = q_nitro[1], size=1)+
+  geom_vline(xintercept = q_nitro[2], size=1)+
+  theme(axis.title=element_text(size=16))
 
 dev.copy2pdf(file="nitro_histo.pdf", width = 7, height = 5)
 

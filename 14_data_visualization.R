@@ -8,7 +8,7 @@ library(ghibli)
 library(reshape2)
 
 # read in data
-dat<-read.csv("pgls_final_data.csv")
+dat<-read.csv("pgls_but_now_with_model_fit.csv")
 dat$nitro_range<-dat$nitro_maxquant-dat$nitro_minquant
 dat$mutualism<-ifelse(dat$EFN==1 | dat$Domatia==1 | dat$fixer==1, "1", "0")
 
@@ -45,7 +45,10 @@ data_short<-dat %>% dplyr::select(species, precip_maxquant,
                                  temp_minquant, nitro_maxquant,
                                  nitro_minquant,
                                  EFN, Domatia,
-                                 fixer, mutualism)
+                                 fixer, mutualism,
+                                 precip_predict,
+                                 temp_predict,
+                                 nitro_predict)
 
 # use melt to make the dataframe longer (this way, can graph with
 # multiple measures on same axes)
@@ -53,7 +56,9 @@ data_melt<-reshape2::melt(data_short, id.vars=c("species", "EFN", "Domatia", "fi
                            measure.vars=c("precip_maxquant",
                                           "precip_minquant", "temp_maxquant",
                                           "temp_minquant", "nitro_maxquant",
-                                          "nitro_minquant"))
+                                          "nitro_minquant",
+                                          "precip_predict", "temp_predict",
+                                          "nitro_predict"))
 
 data_melt$EFN<-as.factor(data_melt$EFN)
 data_melt$Domatia<-as.factor(data_melt$Domatia)

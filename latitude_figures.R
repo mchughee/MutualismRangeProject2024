@@ -8,7 +8,7 @@ library(ghibli)
 library(reshape2)
 
 # read in data
-dat<-read.csv("pgls_final_data.csv")
+dat<-read.csv("pgls_but_now_with_model_fit.csv")
 dat$nitro_range<-dat$nitro_maxquant-dat$nitro_minquant
 dat$mutualism<-ifelse(dat$EFN==1 | dat$Domatia==1 | dat$fixer==1, "1", "0")
 
@@ -21,7 +21,8 @@ dat$fixer<-as.factor(dat$fixer)
 # EFN temp
 EFN_temp <- ggplot(data=dat)+
   geom_point(aes(x=abs(median_lat), y=temp_range, color=EFN), alpha=0.3)+
-  geom_smooth(method="lm", aes(x=abs(median_lat), y=temp_range, color=EFN))+
+  #geom_smooth(method="lm", aes(x=abs(median_lat), y=temp_range, color=EFN))+
+  geom_line(aes(y=temp_predict), linewidth = 1)+
   theme_cowplot()+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
   ylab("average annual temperature \n range (Celsius)")+
