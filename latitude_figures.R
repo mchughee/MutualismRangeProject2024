@@ -21,8 +21,8 @@ dat$fixer<-as.factor(dat$fixer)
 # EFN temp
 EFN_temp <- ggplot(data=dat)+
   geom_point(aes(x=abs(median_lat), y=temp_range, color=EFN), alpha=0.3)+
-  #geom_smooth(method="lm", aes(x=abs(median_lat), y=temp_range, color=EFN))+
-  geom_line(aes(y=temp_predict), linewidth = 1)+
+  geom_smooth(method="lm", aes(x=abs(median_lat), y=temp_range, color=EFN))+
+  #geom_line(aes(y=temp_predict), linewidth = 1)+
   theme_cowplot()+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
   ylab("average annual temperature \n range (Celsius)")+

@@ -3,9 +3,9 @@ library(ape)
 library(phytools)
 library(nlme)
 library(tidyverse)
-library(emmeans)
 library(ghibli)
 library(ggplot2)
+library(cowplot)
 
 # Removing these weird species with 0-little niche breadth at all, and writing 
 # it into a new file that I can read in at any time (very exciting stuff):
@@ -85,7 +85,7 @@ qqnorm(precip_range, abline = c(0,1))
 
 hist(residuals(precip_range))
 
-
+data_1$precip_predict<-predict(precip_range)
 
 
 
@@ -145,9 +145,10 @@ write.csv(data_1, "pgls_but_now_with_model_fit.csv")
 
 # EFN temp
 EFN_temp <- ggplot(data=data_1)+
-  geom_point(aes(x=abs(median_lat), y=temp_range, color=EFN), alpha=0.3)+
+  geom_point(aes(x=abs(median_lat), y=temp_range, color=EFN),alpha=0.3)+
   #geom_smooth(method="lm", aes(x=abs(median_lat), y=temp_range, color=EFN))+
-  geom_line(aes(y=temp_predict, x=abs(median_lat)))+
+  #geom_line(aes(y=temp_predict, x=abs(median_lat), group=interaction(EFN, temp_predict)))+
+  geom_smooth()
   theme_cowplot()+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
   ylab("average annual temperature \n range (Celsius)")+

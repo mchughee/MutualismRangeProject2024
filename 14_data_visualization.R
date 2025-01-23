@@ -56,9 +56,7 @@ data_melt<-reshape2::melt(data_short, id.vars=c("species", "EFN", "Domatia", "fi
                            measure.vars=c("precip_maxquant",
                                           "precip_minquant", "temp_maxquant",
                                           "temp_minquant", "nitro_maxquant",
-                                          "nitro_minquant",
-                                          "precip_predict", "temp_predict",
-                                          "nitro_predict"))
+                                          "nitro_minquant"))
 
 data_melt$EFN<-as.factor(data_melt$EFN)
 data_melt$Domatia<-as.factor(data_melt$Domatia)
@@ -81,7 +79,9 @@ EFN_temp<-data_melt %>%
   scale_x_discrete(labels=c("maximum", "minimum"))+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
   theme(legend.position="none")+
-  theme(axis.title.x=element_blank())
+  theme(axis.title.x=element_blank(), axis.title=element_text(size=16), 
+        axis.text.x = element_text(size=16),
+        axis.text.y = element_text(size=16))
   
 
 
@@ -99,7 +99,9 @@ EFN_precip<-data_melt %>%
   scale_x_discrete(labels=c("maximum", "minimum"))+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
   theme(legend.position="none")+
-  theme(axis.title.x=element_blank())
+  theme(axis.title.x=element_blank(), axis.title=element_text(size=16), 
+        axis.text.x = element_text(size=16),
+        axis.text.y = element_text(size=16))
 
 EFN_nitro<-data_melt %>% 
   subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
@@ -114,7 +116,9 @@ EFN_nitro<-data_melt %>%
   ylab("Nitrogen breadth \n (cg/kg)")+
   scale_x_discrete(labels=c("maximum", "minimum"))+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(legend.position="none")
+  theme(legend.position="none", axis.title=element_text(size=16),
+        axis.text.x = element_text(size=16),
+        axis.text.y = element_text(size=16))
   #theme(axis.title.x=element_blank())
 
 # Domatia
@@ -134,7 +138,10 @@ Domatia_temp<-data_melt %>%
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
   scale_colour_manual(values=c("#26432FFF", "#92BBD9FF"))+
   theme(legend.position="none")+
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank())
+  theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
+        axis.title=element_text(size=16), 
+        axis.text.x = element_text(size=16),
+        axis.text.y = element_text(size=16))
 
 
 
@@ -153,7 +160,10 @@ Domatia_precip<-data_melt %>%
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
   scale_colour_manual(values=c("#26432FFF", "#92BBD9FF"))+
   theme(legend.position="none")+
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank())
+  theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
+        axis.title=element_text(size=16), 
+        axis.text.x = element_text(size=16),
+        axis.text.y = element_text(size=16))
 
 Domatia_nitro<-data_melt %>% 
   subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
@@ -170,7 +180,9 @@ Domatia_nitro<-data_melt %>%
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
   scale_colour_manual(values=c("#26432FFF", "#92BBD9FF"))+
   theme(axis.title.y=element_blank())+
-  theme(legend.position="none")
+  theme(legend.position="none", axis.title=element_text(size=16), 
+        axis.text.x = element_text(size=16),
+        axis.text.y = element_text(size=16))
   #theme(axis.title.x=element_blank())
 
 
@@ -193,7 +205,9 @@ fixer_temp<-data_melt %>%
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
   scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
   theme(legend.position="none")+
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank())
+  theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
+        axis.title=element_text(size=16), axis.text.x = element_text(size=16),
+        axis.text.y = element_text(size=16))
 
 
 
@@ -212,7 +226,9 @@ fixer_precip<-data_melt %>%
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("not present", "present"))+
   #theme(legend.position="none")+
   scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank())+
+  theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
+        axis.title=element_text(size=16), axis.text.x = element_text(size=16),
+        axis.text.y = element_text(size=16))+
  # guides(fill=guide_legend(title="Mutualism"))
   theme(legend.position="none")+
   labs(colour = "Mutualism") 
@@ -232,15 +248,18 @@ fixer_nitro<-data_melt %>%
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
   scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
   theme(axis.title.y=element_blank())+
-  theme(legend.position="none")
+  theme(legend.position="none", axis.title=element_text(size=16), 
+        axis.text.x = element_text(size=16),
+        axis.text.y = element_text(size=16))
   #theme(axis.title.x=element_blank())
   
 
 plot<-cowplot::plot_grid(EFN_precip, Domatia_precip, fixer_precip,
                    EFN_temp, Domatia_temp, fixer_temp,
                    EFN_nitro, Domatia_nitro, fixer_nitro, nrow=3, ncol=3)
+plot
 
-jpeg("maxmin.jpg", width=600, height=600)
+jpeg("maxmin.jpeg", width=700, height=600)
 
 plot
 

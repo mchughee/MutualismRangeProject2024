@@ -29,7 +29,8 @@ ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(precip))+
   ylab("Density")+
   geom_vline(xintercept = q_precip[1], size=1)+
   geom_vline(xintercept = q_precip[2], size=1)+
-  theme(axis.title=element_text(size=16))
+  theme(axis.title=element_text(size=24), axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20))
 
 dev.copy2pdf(file="precip_histo.pdf", width = 7, height = 5)
 
@@ -44,7 +45,8 @@ ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(temp))+
   ylab("Density")+
   geom_vline(xintercept = q_temp[1], size=1)+
   geom_vline(xintercept = q_temp[2], size=1)+
-  theme(axis.title=element_text(size=16))
+  theme(axis.title=element_text(size=24), axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20))
 
 dev.copy2pdf(file="temp_histo.pdf", width = 7, height = 5)
 
@@ -59,7 +61,8 @@ ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(nitrogen))+
   ylab("Density")+
   geom_vline(xintercept = q_nitro[1], size=1)+
   geom_vline(xintercept = q_nitro[2], size=1)+
-  theme(axis.title=element_text(size=16))
+  theme(axis.title=element_text(size=24), axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20))
 
 dev.copy2pdf(file="nitro_histo.pdf", width = 7, height = 5)
 
