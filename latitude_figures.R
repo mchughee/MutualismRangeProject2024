@@ -32,8 +32,8 @@ EFN_temp <- ggplot()+
   ylab("average annual temp. \n range (\u00B0C)")+
   xlab("absolute median latitude")+
   theme(axis.title.x=element_blank(), text = element_text(size = 11), 
-        axis.text.x = element_text(size=11), axis.text.y = element_text(size=11),
-        axis.title.y=element_text(size=15), legend.position="none")+
+        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12),
+        axis.title.y=element_text(size=17), legend.position="none")+
   geom_text(label = "**", x=65, y=9, size = 8)+
 
   geom_line(data=temp_efn, aes(x=x, y=predicted, group = group, colour=group))+
@@ -56,8 +56,8 @@ EFN_precip <- ggplot()+
   xlab("absolute median latitude")+
   theme(legend.position="none")+
   theme(axis.title.x=element_blank(), text = element_text(size = 11),
-        axis.text.x = element_text(size=11), axis.text.y = element_text(size=11),
-        axis.title.y=element_text(size=15))+
+        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12),
+        axis.title.y=element_text(size=17))+
   geom_text(label = "***", x=65, y=2900, size = 8)+
   geom_line(data=precip_efn, aes(x=x, y=predicted, group = group, colour=group))+
   geom_ribbon(data=precip_efn, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
@@ -77,8 +77,8 @@ EFN_nitro <- ggplot(data=dat)+
   ylab("nitrogen \n range (cg/kg)")+
   xlab("absolute median latitude")+
   theme(legend.position="none", axis.title.x = element_blank(), text = element_text(size = 11),
-        axis.text.x = element_text(size=11), axis.text.y = element_text(size=11),
-        axis.title.y=element_text(size=15))+
+        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12),
+        axis.title.y=element_text(size=17))+
   geom_text(label = "***", x=65, y=750, size = 8)+
   geom_line(data=nitro_efn, aes(x=x, y=predicted, group = group, colour=group))+
   geom_ribbon(data=nitro_efn, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
@@ -101,7 +101,7 @@ domatia_temp <- ggplot()+
   ylab("Average annual temperature range (Celsius)")+
   xlab("absolute median latitude")+
   theme(axis.title.y=element_blank(), axis.title.x=element_blank(), text = element_text(size = 11),
-        axis.text.x = element_text(size=11), axis.text.y = element_text(size=11),
+        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12),
         legend.position="none")+
   geom_line(data=temp_dom, aes(x=x, y=predicted, group = group, colour=group))+
   geom_ribbon(data=temp_dom, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
@@ -120,8 +120,8 @@ domatia_precip <- ggplot()+
   ylab("annual precipitation range (mm)")+
   xlab("absolute median latitude")+
   theme(legend.position="none")+
-  theme(axis.title.y=element_blank(), axis.title.x=element_blank(), text = element_text(size = 11),
-        axis.text.x = element_text(size=11))+
+  theme(axis.title.y=element_blank(), axis.title.x=element_blank(), text = element_text(size = 12),
+        axis.text.x = element_text(size=12))+
   geom_line(data=precip_dom, aes(x=x, y=predicted, group = group, colour=group))+
   geom_ribbon(data=precip_dom, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
                                  fill=group, 
@@ -140,7 +140,7 @@ domatia_nitro <- ggplot()+
   xlab("absolute median latitude")+
   theme(legend.position="none")+
   theme(axis.title.y=element_blank(), axis.title.x=element_blank(), text = element_text(size = 11),
-        axis.text.x = element_text(size=11), axis.text.y = element_text(size=11))+
+        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12))+
   geom_line(data=nitro_dom, aes(x=x, y=predicted, group = group, colour=group))+
   geom_ribbon(data=nitro_dom, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
                                    fill=group, 
@@ -162,7 +162,7 @@ fixer_temp <- ggplot()+
   ylab("Average annual temperature range (Celsius)")+
   xlab("absolute median latitude")+
   theme(axis.title.y=element_blank(), axis.title.x=element_blank(), text = element_text(size = 11),
-        axis.text.x = element_text(size=11), axis.text.y = element_text(size=11),
+        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12),
         legend.position="none")+
   geom_line(data=temp_fix, aes(x=x, y=predicted, group = group, colour=group))+
   geom_ribbon(data=temp_fix, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
@@ -182,7 +182,7 @@ fixer_precip <- ggplot()+
   xlab("absolute median latitude")+
   theme(legend.position="none")+
   theme(axis.title.y=element_blank(), axis.title.x=element_blank(), text = element_text(size = 11),
-        axis.text.x = element_text(size=11), axis.text.y = element_text(size=11))+
+        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12))+
   geom_text(label = "***", x=65, y=2900, size = 8)+
   geom_line(data=precip_fix, aes(x=x, y=predicted, group = group, colour=group))+
   geom_ribbon(data=precip_fix, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
@@ -201,7 +201,7 @@ fixer_nitro <- ggplot()+
   xlab("absolute median latitude")+
   theme(legend.position="none")+
   theme(axis.title.y=element_blank(), axis.title.x=element_blank(), text = element_text(size = 11),
-        axis.text.x = element_text(size=11), axis.text.y = element_text(size=11))+
+        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12))+
   geom_line(data=nitro_fix, aes(x=x, y=predicted, group = group, colour=group))+
   geom_ribbon(data=nitro_fix, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
                                    fill=group, 
@@ -217,7 +217,7 @@ P<-cowplot::plot_grid(EFN_temp, domatia_temp, fixer_temp,
                    label_size = 11,
                    label_x = c(0, -0.05, -0.05, 0, -0.05, -0.05, 0, -0.05, -0.05))
 
-P <- add_sub(P, "absolute median latitude", hjust = 0.4, size=15)
+P <- add_sub(P, "absolute median latitude", hjust = 0.4, size=17)
 
 plot(P)
 
