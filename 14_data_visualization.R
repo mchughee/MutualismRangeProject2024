@@ -81,7 +81,8 @@ EFN_temp<-data_melt %>%
   theme(legend.position="none")+
   theme(axis.title.x=element_blank(), axis.title=element_text(size=16), 
         axis.text.x = element_text(size=16),
-        axis.text.y = element_text(size=16))
+        axis.text.y = element_text(size=16))+
+  annotate("text", y=22.5, x=2, size = 7, label = "NS/*")
   
 
 
@@ -101,7 +102,8 @@ EFN_precip<-data_melt %>%
   theme(legend.position="none")+
   theme(axis.title.x=element_blank(), axis.title=element_text(size=16), 
         axis.text.x = element_text(size=16),
-        axis.text.y = element_text(size=16))
+        axis.text.y = element_text(size=16))+
+  annotate("text", x=2, y=1900, label = "*/NS", size = 7)
 
 EFN_nitro<-data_melt %>% 
   subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
@@ -118,8 +120,8 @@ EFN_nitro<-data_melt %>%
   scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
   theme(legend.position="none", axis.title=element_text(size=16),
         axis.text.x = element_text(size=16),
-        axis.text.y = element_text(size=16))
-  #theme(axis.title.x=element_blank())
+        axis.text.y = element_text(size=16))+
+  annotate("text", x=2, y=350, label = "***/NS", size = 7)
 
 # Domatia
 
@@ -142,6 +144,7 @@ Domatia_temp<-data_melt %>%
         axis.title=element_text(size=16), 
         axis.text.x = element_text(size=16),
         axis.text.y = element_text(size=16))
+  #annotate("text", label = "NS/NS", x=2, y=26, size = 7)
 
 
 
@@ -164,6 +167,7 @@ Domatia_precip<-data_melt %>%
         axis.title=element_text(size=16), 
         axis.text.x = element_text(size=16),
         axis.text.y = element_text(size=16))
+  #annotate("text", label = "NS/NS", x=2, y=3000, size = 7)
 
 Domatia_nitro<-data_melt %>% 
   subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
@@ -183,7 +187,7 @@ Domatia_nitro<-data_melt %>%
   theme(legend.position="none", axis.title=element_text(size=16), 
         axis.text.x = element_text(size=16),
         axis.text.y = element_text(size=16))
-  #theme(axis.title.x=element_blank())
+  #annotate("text", label = "NS/NS", x=2, y=350, size = 7)
 
 
 
@@ -207,7 +211,8 @@ fixer_temp<-data_melt %>%
   theme(legend.position="none")+
   theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
         axis.title=element_text(size=16), axis.text.x = element_text(size=16),
-        axis.text.y = element_text(size=16))
+        axis.text.y = element_text(size=16))+
+  annotate("text", label = "*/NS", x=2, y=24, size = 7)
 
 
 
@@ -231,7 +236,8 @@ fixer_precip<-data_melt %>%
         axis.text.y = element_text(size=16))+
  # guides(fill=guide_legend(title="Mutualism"))
   theme(legend.position="none")+
-  labs(colour = "Mutualism") 
+  labs(colour = "Mutualism")+
+  annotate("text", label = "***/*", x=2, y=2000, size = 7)
 
 fixer_nitro<-data_melt %>% 
   subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
@@ -251,12 +257,15 @@ fixer_nitro<-data_melt %>%
   theme(legend.position="none", axis.title=element_text(size=16), 
         axis.text.x = element_text(size=16),
         axis.text.y = element_text(size=16))
-  #theme(axis.title.x=element_blank())
+  #annotate("text", label = "NS/NS", x=2, y=300, size = 7)
   
 
 plot<-cowplot::plot_grid(EFN_precip, Domatia_precip, fixer_precip,
                    EFN_temp, Domatia_temp, fixer_temp,
-                   EFN_nitro, Domatia_nitro, fixer_nitro, nrow=3, ncol=3)
+                   EFN_nitro, Domatia_nitro, fixer_nitro, nrow=3, ncol=3,
+                   labels = c('A', 'D', 'H', 'B', 'E', 'I', 'C', 'F', 'J'),
+                   label_size = 14,
+                   label_x = c(0.05, -0.05, -0.05, 0.05, -0.05, -0.05, 0.05, -0.05, -0.05))
 plot
 
 jpeg("maxmin.jpeg", width=700, height=600)
@@ -352,16 +361,49 @@ invasive<-ggplot(data=intro_niche, aes(x=bothranges, fill=bothranges))+
 
 dat$abs_med_lat<-abs(dat$median_lat)
 
-latitude_hist<-ggplot(data=dat, aes(x=abs_med_lat, fill=mutualism))+
+latitude_EFN<-ggplot(data=dat, aes(x=abs_med_lat, fill=EFN))+
   geom_histogram()+
   theme_classic()+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)
+  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
+  theme(axis.title.x=element_blank(), axis.title.y=element_text(size=18),
+        title.text.y = element_text(size=15), axis.text.y=element_text(size=13),
+        axis.text.x=element_text(size=13))+
+  theme(legend.text=element_text(size=15), legend.title=element_text(size=15))+
+  guides(fill=guide_legend("EFN"))
 
 
-cowplot::plot_grid(mutualism_plot, invasive, latitude_hist, nrow=1, ncol=3)
+latitude_domatia<-ggplot(data=dat, aes(x=abs_med_lat, fill=Domatia))+
+  geom_histogram()+
+  theme_classic()+
+  scale_fill_manual(values=c("#26432FFF", "#92BBD9FF"))+
+  theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
+        title.text.y = element_text(size=15))+
+  theme(legend.text=element_text(size=15), legend.title=element_text(size=15),
+        axis.text.y=element_text(size=13),
+        axis.text.x=element_text(size=13))+
+  guides(fill=guide_legend("Domatia"))
+
+latitude_fixer<-ggplot(data=dat, aes(x=abs_med_lat, fill=fixer))+
+  geom_histogram()+
+  theme_classic()+
+  scale_fill_manual(values=c("#403369FF", "#AE93BEFF"))+
+  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), 
+        title.text.y = element_text(size=15), axis.text.y=element_text(size=13),
+        axis.text.x=element_text(size=13))+
+  theme(legend.text=element_text(size=15), legend.title=element_text(size=15))+
+  guides(fill=guide_legend("Rhizobia"))
+
+
+p<-cowplot::plot_grid(latitude_EFN, latitude_domatia, latitude_fixer, nrow=1, ncol=3,
+                      labels = c('A', 'B', 'C'),
+                      label_x = c(0, -0.05, -0.05),
+                      label_size = 18)
+
+p <- add_sub(p, "absolute median latitude", hjust = 0.4, size=18)
+
+plot(p) 
   
-  
-  
+
 
 
  

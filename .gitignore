@@ -117,3 +117,6 @@ pgls_but_now_with_model_fit.csv
 precip_histo.pdf
 temp_histo.pdf
 maxmin.jpeg
+model_fits
+precip_niche_breadth.rds
+temp_niche_breadth.rds
