@@ -9,7 +9,7 @@ library(reshape2)
 
 
 # read in data
-dat<-read.csv("pgls_final_data.csv")
+dat<-read.csv("pgls_polydropped_final.csv")
 dat$nitro_range<-dat$nitro_maxquant-dat$nitro_minquant
 dat$mutualism<-ifelse(dat$EFN==1 | dat$Domatia==1 | dat$fixer==1, "1", "0")
 
@@ -20,7 +20,7 @@ dat$EFN<-as.factor(dat$EFN)
 dat$fixer<-as.factor(dat$fixer)
 
 
-
+# read in model output
 temp_efn<-read.csv("model_fits/temp_EFN_breadth_means.csv")
 temp_efn$group<-as.factor(temp_efn$group)
 # EFN temp
@@ -33,15 +33,15 @@ EFN_temp <- ggplot()+
   xlab("absolute median latitude")+
   theme(axis.title.x=element_blank(), text = element_text(size = 11), 
         axis.text.x = element_text(size=12), axis.text.y = element_text(size=12),
-        axis.title.y=element_text(size=17), legend.position="none")+
-  geom_text(label = "**", x=65, y=9, size = 8)+
+        axis.title.y=element_text(size=17))+
 
-  geom_line(data=temp_efn, aes(x=x, y=predicted, group = group, colour=group))+
+  geom_line(data=temp_efn, aes(x=x, y=predicted, group = group, colour=group), show.legend = FALSE)+
   
   geom_ribbon(data=temp_efn, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
                                  fill=group, 
-                                 alpha=0.4))+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)
+                                 alpha=0.4), show.legend=FALSE)+
+  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
+annotate("text", label = "**", x=65, y=20, size = 8)
                               
 
 precip_efn<-read.csv("model_fits/precip_EFN_breadth_means.csv")
@@ -58,12 +58,12 @@ EFN_precip <- ggplot()+
   theme(axis.title.x=element_blank(), text = element_text(size = 11),
         axis.text.x = element_text(size=12), axis.text.y = element_text(size=12),
         axis.title.y=element_text(size=17))+
-  geom_text(label = "***", x=65, y=2900, size = 8)+
   geom_line(data=precip_efn, aes(x=x, y=predicted, group = group, colour=group))+
   geom_ribbon(data=precip_efn, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
                                  fill=group, 
                                  alpha=0.4))+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)
+  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
+annotate("text", label = "***", x=65, y=4500, size = 8)
 
 
 nitro_efn<-read.csv("model_fits/nitro_EFN_breadth_means.csv")
@@ -79,7 +79,7 @@ EFN_nitro <- ggplot(data=dat)+
   theme(legend.position="none", axis.title.x = element_blank(), text = element_text(size = 11),
         axis.text.x = element_text(size=12), axis.text.y = element_text(size=12),
         axis.title.y=element_text(size=17))+
-  geom_text(label = "***", x=65, y=750, size = 8)+
+  annotate("text", label = "***", x=65, y=1500, size = 8)+
   geom_line(data=nitro_efn, aes(x=x, y=predicted, group = group, colour=group))+
   geom_ribbon(data=nitro_efn, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
                                    fill=group, 
@@ -101,13 +101,13 @@ domatia_temp <- ggplot()+
   ylab("Average annual temperature range (Celsius)")+
   xlab("absolute median latitude")+
   theme(axis.title.y=element_blank(), axis.title.x=element_blank(), text = element_text(size = 11),
-        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12),
-        legend.position="none")+
-  geom_line(data=temp_dom, aes(x=x, y=predicted, group = group, colour=group))+
+        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12))+
+  geom_line(data=temp_dom, aes(x=x, y=predicted, group = group, colour=group), show.legend = FALSE)+
   geom_ribbon(data=temp_dom, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
                                   fill=group, 
-                                  alpha=0.4))+
-  scale_fill_manual(values=c("#26432FFF", "#92BBD9FF"))
+                                  alpha=0.4), show.legend = FALSE)+
+  scale_fill_manual(values=c("#26432FFF", "#92BBD9FF"))+
+  ylim(-10, 100)
 
 precip_dom<-read.csv("model_fits/precip_dom_breadth_means.csv")
 precip_dom$group<-as.factor(precip_dom$group)
@@ -162,12 +162,11 @@ fixer_temp <- ggplot()+
   ylab("Average annual temperature range (Celsius)")+
   xlab("absolute median latitude")+
   theme(axis.title.y=element_blank(), axis.title.x=element_blank(), text = element_text(size = 11),
-        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12),
-        legend.position="none")+
-  geom_line(data=temp_fix, aes(x=x, y=predicted, group = group, colour=group))+
+        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12))+
+  geom_line(data=temp_fix, aes(x=x, y=predicted, group = group, colour=group), show.legend = FALSE)+
   geom_ribbon(data=temp_fix, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
                                   fill=group, 
-                                  alpha=0.4))+
+                                  alpha=0.4), show.legend=FALSE)+
   scale_fill_manual(values=c("#403369FF", "#AE93BEFF"))
 
 
@@ -183,7 +182,7 @@ fixer_precip <- ggplot()+
   theme(legend.position="none")+
   theme(axis.title.y=element_blank(), axis.title.x=element_blank(), text = element_text(size = 11),
         axis.text.x = element_text(size=12), axis.text.y = element_text(size=12))+
-  geom_text(label = "***", x=65, y=2900, size = 8)+
+  annotate("text", label = "***", x=65, y=4500, size = 8)+
   geom_line(data=precip_fix, aes(x=x, y=predicted, group = group, colour=group))+
   geom_ribbon(data=precip_fix, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
                                  fill=group, 
@@ -214,8 +213,8 @@ P<-cowplot::plot_grid(EFN_temp, domatia_temp, fixer_temp,
                    EFN_precip, domatia_precip, fixer_precip,
                    EFN_nitro, domatia_nitro, fixer_nitro,
                    labels = c('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'),
-                   label_size = 11,
-                   label_x = c(0, -0.05, -0.05, 0, -0.05, -0.05, 0, -0.05, -0.05))
+                   label_size = 14,
+                   label_x = c(0.05, -0.05, -0.05, 0.05, -0.05, -0.05, 0.05, -0.05, -0.05))
 
 P <- add_sub(P, "absolute median latitude", hjust = 0.4, size=17)
 

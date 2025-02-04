@@ -169,6 +169,7 @@ intro_niche$nat_EFN<-as.factor(intro_niche$nat_EFN)
 intro_niche$nat_fixer<-as.factor(intro_niche$nat_fixer)
 intro_niche$nat_Domatia<-as.factor(intro_niche$nat_Domatia)
 
+
 #### Reading in new tree
 mytree<-read.tree("polytomy_removed.tre")
 
@@ -197,6 +198,9 @@ intro_niche$species<-as.factor(intro_niche$nat_species)
 #intro_niche<- subset(intro_niche, select=-c(nat_abs_med_lat))
 intro_niche$intro_abs_med_lat <- 
   intro_ranges$abs_med_lat[match(intro_niche$species, intro_ranges$species)]
+
+### write intro_niche as a csv for figure generation
+write.csv(intro_niche, "introduced_ranges_data.csv")
 
 
 ### Run models!! For introduced ranges first
@@ -284,6 +288,9 @@ native_data_traits<-filter(native_data_traits, native_data_traits$species %in%
 
 levels(native_data_traits$Domatia)
 subset(native_data_traits, Domatia=="1")
+
+# write csv file with native_data_traits
+write.csv(native_data_traits, "native_ranges_data.csv")
 
 # Nope, never even mind!
 

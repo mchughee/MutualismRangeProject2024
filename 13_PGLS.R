@@ -16,7 +16,7 @@ library(ggeffects)
 # we will read this in next
 
 # Read back in PGLS dataframe
-data<-read.csv("pgls_final_data.csv")
+data<-read.csv("pgls_polydropped_final.csv")
 #data$mutualism<-ifelse(data$EFN==1 | data$Domatia==1 | data$fixer==1, "1", "0")
 
 
@@ -24,17 +24,6 @@ data<-read.csv("pgls_final_data.csv")
 # so we also need to trim down the dataset to only include
 # species in the tree!
 mytree<-read.tree("polytomy_removed.tre")
-
-# drop tips not in dataset (remember, we dropped species that had less than
-# 25 occurrences after cleaning and thinning!)
-dropped_species<- setdiff(mytree$tip.label, data$species)
-tree_pruned <- drop.tip(mytree, dropped_species)
-
-# here, we'll trim down
-data1<-filter(data, data$species %in% tree_pruned$tip.label)
-# don't worry about the fact that it's 133 species dropped, not 139
-# when dropping species without occurrences, I think we ended up dropping
-# some species in the polytomy
 
 
 # make rows in data match rows in tree

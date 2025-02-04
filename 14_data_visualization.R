@@ -8,7 +8,7 @@ library(ghibli)
 library(reshape2)
 
 # read in data
-dat<-read.csv("pgls_but_now_with_model_fit.csv")
+dat<-read.csv("pgls_polydropped_final.csv")
 dat$nitro_range<-dat$nitro_maxquant-dat$nitro_minquant
 dat$mutualism<-ifelse(dat$EFN==1 | dat$Domatia==1 | dat$fixer==1, "1", "0")
 
@@ -31,7 +31,11 @@ no_mutualism<-filter(dat, EFN==0 & fixer==0 & Domatia==0)
 dat$mutualism<-ifelse(dat$EFN==1 | dat$fixer==1 | dat$Domatia==1, 1, 0)
 dat$mutualism<-as.factor(dat$mutualism)
 
+### find smallest and largest number of occs
+summary(dat$n)
+
 ### Make sure the categorical variables are being read as categorical by R
+### This is SO FREAKING KEY
 dat$Domatia<-as.factor(dat$Domatia)
 dat$EFN<-as.factor(dat$EFN)
 dat$fixer<-as.factor(dat$fixer)
@@ -45,10 +49,7 @@ data_short<-dat %>% dplyr::select(species, precip_maxquant,
                                  temp_minquant, nitro_maxquant,
                                  nitro_minquant,
                                  EFN, Domatia,
-                                 fixer, mutualism,
-                                 precip_predict,
-                                 temp_predict,
-                                 nitro_predict)
+                                 fixer, mutualism)
 
 # use melt to make the dataframe longer (this way, can graph with
 # multiple measures on same axes)
@@ -99,7 +100,7 @@ EFN_precip<-data_melt %>%
   ylab("Annual precipitation \n (mm)")+
   scale_x_discrete(labels=c("maximum", "minimum"))+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(legend.position="none")+
+  #theme(legend.position="none")+
   theme(axis.title.x=element_blank(), axis.title=element_text(size=16), 
         axis.text.x = element_text(size=16),
         axis.text.y = element_text(size=16))+
@@ -162,7 +163,7 @@ Domatia_precip<-data_melt %>%
   scale_x_discrete(labels=c("maximum", "minimum"))+
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
   scale_colour_manual(values=c("#26432FFF", "#92BBD9FF"))+
-  theme(legend.position="none")+
+  #theme(legend.position="none")+
   theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
         axis.title=element_text(size=16), 
         axis.text.x = element_text(size=16),
@@ -229,14 +230,13 @@ fixer_precip<-data_melt %>%
   ylab("Annual precipitation (mm)")+
   scale_x_discrete(labels=c("maximum", "minimum"))+
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("not present", "present"))+
-  #theme(legend.position="none")+
   scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
   theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
         axis.title=element_text(size=16), axis.text.x = element_text(size=16),
         axis.text.y = element_text(size=16))+
  # guides(fill=guide_legend(title="Mutualism"))
-  theme(legend.position="none")+
-  labs(colour = "Mutualism")+
+ # theme(legend.position="none")+
+  labs(colour = "Fixer")+
   annotate("text", label = "***/*", x=2, y=2000, size = 7)
 
 fixer_nitro<-data_melt %>% 
@@ -275,87 +275,6 @@ plot
 dev.off()
 
 
-### Using the melted dataframe to make plots showing hte 
-### distribution of the data
-
-
-data_melt_ID<-reshape2::melt(data_short, id.vars=c("species"),
-                          measure.vars=c("EFN", "Domatia", "fixer"))
-
-data_melt_ID$value<-as.factor(data_melt_ID$value)
-
-mutualism_plot<-ggplot(data_melt_ID, aes(x = variable, fill = value)) + 
-  geom_bar()+
-  theme_classic()+
-  xlab("Mutualism type")+
-  ylab("Number of species")+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1, labels = c("Does not have mutualism", "Has mutualism"))+
-  scale_x_discrete(labels=c("EFN", "domatia", "fixer"))+
-  labs(fill=element_blank())
-
-### Plot showing invasive vs native
-points<-read_csv("invasiveclass_thindat_climadd_soilgridsadd.csv")
-str(points)
-head(points)
-# The "warning" message here is about the dateIdentified not being in the 
-# correct format, which like, I don't care about, so I'm ignoring
-points$species<-as.factor(points$species)
-levels(unique(points$species))
-# 2771 species in dataset
-
-# Drop points that have NA values for the niche axes and the intrdcd status
-points_1<-points %>% drop_na(precip) %>% drop_na(temp) %>%  drop_na(nitrogen)
-points_1<-points_1 %>% drop_na(intrdcd)
-
-# Group by species and invasive status (0 or 1) and get summarizing!
-# we have several measures of niche, latitude, etc.
-summary_df<-points_1 %>% 
-  group_by(species, intrdcd) %>% 
-  reframe(n=n(),
-          precip_maxquant=quantile(precip, 0.95), 
-          precip_minquant=quantile(precip, 0.05),
-          precip_mean=mean(precip),
-          precip_median=median(precip),
-          nitro_maxquant=quantile(nitrogen, 0.95),
-          nitro_minquant=quantile(nitrogen, 0.05),
-          nitro_mean=mean(nitrogen),
-          nitro_median=median(nitrogen),
-          temp_maxquant=quantile(temp, 0.95),
-          temp_minquant=quantile(temp, 0.05),
-          temp_mean=mean(temp),
-          temp_median=median(temp),
-          max_lat=max(Y),
-          min_lat=min(Y),
-          mean_lat=mean(Y),
-          median_lat=median(Y),
-          quant95=quantile(Y, 0.95),
-          quant005=quantile(Y, 0.05)
-  )
-
-summary_df<-summary_df %>% filter(n>=25)
-n_distinct(unique(summary_df$species))
-# There are now 2656 species in the dataset
-
-## separate the summary_df into native and invasive range dataframes
-native_ranges<-summary_df %>% subset(intrdcd=="0")
-intro_ranges<-summary_df %>% subset(intrdcd=="1")
-
-colnames(intro_ranges) <- paste0('intro_', colnames(intro_ranges))
-intro_niche<-left_join(native_ranges, intro_ranges, join_by(species==intro_species), multiple="any")
-
-intro_niche$bothranges<-ifelse(intro_niche$intrdcd=="0" & intro_niche$intro_intrdcd=="1", "1", "0")
-intro_niche$bothranges[is.na(intro_niche$bothranges)] <- "0"
-
-
-invasive<-ggplot(data=intro_niche, aes(x=bothranges, fill=bothranges))+
-  geom_bar()+
-  theme_classic()+
-  scale_x_discrete(labels= c("native range only", "both native and introduced"))+
-  ylab("Number of species")+
-  scale_fill_manual(values=c("#CD4F38FF","#E48C2AFF"), labels = c("Does not have trait", "Has trait"))+
-  labs(fill=element_blank())+
-  theme(legend.position="none")
-# Jesus, that was a lot of work for one plot! Onwards and upwards I guess
 
 ### absolute median latitude plot
 
