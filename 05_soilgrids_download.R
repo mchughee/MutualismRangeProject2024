@@ -1,9 +1,11 @@
+### Downloading SoilGrids data for soil nitrogen
+
 # Please note: symbiont throws a tantrum any time you try to load gdalUtilities! Just download
 # the script and run it locally
 devtools:::install_github("gearslaboratory/gdalUtils")
 library(gdalUtilities)
 
-
+### Actual download
 gdalUtilities::gdalwarp(t_srs="EPSG:4326", multi=TRUE, wm=200, 
                         co=c("BIGTIFF=YES", "COMPRESS=DEFLATE", "TILED=TRUE"),
                         tr=c(250, 250), # Desired output resolution

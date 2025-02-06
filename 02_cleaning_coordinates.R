@@ -10,6 +10,8 @@ library(countrycode)
 occ_data <- read_delim("0008106-240229165702484.csv")
 
 # Convert country code from ISO2 to ISO3
+# FWIW, I'm not sure this is strictly necessary-- it's needed for the countries test
+# But I did it anyways so
 occ_data$countryCode <-  countrycode(occ_data$countryCode, 
                                 origin =  'iso2c',
                                 destination = 'iso3c')

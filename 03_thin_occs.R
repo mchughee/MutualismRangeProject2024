@@ -1,4 +1,4 @@
-# Thinning points with spatsample instead of spthin
+# Thinning points with spatsample
 
 # First, read in packages and data
 library(terra)
@@ -8,10 +8,6 @@ library(dplyr)
 # Using the twenty species dataframe for right now, but replace with full data when the time comes
 occ<-read.csv("allocc_clean.csv")
 occ$species<-gsub(" ", "_", occ$species)
-
-# Read in bioclim data as a spatraster for use with terra
-temp<-rast("wc2.1_30s_bio_1.tif", crs("+proj=longlat +datum=WGS84"))
-precip<-rast("wc2.1_30s_bio_12.tif", crs("+proj=longlat +datum=WGS84"))
 
 
 # tell R where the long/lat is in the dataframe and the crs
@@ -46,11 +42,6 @@ thinned <- st_as_sf(x = thinned_data,
 # Tell R to read coordinates as WGS84
 st_set_crs(thinned, 4326)->thinned
 
-
-# Extract climate data
-
-thinned$temp <-raster::extract(temp, thinned)
-thinned$precip <-raster::extract(precip, thinned)
 
 # Nice and easy! Now we have a thinned dataframe
 

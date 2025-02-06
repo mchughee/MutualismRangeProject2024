@@ -28,7 +28,7 @@ points_filtered$species<-as.factor(points_filtered$species)
 levels(points_filtered$species)
 
 
-# Okay, now time to run through the big loop I made in 03 to check how good the fit is for
+# Okay, now time to run through a big loop check how good the fit is for
 # all the points and the polygons for each species
 # turning geodesic geometry off
 sf_use_s2(FALSE)
@@ -75,14 +75,18 @@ finaldf$percent_cover<-(finaldf$num_in_polygon/finaldf$num_total)*100
 # make histogram
 hist(finaldf$percent_cover)
 
+# grab species with >100 percent cover, suggesting some overlapping polygons
 giant_headache<-subset(finaldf, percent_cover>100)
 giant_headache<-giant_headache %>% select(-geometry)
 write.csv(giant_headache, "list_powo_pols_greaterthan100.csv")
 
-
+# grab species with <50% cover, because that indicates the polygons are not fitting
+# very well
 lesser_headache<-subset(finaldf, percent_cover<50)
 lesser_headache<-lesser_headache %>% select(-geometry)
 write.csv(lesser_headache, "list_powo_pols_lessthan100.csv")
+
+# we'll use these lists to drop these pesky species from the dataset
 
 # Running mapping code to check out if turning on planar (so turning OFF geodesic) is
 # affecting the points
