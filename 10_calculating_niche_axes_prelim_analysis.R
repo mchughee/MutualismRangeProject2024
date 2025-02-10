@@ -1,6 +1,5 @@
-# Bringing in phylogeny and doing preliminary analysis
+# Making df with summarized niche breadth measures
 
-library(ape)
 library(tidyverse)
 library(cowplot)
 

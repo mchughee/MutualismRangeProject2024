@@ -26,8 +26,11 @@ data<-read.csv("pgls_polydropped_final.csv")
 mytree<-read.tree("polytomy_removed.tre")
 
 
+diff <- setdiff(mytree$tip.label, data$species)
+tree_pruned <- drop.tip(mytree, diff)
+
 # make rows in data match rows in tree
-data_1 <- data1[match(tree_pruned$tip.label,data1$species),]
+data_1 <- data[match(tree_pruned$tip.label,data$species),]
 
 # Add in nitrogen range-- we didn't calculate this in the dataset
 data_1$nitro_range<-data_1$nitro_maxquant-data_1$nitro_minquant
@@ -63,9 +66,11 @@ data_1$fixer<-as.factor(data_1$fixer)
 ######################################
 ## precip first
 
-precip_range <- gls(log(precip_range) ~ EFN + Domatia + fixer + woody
-                    + uses_num_uses + annual + n + poly(abs_med_lat, 2)+EFN*poly(abs_med_lat, 2)+
-                      Domatia*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2),
+# I took n out to try without it!!!! But please know that it should be put back
+# in!
+precip_range <- gls(log(precip_range) ~ EFN + fixer + woody
+                    + uses_num_uses + annual + poly(median_lat, 2)+EFN*poly(median_lat, 2)+
+                      fixer*poly(median_lat, 2),
                     data=data_1, 
                     correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -86,29 +91,19 @@ precip_range<-readRDS("precip_niche_breadth.rds")
 
 ### Pull predicted means for EFN
 
-precip_means<-ggpredict(precip_range, terms=c("abs_med_lat", "EFN [all]"), type="fixed")
-plot(precip_means)
+EFN_precip_means<-ggpredict(precip_range, terms=c("median_lat", "EFN [all]"), type="fixed")
+plot(EFN_precip_means)
 
 
 ### save df
-write.csv(precip_means, "precip_EFN_breadth_means.csv")
+write.csv(EFN_precip_means, "precip_EFN_breadth_means.csv")
 
-######################################3
-
-### Pull predicted means for domatia
-
-dom_precip_means<-ggpredict(precip_range, terms=c("abs_med_lat", "Domatia [all]"), type="fixed")
-plot(dom_precip_means)
-
-
-### save df
-write.csv(dom_precip_means, "precip_dom_breadth_means.csv")
 
 ###########################
 
 ### Pull predicted means for fixers
 
-fix_precip_means<-ggpredict(precip_range, terms=c("abs_med_lat", "fixer [all]"), type="fixed")
+fix_precip_means<-ggpredict(precip_range, terms=c("median_lat", "fixer [all]"), type="fixed")
 plot(fix_precip_means)
 
 ### save df
@@ -117,9 +112,9 @@ write.csv(fix_precip_means, "precip_fix_breadth_means.csv")
 #############################################
 # pgls for temp range
 
-temp_range <- gls(temp_range ~ EFN + Domatia + fixer + woody + uses_num_uses
-                  + annual + n + poly(abs_med_lat, 2)+EFN*poly(abs_med_lat, 2)+
-                    Domatia*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2),
+temp_range <- gls(temp_range ~ EFN + fixer + woody + uses_num_uses
+                  + annual + poly(median_lat, 2)+EFN*poly(median_lat, 2)+
+                    fixer*poly(median_lat, 2),
                   data=data_1, 
                   correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -137,24 +132,16 @@ write_rds(temp_range, "temp_niche_breadth.rds")
 
 ### Pull predicted means for EFN
 
-EFN_temp_means<-ggpredict(temp_range, terms=c("abs_med_lat", "EFN [all]"), type="fixed")
+EFN_temp_means<-ggpredict(temp_range, terms=c("median_lat", "EFN [all]"), type="fixed")
 plot(EFN_temp_means)
 
 ### save df
 write.csv(EFN_temp_means, "temp_EFN_breadth_means.csv")
 
-### Pull predicted means for domatia
-
-dom_temp_means<-ggpredict(temp_range, terms=c("abs_med_lat", "Domatia [all]"), type="fixed")
-plot(dom_temp_means)
-
-### save df
-write.csv(dom_temp_means, "temp_dom_breadth_means.csv")
-
-
+################################################################################
 ### Pull predicted means for fixers
 
-fix_temp_means<-ggpredict(temp_range, terms=c("abs_med_lat", "fixer [all]"), type="fixed")
+fix_temp_means<-ggpredict(temp_range, terms=c("median_lat", "fixer [all]"), type="fixed")
 plot(fix_temp_means)
 
 ### save df
@@ -165,9 +152,9 @@ write.csv(fix_temp_means, "temp_fix_breadth_means.csv")
 ##########################################################################
 #### pgls for nitro range
 
-nitro_range <- gls(log(nitro_range) ~ EFN + Domatia + fixer + woody + uses_num_uses
-                   + annual + n + poly(abs_med_lat, 2)+EFN*poly(abs_med_lat, 2)+
-                     Domatia*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2),
+nitro_range <- gls(log(nitro_range) ~ EFN + fixer + woody + uses_num_uses
+                   + annual + n + poly(median_lat, 2)+EFN*poly(median_lat, 2)+
+                     fixer*poly(median_lat, 2),
 
                    data=data_1, 
 
@@ -183,34 +170,19 @@ qqnorm(temp_range, abline = c(0,1))
 
 ### Pull predicted means for EFN
 
-EFN_nitro_means<-ggpredict(nitro_range, terms=c("abs_med_lat", "EFN [all]"), type="fixed")
+EFN_nitro_means<-ggpredict(nitro_range, terms=c("median_lat", "EFN [all]"), type="fixed")
 plot(EFN_nitro_means)
 
 ### save df
 write.csv(EFN_nitro_means, "nitro_EFN_breadth_means.csv")
 
-### Pull predicted means for domatia
-
-dom_nitro_means<-ggpredict(temp_range, terms=c("abs_med_lat", "Domatia [all]"), type="fixed")
-plot(dom_nitro_means)
-
-### save df
-write.csv(dom_nitro_means, "nitro_dom_breadth_means.csv")
-
 
 ### Pull predicted means for fixers
 
-fix_nitro_means<-ggpredict(nitro_range, terms=c("abs_med_lat", "fixer [all]"), type="fixed")
+fix_nitro_means<-ggpredict(nitro_range, terms=c("median_lat", "fixer [all]"), type="fixed")
 plot(fix_nitro_means)
 
 ### save df
 write.csv(fix_nitro_means, "nitro_fix_breadth_means.csv")
 
-########################################
 
-# write new dataframe with the columns containing model fit from pgls output
-
-write.csv(data_1, "pgls_but_now_with_model_fit.csv")
-
-
-#######################################

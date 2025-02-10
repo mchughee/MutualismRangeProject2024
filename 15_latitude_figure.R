@@ -21,7 +21,7 @@ dat$fixer<-as.factor(dat$fixer)
 
 
 # read in model output
-temp_efn<-read.csv("model_fits/temp_EFN_breadth_means.csv")
+temp_efn<-read.csv("nichebreadth_modelfit/temp_EFN_breadth_means.csv")
 temp_efn$group<-as.factor(temp_efn$group)
 # EFN temp
 EFN_temp <- ggplot()+
@@ -44,7 +44,7 @@ EFN_temp <- ggplot()+
 annotate("text", label = "**", x=65, y=20, size = 8)
                               
 
-precip_efn<-read.csv("model_fits/precip_EFN_breadth_means.csv")
+precip_efn<-read.csv("nichebreadth_modelfit/precip_EFN_breadth_means.csv")
 precip_efn$group<-as.factor(precip_efn$group)
 # EFN precip
 EFN_precip <- ggplot()+
@@ -66,7 +66,7 @@ EFN_precip <- ggplot()+
 annotate("text", label = "***", x=65, y=4500, size = 8)
 
 
-nitro_efn<-read.csv("model_fits/nitro_EFN_breadth_means.csv")
+nitro_efn<-read.csv("nichebreadth_modelfit/nitro_EFN_breadth_means.csv")
 nitro_efn$group<-as.factor(nitro_efn$group)
 # EFN nitro
 EFN_nitro <- ggplot(data=dat)+
@@ -87,71 +87,11 @@ EFN_nitro <- ggplot(data=dat)+
   scale_fill_ghibli_d("YesterdayMedium", direction = -1)
 
 
-### Domatia time
-
-temp_dom<-read.csv("model_fits/temp_dom_breadth_means.csv")
-temp_dom$group<-as.factor(temp_dom$group)
-# Domatia temp
-domatia_temp <- ggplot()+
-  geom_point(data=dat, aes(x=abs(median_lat), y=temp_range, color=Domatia), alpha=0.4)+
-  #geom_smooth(method="lm", aes(x=abs(median_lat), y=temp_range, color=Domatia))+
-  theme_cowplot()+
-  scale_colour_manual(values=c("#26432FFF", "#92BBD9FF"))+
-  #scale_colour_ghibli_d("MarnieMedium2")+
-  ylab("Average annual temperature range (Celsius)")+
-  xlab("absolute median latitude")+
-  theme(axis.title.y=element_blank(), axis.title.x=element_blank(), text = element_text(size = 11),
-        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12))+
-  geom_line(data=temp_dom, aes(x=x, y=predicted, group = group, colour=group), show.legend = FALSE)+
-  geom_ribbon(data=temp_dom, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
-                                  fill=group, 
-                                  alpha=0.4), show.legend = FALSE)+
-  scale_fill_manual(values=c("#26432FFF", "#92BBD9FF"))+
-  ylim(-10, 100)
-
-precip_dom<-read.csv("model_fits/precip_dom_breadth_means.csv")
-precip_dom$group<-as.factor(precip_dom$group)
-# domatia precip
-domatia_precip <- ggplot()+
-  geom_point(data=dat, aes(x=abs(median_lat), y=precip_range, color=Domatia), alpha=0.4)+
- # geom_smooth(method="lm", aes(x=abs(median_lat), y=precip_range, color=Domatia))+
-  theme_cowplot()+
-  scale_colour_manual(values=c("#26432FFF", "#92BBD9FF"))+
-  ylab("annual precipitation range (mm)")+
-  xlab("absolute median latitude")+
-  theme(legend.position="none")+
-  theme(axis.title.y=element_blank(), axis.title.x=element_blank(), text = element_text(size = 12),
-        axis.text.x = element_text(size=12))+
-  geom_line(data=precip_dom, aes(x=x, y=predicted, group = group, colour=group))+
-  geom_ribbon(data=precip_dom, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
-                                 fill=group, 
-                                 alpha=0.4))+
-  scale_fill_manual(values=c("#26432FFF", "#92BBD9FF"))
-
-nitro_dom<-read.csv("model_fits/nitro_dom_breadth_means.csv")
-nitro_dom$group<-as.factor(nitro_dom$group)
-# domatia nitro
-domatia_nitro <- ggplot()+
-  geom_point(data=dat, aes(x=abs(median_lat), y=nitro_range, color=Domatia), alpha=0.4)+
-  #geom_smooth(method="lm", aes(x=abs(median_lat), y=nitro_range, color=Domatia))+
-  theme_cowplot()+
-  scale_colour_manual(values=c("#26432FFF", "#92BBD9FF"))+
-  ylab("nitrogen range (cg/kg)")+
-  xlab("absolute median latitude")+
-  theme(legend.position="none")+
-  theme(axis.title.y=element_blank(), axis.title.x=element_blank(), text = element_text(size = 11),
-        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12))+
-  geom_line(data=nitro_dom, aes(x=x, y=predicted, group = group, colour=group))+
-  geom_ribbon(data=nitro_dom, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
-                                   fill=group, 
-                                   alpha=0.4))+
-  scale_fill_manual(values=c("#26432FFF", "#92BBD9FF"))
-
 
 
 ### Rhizobia o'clock
 
-temp_fix<-read.csv("model_fits/temp_fix_breadth_means.csv")
+temp_fix<-read.csv("nichebreadth_modelfit/temp_fix_breadth_means.csv")
 temp_fix$group<-as.factor(temp_fix$group)
 
 # fixer temp
@@ -170,7 +110,7 @@ fixer_temp <- ggplot()+
   scale_fill_manual(values=c("#403369FF", "#AE93BEFF"))
 
 
-precip_fix<-read.csv("model_fits/precip_fix_breadth_means.csv")
+precip_fix<-read.csv("nichebreadth_modelfit/precip_fix_breadth_means.csv")
 precip_fix$group<-as.factor(precip_fix$group)
 # fixer precip
 fixer_precip <- ggplot()+
@@ -189,7 +129,7 @@ fixer_precip <- ggplot()+
                                  alpha=0.4))+
   scale_fill_manual(values=c("#403369FF", "#AE93BEFF"))
 
-nitro_fix<-read.csv("model_fits/nitro_fix_breadth_means.csv")
+nitro_fix<-read.csv("nichebreadth_modelfit/nitro_fix_breadth_means.csv")
 nitro_fix$group<-as.factor(nitro_fix$group)
 # fixer nitro
 fixer_nitro <- ggplot()+
@@ -209,12 +149,13 @@ fixer_nitro <- ggplot()+
 
 ### make a compound plot with all the plots we've made!
 
-P<-cowplot::plot_grid(EFN_temp, domatia_temp, fixer_temp,
-                   EFN_precip, domatia_precip, fixer_precip,
-                   EFN_nitro, domatia_nitro, fixer_nitro,
-                   labels = c('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'),
+P<-cowplot::plot_grid(EFN_temp, fixer_temp,
+                   EFN_precip, fixer_precip,
+                   EFN_nitro, fixer_nitro,
+                   ncol=2, nrow=3,
+                   labels = c('A', 'B', 'C', 'D', 'E', 'F'),
                    label_size = 14,
-                   label_x = c(0.05, -0.05, -0.05, 0.05, -0.05, -0.05, 0.05, -0.05, -0.05))
+                   label_x = c(0.05, -0.05, 0.05, -0.05, 0.05, -0.05))
 
 P <- add_sub(P, "absolute median latitude", hjust = 0.4, size=17)
 
