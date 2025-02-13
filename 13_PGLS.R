@@ -68,8 +68,8 @@ data_1$fixer<-as.factor(data_1$fixer)
 
 # I took n out to try without it!!!! But please know that it should be put back
 # in!
-precip_range <- gls(log(precip_range) ~ EFN + fixer + woody
-                    + uses_num_uses + annual + poly(median_lat, 2)+EFN*poly(median_lat, 2)+
+precip_range <- gls(log(precip_range) ~ EFN + fixer+woody
+                    + uses_num_uses + annual+poly(median_lat, 2)+EFN*poly(median_lat, 2)+
                       fixer*poly(median_lat, 2),
                     data=data_1, 
                     correlation=corPagel(1, tree_pruned, form=~species), method="ML")
@@ -113,7 +113,7 @@ write.csv(fix_precip_means, "precip_fix_breadth_means.csv")
 # pgls for temp range
 
 temp_range <- gls(temp_range ~ EFN + fixer + woody + uses_num_uses
-                  + annual + poly(median_lat, 2)+EFN*poly(median_lat, 2)+
+                  + annual +n+ poly(median_lat, 2)+EFN*poly(median_lat, 2)+
                     fixer*poly(median_lat, 2),
                   data=data_1, 
                   correlation=corPagel(1, tree_pruned, form=~species), method="ML")
@@ -152,8 +152,8 @@ write.csv(fix_temp_means, "temp_fix_breadth_means.csv")
 ##########################################################################
 #### pgls for nitro range
 
-nitro_range <- gls(log(nitro_range) ~ EFN + fixer + woody + uses_num_uses
-                   + annual + n + poly(median_lat, 2)+EFN*poly(median_lat, 2)+
+nitro_range <- gls(log(nitro_range) ~ EFN + fixer+woody + uses_num_uses
+                   + annual + n+poly(median_lat, 2)+EFN*poly(median_lat, 2)+
                      fixer*poly(median_lat, 2),
 
                    data=data_1, 

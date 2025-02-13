@@ -25,7 +25,7 @@ temp_efn<-read.csv("nichebreadth_modelfit/temp_EFN_breadth_means.csv")
 temp_efn$group<-as.factor(temp_efn$group)
 # EFN temp
 EFN_temp <- ggplot()+
-  geom_point(data=dat, aes(x=abs(median_lat), y=temp_range, color=EFN), alpha=0.4)+
+  geom_point(data=dat, aes(x=median_lat, y=temp_range, color=EFN), alpha=0.4)+
   #geom_smooth(method="lm", aes(x=abs(median_lat), y=temp_range, color=EFN))+
   theme_cowplot()+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
@@ -48,7 +48,7 @@ precip_efn<-read.csv("nichebreadth_modelfit/precip_EFN_breadth_means.csv")
 precip_efn$group<-as.factor(precip_efn$group)
 # EFN precip
 EFN_precip <- ggplot()+
-  geom_point(data=dat, aes(x=abs(median_lat), y=precip_range, color=EFN), alpha=0.4)+
+  geom_point(data=dat, aes(x=median_lat, y=precip_range, color=EFN), alpha=0.4)+
   #geom_smooth(method="lm", aes(x=abs(median_lat), y=precip_range, color=EFN))+
   theme_cowplot()+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
@@ -70,7 +70,7 @@ nitro_efn<-read.csv("nichebreadth_modelfit/nitro_EFN_breadth_means.csv")
 nitro_efn$group<-as.factor(nitro_efn$group)
 # EFN nitro
 EFN_nitro <- ggplot(data=dat)+
-  geom_point(aes(x=abs(median_lat), y=nitro_range, color=EFN), alpha=0.4)+
+  geom_point(aes(x=median_lat, y=nitro_range, color=EFN), alpha=0.4)+
   #geom_smooth(method="lm", aes(x=abs(median_lat), y=nitro_range, color=EFN))+
   theme_cowplot()+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
@@ -96,7 +96,7 @@ temp_fix$group<-as.factor(temp_fix$group)
 
 # fixer temp
 fixer_temp <- ggplot()+
-  geom_point(data=dat, aes(x=abs(median_lat), y=temp_range, color=fixer), alpha=0.4)+
+  geom_point(data=dat, aes(x=median_lat, y=temp_range, color=fixer), alpha=0.4)+
   theme_cowplot()+
   scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
   ylab("Average annual temperature range (Celsius)")+
@@ -114,7 +114,7 @@ precip_fix<-read.csv("nichebreadth_modelfit/precip_fix_breadth_means.csv")
 precip_fix$group<-as.factor(precip_fix$group)
 # fixer precip
 fixer_precip <- ggplot()+
-  geom_point(data=dat, aes(x=abs(median_lat), y=precip_range, color=fixer), alpha=0.4)+
+  geom_point(data=dat, aes(x=median_lat, y=precip_range, color=fixer), alpha=0.4)+
   theme_cowplot()+
   scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
   ylab("annual precipitation range (mm)")+
@@ -133,7 +133,7 @@ nitro_fix<-read.csv("nichebreadth_modelfit/nitro_fix_breadth_means.csv")
 nitro_fix$group<-as.factor(nitro_fix$group)
 # fixer nitro
 fixer_nitro <- ggplot()+
-  geom_point(data=dat, aes(x=abs(median_lat), y=nitro_range, color=fixer), alpha=0.4)+
+  geom_point(data=dat, aes(x=median_lat, y=nitro_range, color=fixer), alpha=0.4)+
   theme_cowplot()+
   scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
   ylab("nitrogen range (cg/kg)")+
