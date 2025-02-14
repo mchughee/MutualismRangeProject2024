@@ -70,6 +70,16 @@ n_distinct(unique(summary_df$species))
 native_ranges<-summary_df %>% subset(intrdcd=="0")
 intro_ranges<-summary_df %>% subset(intrdcd=="1")
 
+## pare down native ranges to just species that have an introduced range
+native_ranges<-native_ranges %>% filter(species %in% intro_ranges$species)
+
+# and ughhhhh remove species that "have no native range" (polygon weirdness)
+intro_ranges<-intro_ranges %>% filter(species %in% native_ranges$species)
+
+setdiff(native_ranges$species, intro_ranges$species)
+
+# okay, they now both have 294 of the same species:^)
+
 # Okay bring in traits (what species have EFN, rhizobia, etc.)
 traits<-read.csv("legume_range_traits.csv")
 
@@ -79,30 +89,15 @@ traits$species<-gsub(" ", "_", traits$species)
 # combine native and trait data to make df that we can use for analysis
 traits_native<-traits %>% filter(species %in% native_ranges$species)
 
-# Drop that freaking duplicate species that always has to be in the 
-# range traits df for SOME REASON
-duplicates <- traits_native[duplicated(traits_native$species), ]
-
-# pesky duplicate removal service!
-traits_native<-traits_native[!duplicated(traits_native$species), ]
-
 # combine species traits and species niche info
 native_data_traits<-left_join(native_ranges, traits_native, join_by(species==species), multiple="any")
 
 n_distinct(native_data_traits$species)
 
-# make dataset with invasive niche breadth-- i.e., total minus native 
-# frig, I really hate this dumb data wrangling! But that's okay
-# Filter native traits df by species in invasive df
-traits_native_intro<-native_data_traits %>% filter(species %in% intro_ranges$species)
-# same prob as before-- there are eleven species in the dataset that 
-# have an invasive range but not a native one-- I expect this is due to
-# polygon weirdness (gbif occurrences not matching up with inv/nat pow polygons)
-
 # add the term "nat" to every column in this df so that when we merge this 
 # with the df for all species, we can tell what columns represent native range data
 
-colnames(traits_native_intro) <- paste0('nat_', colnames(traits_native_intro))
+colnames(native_data_traits) <- paste0('nat_', colnames(native_data_traits))
 
 # Next, make a new summary df grouped only by species, not by intrdcd status
 
@@ -130,11 +125,11 @@ all_df<-points_1 %>%
   )
 
 
-# filter this dataset by the species in traits_native_intro
+# filter this dataset by the species in native_data_traits
 
-all_intro<-all_df %>% filter(all_df$species %in% traits_native_intro$nat_species)
+all_intro<-all_df %>% filter(all_df$species %in% native_data_traits$nat_species)
 
-# get measures of niche for native+invasive
+# get measures of niche for native+invasive (i.e., total niche)
 all_intro$precip_range<-all_intro$precip_maxquant-all_intro$precip_minquant
 all_intro$temp_range<-all_intro$temp_maxquant-all_intro$temp_minquant
 all_intro$nitro_range<-all_intro$nitro_maxquant-all_intro$nitro_minquant
@@ -146,7 +141,7 @@ all_intro$nitro_range<-all_intro$nitro_maxquant-all_intro$nitro_minquant
 # to get this measure, we need to recombine the native and all data,
 # and subtract the native niche from combined/all niche
 
-intro_niche<-left_join(traits_native_intro, all_intro, join_by(nat_species==species), multiple="any")
+intro_niche<-left_join(native_data_traits, all_intro, join_by(nat_species==species), multiple="any")
 
 # calculate the introduced part of the niche
 intro_niche$introduced_precip_niche<-intro_niche$precip_range-intro_niche$nat_precip_range
@@ -161,20 +156,23 @@ mean(intro_niche$introduced_nitro_niche)
 
 # Make sure that in native and intro datasets, EFN, rhizobia, and fixer are
 # being recognized as factors
-native_data_traits$EFN<-as.factor(native_data_traits$EFN)
-native_data_traits$fixer<-as.factor(native_data_traits$fixer)
-native_data_traits$Domatia<-as.factor(native_data_traits$Domatia)
+native_data_traits$nat_EFN<-as.factor(native_data_traits$nat_EFN)
+native_data_traits$nat_fixer<-as.factor(native_data_traits$nat_fixer)
+native_data_traits$nat_Domatia<-as.factor(native_data_traits$nat_Domatia)
 
 intro_niche$nat_EFN<-as.factor(intro_niche$nat_EFN)
 intro_niche$nat_fixer<-as.factor(intro_niche$nat_fixer)
 intro_niche$nat_Domatia<-as.factor(intro_niche$nat_Domatia)
+
+intro_niche$all_median_lat <- 
+  all_df$median_lat[match(intro_niche$nat_species, all_df$species)]
 
 
 #### Reading in new tree
 mytree<-read.tree("polytomy_removed.tre")
 
 # drop tips with species that aren't in the dataset
-dropped_species<- setdiff(mytree$tip.label, intro_niche$nat_species)
+dropped_species<- setdiff(intro_niche$nat_species, mytree$tip.label)
 tree_pruned <- drop.tip(mytree, dropped_species)
 
 # Now vice versa-- since trimming the polytomy, there may be species our dataset
@@ -183,6 +181,7 @@ intro_niche<-filter(intro_niche, intro_niche$nat_species %in% tree_pruned$tip.la
 # 286 species now-- so eight have been dropped
 
 setdiff(intro_niche$nat_species, tree_pruned$tip.label)
+# Queenly! We have the same species in the tree and the data
 
 ## Check that numeric values are being read as numeric
 intro_niche$nat_woody<-as.numeric(intro_niche$nat_woody)
@@ -193,12 +192,6 @@ intro_niche$EFN<-as.factor(intro_niche$nat_EFN)
 intro_niche$fixer<-as.factor(intro_niche$nat_fixer)
 intro_niche$species<-as.factor(intro_niche$nat_species)
 
-# remove native latitude column and add in introduced column
-
-#intro_niche<- subset(intro_niche, select=-c(nat_abs_med_lat))
-intro_niche$intro_abs_med_lat <- 
-  intro_ranges$abs_med_lat[match(intro_niche$species, intro_ranges$species)]
-
 ### write intro_niche as a csv for figure generation
 write.csv(intro_niche, "introduced_ranges_data.csv")
 
@@ -208,9 +201,9 @@ hist(intro_niche$introduced_precip_niche)
 
 
 precip_range <- gls(introduced_precip_niche ~ nat_EFN + nat_fixer + nat_woody +
-                    nat_uses_num_uses + nat_annual + nat_n +
-                    poly(intro_abs_med_lat, 2)+nat_EFN*poly(intro_abs_med_lat, 2)+
-                    nat_fixer*poly(intro_abs_med_lat, 2),
+                    nat_uses_num_uses + nat_annual + 
+                    poly(all_median_lat, 2)+nat_EFN*poly(all_median_lat, 2)+
+                    nat_fixer*poly(all_median_lat, 2),
                     data=intro_niche, 
                     correlation=corPagel(0.487, tree_pruned, form=~nat_species, fixed=TRUE),
                     method="ML")
@@ -231,9 +224,9 @@ hist(intro_niche$introduced_temp_niche)
 
 
 temp_range <- gls(introduced_temp_niche ~ nat_EFN + nat_fixer + nat_woody +
-                      nat_uses_num_uses + nat_annual + nat_n+
-                      poly(intro_abs_med_lat, 2)+nat_EFN*poly(intro_abs_med_lat, 2)+
-                      nat_fixer*poly(intro_abs_med_lat, 2),
+                      nat_uses_num_uses + nat_annual +
+                      poly(all_median_lat, 2)+nat_EFN*poly(all_median_lat, 2)+
+                      nat_fixer*poly(all_median_lat, 2),
                       data=intro_niche, 
                       correlation=corPagel(0.504, tree_pruned, form=~nat_species, fixed=TRUE), 
                   method="ML")
@@ -254,9 +247,9 @@ hist(log(intro_niche$introduced_nitro_niche+244))
 hist(intro_niche$introduced_nitro_niche)
 
 nitro_range <- gls(introduced_nitro_niche ~ nat_EFN + nat_fixer + nat_woody +
-                    nat_uses_num_uses + nat_annual + nat_n +
-                    poly(intro_abs_med_lat, 2)+nat_EFN*poly(intro_abs_med_lat, 2)+
-                    nat_fixer*poly(intro_abs_med_lat, 2),
+                    nat_uses_num_uses + nat_annual +
+                    poly(all_median_lat, 2)+nat_EFN*poly(all_median_lat, 2)+
+                    nat_fixer*poly(all_median_lat, 2),
                   data=intro_niche, 
                   correlation=corPagel(0.511, tree_pruned, form=~nat_species, fixed=TRUE),
                   method="ML")
@@ -274,36 +267,32 @@ hist(residuals(nitro_range))
 ### Native ranges next
 
 # drop tips with species that aren't in the dataset
-dropped_nat_species<- setdiff(mytree$tip.label, native_data_traits$species)
+dropped_nat_species<- setdiff(mytree$tip.label, native_data_traits$nat_species)
 tree_nat_pruned <- drop.tip(mytree, dropped_nat_species)
 
 # Now vice versa-- since trimming the polytomy, there may be species our dataset
 # that are not represented on the tree
-setdiff(native_data_traits$species, tree_nat_pruned$tip.label)
-native_data_traits<-filter(native_data_traits, native_data_traits$species %in% 
+setdiff(native_data_traits$nat_species, tree_nat_pruned$tip.label)
+native_data_traits<-filter(native_data_traits, native_data_traits$nat_species %in% 
                              tree_nat_pruned$tip.label)
 
-# Check whether or not we have domatia in this dataset
-# Even if we do, it's probably so few that it's not worth it to keep them in the model
-
-levels(native_data_traits$Domatia)
-subset(native_data_traits, Domatia=="1")
 
 # write csv file with native_data_traits
 write.csv(native_data_traits, "native_ranges_data.csv")
 
-# Nope, never even mind!
+# add median latitude for all occurrences to the native data traits df
+native_data_traits$all_median_lat <- 
+  all_df$median_lat[match(native_data_traits$nat_species, all_df$species)]
 
 ### Run models!!
 hist(native_data_traits$precip_range)
 hist(log(native_data_traits$precip_range))
 
-nat_precip_range <- gls(precip_range ~ EFN + fixer + Domatia+woody
-                    + uses_num_uses + annual + n + poly(abs_med_lat, 2) +
-                      EFN*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2)+
-                      Domatia*poly(abs_med_lat, 2),
+nat_precip_range <- gls(nat_precip_range ~ nat_EFN + nat_fixer + nat_woody+
+                     nat_uses_num_uses + nat_annual + poly(all_median_lat, 2) +
+                      nat_EFN*poly(all_median_lat, 2)+nat_fixer*poly(all_median_lat, 2),
                     data=native_data_traits, 
-                    correlation=corPagel(0.487, tree_nat_pruned, form=~species, fixed=TRUE),
+                    correlation=corPagel(0.487, tree_nat_pruned, form=~nat_species, fixed=TRUE),
                     method="ML")
 
 
@@ -322,12 +311,11 @@ hist(residuals(nat_precip_range))
 hist(native_data_traits$temp_range)
 hist(log(native_data_traits$temp_range))
 
-nat_temp_range <- gls(temp_range ~ EFN + fixer + Domatia+woody
-                        + uses_num_uses + annual + n + poly(abs_med_lat, 2) +
-                          EFN*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2)+
-                          Domatia*poly(abs_med_lat, 2),
+nat_temp_range <- gls(nat_temp_range ~ nat_EFN + nat_fixer +nat_woody
+                        + nat_uses_num_uses + nat_annual + poly(all_median_lat, 2) +
+                        nat_EFN*poly(all_median_lat, 2)+nat_fixer*poly(all_median_lat, 2),
                         data=native_data_traits, 
-                        correlation=corPagel(0.504, tree_nat_pruned, form=~species, fixed=TRUE),
+                        correlation=corPagel(0.504, tree_nat_pruned, form=~nat_species, fixed=TRUE),
                         method="ML")
 
 summary(nat_temp_range)
@@ -345,12 +333,11 @@ hist(residuals(nat_temp_range))
 hist(native_data_traits$nitro_range)
 hist(log(native_data_traits$nitro_range))
 
-nat_nitro_range <- gls(nitro_range ~ EFN + fixer + Domatia+woody
-                         + uses_num_uses + annual + n + poly(abs_med_lat, 2) +
-                           EFN*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2)+
-                           Domatia*poly(abs_med_lat, 2),
+nat_nitro_range <- gls(nat_nitro_range ~ nat_EFN + nat_fixer + nat_woody
+                         + nat_uses_num_uses + nat_annual + poly(all_median_lat, 2) +
+                         nat_EFN*poly(all_median_lat, 2)+nat_fixer*poly(all_median_lat, 2),
                          data=native_data_traits, 
-                         correlation=corPagel(0.511, tree_nat_pruned, form=~species, fixed=TRUE),
+                         correlation=corPagel(0.511, tree_nat_pruned, form=~nat_species, fixed=TRUE),
                          method="ML")
 
 summary(nat_nitro_range)
