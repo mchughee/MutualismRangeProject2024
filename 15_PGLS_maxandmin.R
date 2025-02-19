@@ -5,18 +5,16 @@ library(ape)
 library(phytools)
 library(nlme)
 library(tidyverse)
-library(emmeans)
 library(ghibli)
 library(ggplot2)
 
 
 # Read back in PGLS dataframe
-data<-read.csv("pgls_final_data.csv")
+data<-read.csv("pgls_polydropped_final.csv")
 
 
 # Bring in tree
 mytree<-read.tree("polytomy_removed.tre")
-
 
 # drop tips not in dataset (remember, we dropped species that had less than
 # 25 occurrences after cleaning and thinning!)
@@ -28,8 +26,6 @@ data1<-filter(data, data$species %in% tree_pruned$tip.label)
 # don't worry about the fact that it's 133 species dropped, not 139
 # when dropping species without occurrences, I think we ended up dropping
 # some species in the polytomy
-
-
 
 # make rows in data match rows in tree
 data_1 <- data1[match(tree_pruned$tip.label,data1$species),]
@@ -45,16 +41,14 @@ data_1$EFN<-as.factor(data_1$EFN)
 data_1$Domatia<-as.factor(data_1$Domatia)
 data_1$fixer<-as.factor(data_1$fixer)
 
-
-
 ### Running PGLS on maxquant data
 
 hist(data_1$precip_maxquant)
 hist(log(data_1$precip_maxquant))
 
-precip_maxquant <- gls(log(precip_maxquant) ~ EFN + Domatia + fixer + woody + uses_num_uses +
-                         annual + n + poly(abs_med_lat, 2)+EFN*poly(abs_med_lat, 2)+
-                         Domatia*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2),
+precip_maxquant <- gls(log(precip_maxquant) ~ EFN + fixer + woody + uses_num_uses +
+                         annual + poly(median_lat, 2)+EFN*poly(median_lat, 2)
+                       +fixer*poly(median_lat, 2),
                        data=data_1, 
                        correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -72,11 +66,11 @@ hist(data_1$temp_maxquant)
 hist(log(data_1$temp_maxquant))
 # pov when you do the transformation and it makes the data look WORSE
 
-temp_maxquant <- gls(temp_maxquant ~ EFN + Domatia + fixer + woody + uses_num_uses
-                     + annual + n + poly(abs_med_lat, 2)+EFN*poly(abs_med_lat, 2)+
-                       Domatia*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2),
+temp_maxquant <- gls(temp_maxquant ~ EFN + fixer + woody + uses_num_uses
+                     + annual + poly(median_lat, 2)+EFN*poly(median_lat, 2)+
+                      fixer*poly(median_lat, 2),
                      data=data_1, 
-                     correlation=corPagel(1, mytree, form=~species), method="ML")
+                     correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
 summary(temp_maxquant)
 
@@ -90,13 +84,13 @@ plot(temp_maxquant)
 hist(log(data_1$nitro_maxquant))
 hist(data_1$nitro_maxquant)
 
-nitro_maxquant <- gls(log(nitro_maxquant) ~ EFN + Domatia + fixer + woody + 
-                        uses_num_uses + annual + n + poly(abs_med_lat, 2)+EFN*poly(abs_med_lat, 2)+
-                        Domatia*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2),
+nitro_maxquant <- gls(log(nitro_maxquant) ~ EFN + fixer + woody + 
+                        uses_num_uses + annual + poly(median_lat, 2)+EFN*poly(median_lat, 2)+
+                        fixer*poly(median_lat, 2),
                       
                       data=data_1, 
                       
-                      correlation=corPagel(1, mytree, form=~species), method="ML")
+                      correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
 summary(nitro_maxquant)
 
@@ -116,9 +110,9 @@ qqnorm(nitro_maxquant, abline = c(0,1))
 hist(log(data_1$precip_minquant))
 hist(data_1$precip_minquant)
 
-precip_minquant <- gls(log(precip_minquant) ~ EFN + Domatia + fixer + woody + 
-                         uses_num_uses + annual + n + poly(abs_med_lat, 2)+EFN*poly(abs_med_lat, 2)+
-                         Domatia*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2),
+precip_minquant <- gls(log(precip_minquant) ~ EFN + fixer + woody + 
+                         uses_num_uses + annual + poly(median_lat, 2)+EFN*poly(median_lat, 2)+
+                         fixer*poly(median_lat, 2),
                        data=data_1, 
                        correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -142,9 +136,9 @@ hist(scale(data_1$temp_minquant, scale=TRUE))
 
 shapiro.test(data_1$temp_minquant)
 
-temp_minquant <- gls(temp_minquant ~ EFN + Domatia + fixer + woody + uses_num_uses
-                     + annual + n + poly(abs_med_lat, 2)+EFN*poly(abs_med_lat, 2)+
-                       Domatia*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2),
+temp_minquant <- gls(temp_minquant ~ EFN + fixer + woody + uses_num_uses
+                     + annual + poly(median_lat, 2)+EFN*poly(median_lat, 2)+
+                       fixer*poly(median_lat, 2),
                      data=data_1, 
                      correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -161,13 +155,13 @@ hist(data_1$nitro_minquant)
 hist(log(data_1$nitro_minquant))
 hist(sqrt(data_1$nitro_minquant))
 
-nitro_minquant <- gls(log(nitro_minquant) ~ EFN + Domatia + fixer + woody + 
-                        uses_num_uses + annual + n + poly(abs_med_lat, 2)+EFN*poly(abs_med_lat, 2)+
-                        Domatia*poly(abs_med_lat, 2)+fixer*poly(abs_med_lat, 2),
+nitro_minquant <- gls(log(nitro_minquant) ~ EFN + fixer + woody + 
+                        uses_num_uses + annual + poly(median_lat, 2)+EFN*poly(median_lat, 2)+
+                        fixer*poly(median_lat, 2),
                       
                       data=data_1, 
                       
-                      correlation=corPagel(1, mytree, form=~species), method="ML")
+                      correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
 summary(nitro_minquant)
 

@@ -25,7 +25,6 @@ data<-read.csv("pgls_polydropped_final.csv")
 # species in the tree!
 mytree<-read.tree("polytomy_removed.tre")
 
-
 diff <- setdiff(mytree$tip.label, data$species)
 tree_pruned <- drop.tip(mytree, diff)
 
@@ -96,7 +95,7 @@ plot(EFN_precip_means)
 
 
 ### save df
-write.csv(EFN_precip_means, "precip_EFN_breadth_means.csv")
+write.csv(EFN_precip_means, "nichebreadth_modelfit_new/precip_EFN_breadth_means.csv")
 
 
 ###########################
@@ -107,13 +106,13 @@ fix_precip_means<-ggpredict(precip_range, terms=c("median_lat", "fixer [all]"), 
 plot(fix_precip_means)
 
 ### save df
-write.csv(fix_precip_means, "precip_fix_breadth_means.csv")
+write.csv(fix_precip_means, "nichebreadth_modelfit_new/precip_fix_breadth_means.csv")
 
 #############################################
 # pgls for temp range
 
 temp_range <- gls(temp_range ~ EFN + fixer + woody + uses_num_uses
-                  + annual +n+ poly(median_lat, 2)+EFN*poly(median_lat, 2)+
+                  + annual + poly(median_lat, 2)+EFN*poly(median_lat, 2)+
                     fixer*poly(median_lat, 2),
                   data=data_1, 
                   correlation=corPagel(1, tree_pruned, form=~species), method="ML")
@@ -136,7 +135,7 @@ EFN_temp_means<-ggpredict(temp_range, terms=c("median_lat", "EFN [all]"), type="
 plot(EFN_temp_means)
 
 ### save df
-write.csv(EFN_temp_means, "temp_EFN_breadth_means.csv")
+write.csv(EFN_temp_means, "nichebreadth_modelfit_new/temp_EFN_breadth_means.csv")
 
 ################################################################################
 ### Pull predicted means for fixers
@@ -145,7 +144,7 @@ fix_temp_means<-ggpredict(temp_range, terms=c("median_lat", "fixer [all]"), type
 plot(fix_temp_means)
 
 ### save df
-write.csv(fix_temp_means, "temp_fix_breadth_means.csv")
+write.csv(fix_temp_means, "nichebreadth_modelfit_new/temp_fix_breadth_means.csv")
 
 
 
@@ -153,7 +152,7 @@ write.csv(fix_temp_means, "temp_fix_breadth_means.csv")
 #### pgls for nitro range
 
 nitro_range <- gls(log(nitro_range) ~ EFN + fixer+woody + uses_num_uses
-                   + annual + n+poly(median_lat, 2)+EFN*poly(median_lat, 2)+
+                   + annual+poly(median_lat, 2)+EFN*poly(median_lat, 2)+
                      fixer*poly(median_lat, 2),
 
                    data=data_1, 
@@ -168,13 +167,17 @@ hist(residuals(nitro_range))
 
 qqnorm(temp_range, abline = c(0,1))
 
+### Save as RDS file
+
+write_rds(nitro_range, "nitro_niche_breadth.rds")
+
 ### Pull predicted means for EFN
 
 EFN_nitro_means<-ggpredict(nitro_range, terms=c("median_lat", "EFN [all]"), type="fixed")
 plot(EFN_nitro_means)
 
 ### save df
-write.csv(EFN_nitro_means, "nitro_EFN_breadth_means.csv")
+write.csv(EFN_nitro_means, "nichebreadth_modelfit_new/nitro_EFN_breadth_means.csv")
 
 
 ### Pull predicted means for fixers
@@ -183,6 +186,6 @@ fix_nitro_means<-ggpredict(nitro_range, terms=c("median_lat", "fixer [all]"), ty
 plot(fix_nitro_means)
 
 ### save df
-write.csv(fix_nitro_means, "nitro_fix_breadth_means.csv")
+write.csv(fix_nitro_means, "nichebreadth_modelfit_new/nitro_fix_breadth_means.csv")
 
 

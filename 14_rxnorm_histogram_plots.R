@@ -71,19 +71,18 @@ EFN_temp<-data_melt %>%
   group_by(variable, EFN) %>%
   summarise(average = mean(value)) %>% 
   ggplot()+
-  aes(x=variable, y=average, colour=EFN, group=EFN)+
+  aes(x=EFN, y=average, colour=variable, group=variable)+
   geom_point(size=5)+
   geom_path(size=1.5)+
   theme_classic()+
   xlab("EFN")+
-  ylab("Average annual temperature \n (Celsius)")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
+  ylab("Average annual temp. \n (Celsius)")+
+  scale_x_discrete(labels=c("no EFN", "EFN"))+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
   theme(legend.position="none")+
-  theme(axis.title.x=element_blank(), axis.title=element_text(size=16), 
-        axis.text.x = element_text(size=16),
-        axis.text.y = element_text(size=16))+
-  annotate("text", y=22.5, x=2, size = 7, label = "NS/*")
+  theme(axis.title.x=element_blank(), axis.title=element_text(size=13), 
+        axis.text.x = element_text(size=13),
+        axis.text.y = element_text(size=13))
   
 
 
@@ -92,105 +91,37 @@ EFN_precip<-data_melt %>%
   group_by(variable, EFN) %>%
   summarise(average = mean(value)) %>% 
   ggplot()+
-  aes(x=variable, y=average, colour=EFN, group=EFN)+
+  aes(x=EFN, y=average, colour=variable, group=variable)+
   geom_point(size=5)+
   geom_path(size=1.5)+
   theme_classic()+
   xlab("EFN")+
-  ylab("Annual precipitation \n (mm)")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
-  scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+  ylab("Annual precip. \n (mm)")+
+  scale_x_discrete(labels=c("no EFN", "EFN"))+
+  scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("Max. niche value", "Min. niche value"))+
   #theme(legend.position="none")+
-  theme(axis.title.x=element_blank(), axis.title=element_text(size=16), 
-        axis.text.x = element_text(size=16),
-        axis.text.y = element_text(size=16))+
-  annotate("text", x=2, y=1900, label = "*/NS", size = 7)
+  theme(axis.title.x=element_blank(), axis.title=element_text(size=13), 
+        axis.text.x = element_text(size=13),
+        axis.text.y = element_text(size=13))+
+  labs(colour = "")
 
 EFN_nitro<-data_melt %>% 
   subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
   group_by(variable, EFN) %>%
   summarise(average = mean(value)) %>% 
   ggplot()+
-  aes(x=variable, y=average, colour=EFN, group=EFN)+
+  aes(x=EFN, y=average, colour=variable, group=variable)+
   geom_point(size=5)+
   geom_path(size=1.5)+
   theme_classic()+
   xlab("EFN")+
   ylab("Nitrogen breadth \n (cg/kg)")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
+  scale_x_discrete(labels=c("no EFN", "EFN"))+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(legend.position="none", axis.title=element_text(size=16),
-        axis.text.x = element_text(size=16),
-        axis.text.y = element_text(size=16))+
-  annotate("text", x=2, y=350, label = "***/NS", size = 7)
-
-# Domatia
-
-Domatia_temp<-data_melt %>% 
-  subset(variable=="temp_minquant" | variable=="temp_maxquant") %>% 
-  group_by(variable, Domatia) %>%
-  summarise(average = mean(value)) %>% 
-  ggplot()+
-  aes(x=variable, y=average, colour=Domatia, group=Domatia)+
-  geom_point(size=5)+
-  geom_path(size=1.5)+
-  theme_classic()+
-  xlab("Domatia")+
-  ylab("average annual temperature")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
-  #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-  scale_colour_manual(values=c("#26432FFF", "#92BBD9FF"))+
-  theme(legend.position="none")+
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
-        axis.title=element_text(size=16), 
-        axis.text.x = element_text(size=16),
-        axis.text.y = element_text(size=16))
-  #annotate("text", label = "NS/NS", x=2, y=26, size = 7)
-
-
-
-Domatia_precip<-data_melt %>% 
-  subset(variable=="precip_minquant" | variable=="precip_maxquant") %>% 
-  group_by(variable, Domatia) %>%
-  summarise(average = mean(value)) %>% 
-  ggplot()+
-  aes(x=variable, y=average, colour=Domatia, group=Domatia)+
-  geom_point(size=5)+
-  geom_path(size=1.5)+
-  theme_classic()+
-  xlab("Domatia")+
-  ylab("Annual precipitation (mm)")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
-  #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-  scale_colour_manual(values=c("#26432FFF", "#92BBD9FF"))+
-  #theme(legend.position="none")+
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
-        axis.title=element_text(size=16), 
-        axis.text.x = element_text(size=16),
-        axis.text.y = element_text(size=16))
-  #annotate("text", label = "NS/NS", x=2, y=3000, size = 7)
-
-Domatia_nitro<-data_melt %>% 
-  subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
-  group_by(variable, Domatia) %>%
-  summarise(average = mean(value)) %>% 
-  ggplot()+
-  aes(x=variable, y=average, colour=Domatia, group=Domatia)+
-  geom_point(size=5)+
-  geom_path(size=1.5)+
-  theme_classic()+
-  xlab("Domatia")+
-  ylab("Nitrogen breadth \n (cg/kg)")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
-  #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-  scale_colour_manual(values=c("#26432FFF", "#92BBD9FF"))+
-  theme(axis.title.y=element_blank())+
-  theme(legend.position="none", axis.title=element_text(size=16), 
-        axis.text.x = element_text(size=16),
-        axis.text.y = element_text(size=16))
-  #annotate("text", label = "NS/NS", x=2, y=350, size = 7)
-
-
+  theme(legend.position="none", axis.title=element_text(size=13),
+        axis.text.x = element_text(size=13),
+        axis.text.y = element_text(size=13))
+  
 
 
 # Fixer
@@ -200,20 +131,19 @@ fixer_temp<-data_melt %>%
   group_by(variable, fixer) %>%
   summarise(average = mean(value)) %>% 
   ggplot()+
-  aes(x=variable, y=average, colour=fixer, group=fixer)+
+  aes(x=fixer, y=average, colour=variable, group=variable)+
   geom_point(size=5)+
   geom_path(size=1.5)+
   theme_classic()+
   xlab("Fixer")+
   ylab("average annual temperature")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
+  scale_x_discrete(labels=c("no rhizobia", "rhizobia"))+
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-  scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
+  scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"))+
   theme(legend.position="none")+
   theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
-        axis.title=element_text(size=16), axis.text.x = element_text(size=16),
-        axis.text.y = element_text(size=16))+
-  annotate("text", label = "*/NS", x=2, y=24, size = 7)
+        axis.title=element_text(size=13), axis.text.x = element_text(size=13),
+        axis.text.y = element_text(size=13))
 
 
 
@@ -222,50 +152,49 @@ fixer_precip<-data_melt %>%
   group_by(variable, fixer) %>%
   summarise(average = mean(value)) %>% 
   ggplot()+
-  aes(x=variable, y=average, colour=fixer, group=fixer)+
+  aes(x=fixer, y=average, colour=variable, group=variable)+
   geom_point(size=5)+
   geom_path(size=1.5)+
   theme_classic()+
   xlab("Fixer")+
   ylab("Annual precipitation (mm)")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
+  scale_x_discrete(labels=c("no rhizobia", "rhizobia"))+
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("not present", "present"))+
-  scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
+  scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("Max. niche value", "Min. niche value"))+
   theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
-        axis.title=element_text(size=16), axis.text.x = element_text(size=16),
-        axis.text.y = element_text(size=16))+
+        axis.title=element_text(size=13), axis.text.x = element_text(size=13),
+        axis.text.y = element_text(size=13))+
  # guides(fill=guide_legend(title="Mutualism"))
  # theme(legend.position="none")+
-  labs(colour = "Fixer")+
-  annotate("text", label = "***/*", x=2, y=2000, size = 7)
+  labs(colour = "")
 
 fixer_nitro<-data_melt %>% 
   subset(variable=="nitro_minquant" | variable=="nitro_maxquant") %>% 
   group_by(variable, fixer) %>%
   summarise(average = mean(value)) %>% 
   ggplot()+
-  aes(x=variable, y=average, colour=fixer, group=fixer)+
+  aes(x=fixer, y=average, colour=variable, group=variable)+
   geom_point(size=5)+
   geom_path(size=1.5)+
   theme_classic()+
   xlab("Fixer")+
   ylab("Nitrogen breadth \n (cg/kg)")+
-  scale_x_discrete(labels=c("maximum", "minimum"))+
+  scale_x_discrete(labels=c("no rhizobia", "rhizobia"))+
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-  scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
+  scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"))+
   theme(axis.title.y=element_blank())+
-  theme(legend.position="none", axis.title=element_text(size=16), 
-        axis.text.x = element_text(size=16),
-        axis.text.y = element_text(size=16))
+  theme(legend.position="none", axis.title=element_text(size=13), 
+        axis.text.x = element_text(size=13),
+        axis.text.y = element_text(size=13))
   #annotate("text", label = "NS/NS", x=2, y=300, size = 7)
   
 
-plot<-cowplot::plot_grid(EFN_precip, Domatia_precip, fixer_precip,
-                   EFN_temp, Domatia_temp, fixer_temp,
-                   EFN_nitro, Domatia_nitro, fixer_nitro, nrow=3, ncol=3,
-                   labels = c('A', 'D', 'H', 'B', 'E', 'I', 'C', 'F', 'J'),
-                   label_size = 14,
-                   label_x = c(0.05, -0.05, -0.05, 0.05, -0.05, -0.05, 0.05, -0.05, -0.05))
+plot<-cowplot::plot_grid(EFN_precip, fixer_precip,
+                   EFN_temp, fixer_temp,
+                   EFN_nitro, fixer_nitro, nrow=3, ncol=2,
+                   labels = c('A', 'D', 'B', 'E', 'C', 'F'),
+                   label_size = 12,
+                   label_x = c(0.03, -0.05,  0.05, -0.05,  0.03, -0.05))
 plot
 
 jpeg("maxmin.jpeg", width=700, height=600)
@@ -323,6 +252,25 @@ p <- add_sub(p, "absolute median latitude", hjust = 0.4, size=18)
 plot(p) 
   
 
+### Plot all three mutualisms by latitude on one histogram
+
+# make column with EFN, EFN+rhizobia, just rhizobia, and none
+dat$traits<-ifelse(dat$EFN=="0" & dat$fixer=="0", "None", 
+                   ifelse(dat$EFN=="1" & dat$fixer=="0", "EFN only",
+                          ifelse(dat$EFN=="0" & dat$fixer=="1", "Rhizobia only",
+                                 "Both")))
+
+select(dat, c('EFN','fixer','traits'))
+
+complex_histo<-ggplot(data=dat, aes(x=median_lat, fill=traits))+
+  geom_histogram()+
+  theme_classic()+
+  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
+  theme(axis.title.x=element_text()"median latitude", axis.title.y=element_text(size=18),
+        title.text.y = element_text(size=13), axis.text.y=element_text(size=13),
+        axis.text.x=element_text(size=13))+
+  theme(legend.text=element_text(size=13), legend.title=element_text(size=15))+
+  guides(fill=guide_legend("Mutualism types"))
 
 
  

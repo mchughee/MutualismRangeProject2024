@@ -21,7 +21,7 @@ dat$fixer<-as.factor(dat$fixer)
 
 
 # read in model output
-temp_efn<-read.csv("nichebreadth_modelfit/temp_EFN_breadth_means.csv")
+temp_efn<-read.csv("nichebreadth_modelfit_new/temp_EFN_breadth_means.csv")
 temp_efn$group<-as.factor(temp_efn$group)
 # EFN temp
 EFN_temp <- ggplot()+
@@ -33,7 +33,9 @@ EFN_temp <- ggplot()+
   xlab("absolute median latitude")+
   theme(axis.title.x=element_blank(), text = element_text(size = 11), 
         axis.text.x = element_text(size=12), axis.text.y = element_text(size=12),
-        axis.title.y=element_text(size=17))+
+        axis.title.y=element_text(size=12), legend.text=element_text(size=12),
+        legend.title=element_text(size=12))+
+  guides(colour = guide_legend(override.aes = list(size=3)))+
 
   geom_line(data=temp_efn, aes(x=x, y=predicted, group = group, colour=group), show.legend = FALSE)+
   
@@ -44,7 +46,7 @@ EFN_temp <- ggplot()+
 annotate("text", label = "**", x=65, y=20, size = 8)
                               
 
-precip_efn<-read.csv("nichebreadth_modelfit/precip_EFN_breadth_means.csv")
+precip_efn<-read.csv("nichebreadth_modelfit_new/precip_EFN_breadth_means.csv")
 precip_efn$group<-as.factor(precip_efn$group)
 # EFN precip
 EFN_precip <- ggplot()+
@@ -57,7 +59,7 @@ EFN_precip <- ggplot()+
   theme(legend.position="none")+
   theme(axis.title.x=element_blank(), text = element_text(size = 11),
         axis.text.x = element_text(size=12), axis.text.y = element_text(size=12),
-        axis.title.y=element_text(size=17))+
+        axis.title.y=element_text(size=12))+
   geom_line(data=precip_efn, aes(x=x, y=predicted, group = group, colour=group))+
   geom_ribbon(data=precip_efn, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
                                  fill=group, 
@@ -66,7 +68,7 @@ EFN_precip <- ggplot()+
 annotate("text", label = "***", x=65, y=4500, size = 8)
 
 
-nitro_efn<-read.csv("nichebreadth_modelfit/nitro_EFN_breadth_means.csv")
+nitro_efn<-read.csv("nichebreadth_modelfit_new/nitro_EFN_breadth_means.csv")
 nitro_efn$group<-as.factor(nitro_efn$group)
 # EFN nitro
 EFN_nitro <- ggplot(data=dat)+
@@ -78,7 +80,7 @@ EFN_nitro <- ggplot(data=dat)+
   xlab("absolute median latitude")+
   theme(legend.position="none", axis.title.x = element_blank(), text = element_text(size = 11),
         axis.text.x = element_text(size=12), axis.text.y = element_text(size=12),
-        axis.title.y=element_text(size=17))+
+        axis.title.y=element_text(size=12))+
   annotate("text", label = "***", x=65, y=1500, size = 8)+
   geom_line(data=nitro_efn, aes(x=x, y=predicted, group = group, colour=group))+
   geom_ribbon(data=nitro_efn, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
@@ -91,32 +93,35 @@ EFN_nitro <- ggplot(data=dat)+
 
 ### Rhizobia o'clock
 
-temp_fix<-read.csv("nichebreadth_modelfit/temp_fix_breadth_means.csv")
+temp_fix<-read.csv("nichebreadth_modelfit_new/temp_fix_breadth_means.csv")
 temp_fix$group<-as.factor(temp_fix$group)
 
 # fixer temp
 fixer_temp <- ggplot()+
   geom_point(data=dat, aes(x=median_lat, y=temp_range, color=fixer), alpha=0.4)+
   theme_cowplot()+
-  scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
+  scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"))+
   ylab("Average annual temperature range (Celsius)")+
   xlab("absolute median latitude")+
   theme(axis.title.y=element_blank(), axis.title.x=element_blank(), text = element_text(size = 11),
-        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12))+
+        axis.text.x = element_text(size=12), axis.text.y = element_text(size=12),
+        legend.text=element_text(size=12),
+        legend.title=element_text(size=12))+
+  guides(colour = guide_legend(override.aes = list(size=3)))+
   geom_line(data=temp_fix, aes(x=x, y=predicted, group = group, colour=group), show.legend = FALSE)+
   geom_ribbon(data=temp_fix, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
                                   fill=group, 
                                   alpha=0.4), show.legend=FALSE)+
-  scale_fill_manual(values=c("#403369FF", "#AE93BEFF"))
+  scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))
 
 
-precip_fix<-read.csv("nichebreadth_modelfit/precip_fix_breadth_means.csv")
+precip_fix<-read.csv("nichebreadth_modelfit_new/precip_fix_breadth_means.csv")
 precip_fix$group<-as.factor(precip_fix$group)
 # fixer precip
 fixer_precip <- ggplot()+
   geom_point(data=dat, aes(x=median_lat, y=precip_range, color=fixer), alpha=0.4)+
   theme_cowplot()+
-  scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
+  scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"))+
   ylab("annual precipitation range (mm)")+
   xlab("absolute median latitude")+
   theme(legend.position="none")+
@@ -127,15 +132,15 @@ fixer_precip <- ggplot()+
   geom_ribbon(data=precip_fix, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
                                  fill=group, 
                                  alpha=0.4))+
-  scale_fill_manual(values=c("#403369FF", "#AE93BEFF"))
+  scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))
 
-nitro_fix<-read.csv("nichebreadth_modelfit/nitro_fix_breadth_means.csv")
+nitro_fix<-read.csv("nichebreadth_modelfit_new/nitro_fix_breadth_means.csv")
 nitro_fix$group<-as.factor(nitro_fix$group)
 # fixer nitro
 fixer_nitro <- ggplot()+
   geom_point(data=dat, aes(x=median_lat, y=nitro_range, color=fixer), alpha=0.4)+
   theme_cowplot()+
-  scale_colour_manual(values=c("#403369FF", "#AE93BEFF"))+
+  scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"))+
   ylab("nitrogen range (cg/kg)")+
   xlab("absolute median latitude")+
   theme(legend.position="none")+
@@ -145,7 +150,7 @@ fixer_nitro <- ggplot()+
   geom_ribbon(data=nitro_fix, aes(x=x, ymax=conf.high, ymin=conf.low, group=group,
                                    fill=group, 
                                    alpha=0.4))+
-  scale_fill_manual(values=c("#403369FF", "#AE93BEFF"))
+  scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))
 
 ### make a compound plot with all the plots we've made!
 
