@@ -53,9 +53,6 @@ summary_df$precip_range<-summary_df$precip_maxquant-summary_df$precip_minquant
 summary_df$temp_range<-summary_df$temp_maxquant-summary_df$temp_minquant
 summary_df$nitro_range<-summary_df$nitro_maxquant-summary_df$nitro_minquant
 
-# calculate absolute median latitude
-summary_df$abs_med_lat<-abs(summary_df$median_lat)
-
 
 # drop species with less than 25 occurrences
 # Yes, I did this for PGLS and now I'm doing it for separate native
@@ -120,11 +117,9 @@ nat_niche<-filter(native_data_traits, native_data_traits$species %in% tree_prune
 
 native_data_traits$EFN<-as.factor(native_data_traits$EFN)
 native_data_traits$fixer<-as.factor(native_data_traits$fixer)
-native_data_traits$Domatia<-as.factor(native_data_traits$Domatia)
 
 intro_niche$EFN<-as.factor(intro_niche$EFN)
 intro_niche$fixer<-as.factor(intro_niche$fixer)
-intro_niche$Domatia<-as.factor(intro_niche$Domatia)
 
 ################################################################################
 ### Run models!! For introduced ranges first
@@ -136,7 +131,7 @@ precip_range <- gls(log(precip_range) ~ EFN + fixer + woody +
                       poly(median_lat, 2)+EFN*poly(median_lat, 2)+
                       fixer*poly(median_lat, 2),
                     data=intro_niche, 
-                    correlation=corPagel(0.487, tree_pruned, form=~species, fixed=TRUE),
+                    correlation=corPagel(0.445, tree_pruned, form=~species, fixed=TRUE),
                     method="ML")
 
 summary(precip_range)
@@ -154,13 +149,12 @@ hist(residuals(precip_range))
 hist(intro_niche$temp_range)
 
 
-
 temp_range <- gls(temp_range ~ EFN + fixer + woody +
                     uses_num_uses + annual +
                     poly(median_lat, 2)+EFN*poly(median_lat, 2)+
                     fixer*poly(median_lat, 2),
                   data=intro_niche, 
-                  correlation=corPagel(0.504, tree_pruned, form=~species, fixed=TRUE), 
+                  correlation=corPagel(0.373, tree_pruned, form=~species, fixed=TRUE), 
                   method="ML")
 
 summary(temp_range)
@@ -182,7 +176,7 @@ nitro_range <- gls(log(nitro_range) ~ EFN + fixer + woody +
                      poly(median_lat, 2)+EFN*poly(median_lat, 2)+
                      fixer*poly(median_lat, 2),
                    data=intro_niche, 
-                   correlation=corPagel(0.511, tree_pruned, form=~species, fixed=TRUE),
+                   correlation=corPagel(0.330, tree_pruned, form=~species, fixed=TRUE),
                    method="ML")
 
 summary(nitro_range)
@@ -205,7 +199,7 @@ nat_precip_range <- gls(log(precip_range) ~ EFN + fixer + woody+
                           uses_num_uses + annual + poly(median_lat, 2) +
                           EFN*poly(median_lat, 2)+fixer*poly(median_lat, 2),
                         data=nat_niche, 
-                        correlation=corPagel(0.487, tree_pruned, form=~species, fixed=TRUE),
+                        correlation=corPagel(0.445, tree_pruned, form=~species, fixed=TRUE),
                         method="ML")
 
 
@@ -228,7 +222,7 @@ nat_temp_range <- gls(temp_range ~ EFN + fixer + woody
                       + uses_num_uses + annual + poly(median_lat, 2) +
                         EFN*poly(median_lat, 2)+ fixer*poly(median_lat, 2),
                       data=nat_niche, 
-                      correlation=corPagel(0.504, tree_pruned, form=~species, fixed=TRUE),
+                      correlation=corPagel(0.373, tree_pruned, form=~species, fixed=TRUE),
                       method="ML")
 
 summary(nat_temp_range)
@@ -250,7 +244,7 @@ nat_nitro_range <- gls(log(nitro_range) ~ EFN + fixer + woody
                        + uses_num_uses + annual + poly(median_lat, 2) +
                          EFN*poly(median_lat, 2)+ fixer*poly(median_lat, 2),
                        data=nat_niche, 
-                       correlation=corPagel(0.511, tree_pruned, form=~species, fixed=TRUE),
+                       correlation=corPagel(0.330, tree_pruned, form=~species, fixed=TRUE),
                        method="ML")
 
 summary(nat_nitro_range)
@@ -261,3 +255,107 @@ qqnorm(nat_nitro_range, abline = c(0,1))
 
 hist(residuals(nat_nitro_range))
 
+################################################################################
+### Running on total
+
+total_df<-points_1 %>% 
+  group_by(species) %>% 
+  reframe(n=n(),
+          precip_maxquant=quantile(precip, 0.95), 
+          precip_minquant=quantile(precip, 0.05),
+          precip_mean=mean(precip),
+          precip_median=median(precip),
+          nitro_maxquant=quantile(nitrogen, 0.95),
+          nitro_minquant=quantile(nitrogen, 0.05),
+          nitro_mean=mean(nitrogen),
+          nitro_median=median(nitrogen),
+          temp_maxquant=quantile(temp, 0.95),
+          temp_minquant=quantile(temp, 0.05),
+          temp_mean=mean(temp),
+          temp_median=median(temp),
+          max_lat=max(Y),
+          min_lat=min(Y),
+          mean_lat=mean(Y),
+          median_lat=median(Y),
+          quant95=quantile(Y, 0.95),
+          quant005=quantile(Y, 0.05)
+  )
+
+# slim down to species in native and intro ranges
+total_niche<-filter(total_df, total_df$species %in% nat_niche$species)
+total_traits<-left_join(total_niche, traits, 
+                             join_by(species==species), multiple="any")
+
+
+# calculate niche breadth
+total_traits$precip_range<-total_traits$precip_maxquant-total_traits$precip_minquant
+total_traits$temp_range<-total_traits$temp_maxquant-total_traits$temp_minquant
+total_traits$nitro_range<-total_traits$nitro_maxquant-total_traits$nitro_minquant
+
+# make sure that R knows our categorical variables are factors
+total_traits$EFN<-as.factor(total_traits$EFN)
+total_traits$fixer<-as.factor(total_traits$fixer)
+
+### Run models!!
+hist(total_traits$precip_range)
+hist(log(total_traits$precip_range))
+
+total_precip_range <- gls(log(precip_range) ~ EFN + fixer + woody+
+                          uses_num_uses + annual + poly(median_lat, 2) +
+                          EFN*poly(median_lat, 2)+fixer*poly(median_lat, 2),
+                        data=total_traits, 
+                        correlation=corPagel(0.445, tree_pruned, form=~species, fixed=TRUE),
+                        method="ML")
+
+
+summary(total_precip_range)
+
+plot(total_precip_range)
+
+qqnorm(total_precip_range, abline = c(0,1))
+
+hist(residuals(total_precip_range))
+
+
+
+# pgls for temp range
+
+hist(total_traits$temp_range)
+hist(log(total_traits$temp_range))
+
+total_temp_range <- gls(temp_range ~ EFN + fixer + woody
+                      + uses_num_uses + annual + poly(median_lat, 2) +
+                        EFN*poly(median_lat, 2)+ fixer*poly(median_lat, 2),
+                      data=total_traits, 
+                      correlation=corPagel(0.373, tree_pruned, form=~species, fixed=TRUE),
+                      method="ML")
+
+summary(total_temp_range)
+
+plot(total_temp_range)
+
+qqnorm(total_temp_range, abline = c(0,1))
+
+hist(residuals(total_temp_range))
+
+
+
+#### pgls for nitro range
+
+hist(total_traits$nitro_range)
+hist(log(total_traits$nitro_range))
+
+total_nitro_range <- gls(log(nitro_range) ~ EFN + fixer + woody
+                       + uses_num_uses + annual + poly(median_lat, 2) +
+                         EFN*poly(median_lat, 2)+ fixer*poly(median_lat, 2),
+                       data=total_traits, 
+                       correlation=corPagel(0.330, tree_pruned, form=~species, fixed=TRUE),
+                       method="ML")
+
+summary(total_nitro_range)
+
+plot(total_nitro_range)
+
+qqnorm(total_nitro_range, abline = c(0,1))
+
+hist(residuals(total_nitro_range))
