@@ -1,3 +1,14 @@
+---
+title: "PGLS_niche_breadth"
+output: word_document
+date: "2025-03-03"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
 # Running PGLS
 library(ape)
 library(phytools)
@@ -8,20 +19,10 @@ library(ggplot2)
 library(cowplot)
 #install.packages("ggeffects")
 library(ggeffects)
-#install.packages("gtsummary")
-library(gtsummary)
-#install.packages("stargazer")
-library(stargazer)
-library(broom)
-install.packages("kableExtra")
-library(kableExtra)
+```
 
-# Removing these weird species with 0-little niche breadth at all, and writing 
-# it into a new file that I can read in at any time (very exciting stuff):
-#data_2<-data_1 %>% filter(n>=25)
-#write.csv(data_2, "pgls_final_data.csv")
-# we will read this in next
 
+```{r}
 # Read back in PGLS dataframe
 data<-read.csv("pgls_polydropped_final.csv")
 #data$mutualism<-ifelse(data$EFN==1 | data$Domatia==1 | data$fixer==1, "1", "0")
@@ -68,35 +69,26 @@ min(data_1$nitro_range)
 data_1$EFN<-as.factor(data_1$EFN)
 data_1$Domatia<-as.factor(data_1$Domatia)
 data_1$fixer<-as.factor(data_1$fixer)
+```
 
-######################################
+
+```{r}
 ## precip first
 
-# I took n out to try without it!!!! But please know that it should be put back
-# in!
+
 precip_range <- gls(log(precip_range) ~ EFN + fixer+woody
                     + uses_num_uses + annual+poly(median_lat, 2)+EFN*poly(median_lat, 2)+
                       fixer*poly(median_lat, 2),
                     data=data_1, 
                     correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
-summary(precip_range)$coefficients
+summary(precip_range)
 
 plot(precip_range)
 
 qqnorm(precip_range, abline = c(0,1))
 
 hist(residuals(precip_range))
-
-precip_range|>
-  tbl_regression(exponentiate = TRUE)|>
-  bold_p(t = 0.05)
-
-tidy(precip_range)
-
-precip_range %>% 
-  kbl() %>%
-  kable_styling()
 
 
 ### Save as RDS file
@@ -126,6 +118,10 @@ plot(fix_precip_means)
 ### save df
 write.csv(fix_precip_means, "nichebreadth_modelfit_new/precip_fix_breadth_means.csv")
 
+```
+
+
+```{r}
 ################################################################################
 # pgls for temp range
 
@@ -143,14 +139,12 @@ hist(residuals(temp_range))
 
 plot(temp_range)
 
-temp_range|>
-  tbl_regression(exponentiate = TRUE)|>
-  bold_p(t = 0.05)
 
 ### Save as RDS file
 
 write_rds(temp_range, "temp_niche_breadth.rds")
 
+###############################################################################
 ### Pull predicted means for EFN
 
 EFN_temp_means<-ggpredict(temp_range, terms=c("median_lat", "EFN [all]"), type="fixed")
@@ -169,7 +163,10 @@ plot(fix_temp_means)
 write.csv(fix_temp_means, "nichebreadth_modelfit_new/temp_fix_breadth_means.csv")
 
 
+```
 
+
+```{r}
 ##########################################################################
 #### pgls for nitro range
 
@@ -209,5 +206,5 @@ plot(fix_nitro_means)
 
 ### save df
 write.csv(fix_nitro_means, "nichebreadth_modelfit_new/nitro_fix_breadth_means.csv")
-
+```
 

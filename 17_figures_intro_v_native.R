@@ -10,11 +10,9 @@ library(ghibli)
 intro<-read_csv("introduced_ranges_data.csv")
 native<-read_csv("native_ranges_data.csv")
 
-# remove the native df columns from intro-- we don't need them 
-intro_new <- intro %>% select(-contains("nat_"))
 
 # add nat_ to each column in native df
-#colnames(native) <- paste0('nat_', colnames(native))
+colnames(native) <- paste0('nat_', colnames(native))
 
 # combine dataframes
 combine<-left_join(native, intro_new, join_by(nat_species==species), multiple="any")

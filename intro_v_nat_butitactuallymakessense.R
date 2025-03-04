@@ -359,3 +359,9 @@ plot(total_nitro_range)
 qqnorm(total_nitro_range, abline = c(0,1))
 
 hist(residuals(total_nitro_range))
+
+###############################################################################
+### saving files to make figure down the road
+
+write.csv(nat_niche, "native_ranges_data.csv")
+write.csv(intro_niche, "introduced_ranges_data.csv")
