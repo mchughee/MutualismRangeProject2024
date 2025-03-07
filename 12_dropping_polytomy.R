@@ -46,8 +46,14 @@ write.tree(dropped, "polytomy_removed.tre")
 # remove polytomy species from pgls final dataset
 pgls<-read.csv("pgls_final_data.csv")
 
+setdiff(pgls$species, dropped$tip.label)
+
+
+
 pgls_new<-filter(pgls, pgls$species %in% dropped$tip.label)
 
 # write it as a csv for future use!
 
 write.csv(pgls_new, "pgls_polydropped_final.csv")
+
+setdiff(pgls$species, mytree$tip.label)

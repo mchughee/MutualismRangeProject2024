@@ -122,3 +122,14 @@ precip_niche_breadth.rds
 temp_niche_breadth.rds
 90-10_analyses
 97.5-2.5_analyses
+Rplot.png
+nitro_niche_breadth.rds
+pgls_breadth.docx
+precip_range.png
+precip_range.txt
+maxmin_latitude_figure.R
+maxmin_model_output
+maxmin_results.Rmd
+maxmin_results.docx
+natvin_knit.Rmd
+natvin_knit.docx

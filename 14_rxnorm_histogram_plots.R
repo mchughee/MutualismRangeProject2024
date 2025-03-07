@@ -203,54 +203,7 @@ plot
 
 dev.off()
 
-
-
-### absolute median latitude plot
-
-dat$abs_med_lat<-abs(dat$median_lat)
-
-latitude_EFN<-ggplot(data=dat, aes(x=abs_med_lat, fill=EFN))+
-  geom_histogram()+
-  theme_classic()+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(axis.title.x=element_blank(), axis.title.y=element_text(size=18),
-        title.text.y = element_text(size=15), axis.text.y=element_text(size=13),
-        axis.text.x=element_text(size=13))+
-  theme(legend.text=element_text(size=15), legend.title=element_text(size=15))+
-  guides(fill=guide_legend("EFN"))
-
-
-latitude_domatia<-ggplot(data=dat, aes(x=abs_med_lat, fill=Domatia))+
-  geom_histogram()+
-  theme_classic()+
-  scale_fill_manual(values=c("#26432FFF", "#92BBD9FF"))+
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
-        title.text.y = element_text(size=15))+
-  theme(legend.text=element_text(size=15), legend.title=element_text(size=15),
-        axis.text.y=element_text(size=13),
-        axis.text.x=element_text(size=13))+
-  guides(fill=guide_legend("Domatia"))
-
-latitude_fixer<-ggplot(data=dat, aes(x=abs_med_lat, fill=fixer))+
-  geom_histogram()+
-  theme_classic()+
-  scale_fill_manual(values=c("#403369FF", "#AE93BEFF"))+
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), 
-        title.text.y = element_text(size=15), axis.text.y=element_text(size=13),
-        axis.text.x=element_text(size=13))+
-  theme(legend.text=element_text(size=15), legend.title=element_text(size=15))+
-  guides(fill=guide_legend("Rhizobia"))
-
-
-p<-cowplot::plot_grid(latitude_EFN, latitude_domatia, latitude_fixer, nrow=1, ncol=3,
-                      labels = c('A', 'B', 'C'),
-                      label_x = c(0, -0.05, -0.05),
-                      label_size = 18)
-
-p <- add_sub(p, "absolute median latitude", hjust = 0.4, size=18)
-
-plot(p) 
-  
+################################################################################  
 
 ### Plot all three mutualisms by latitude on one histogram
 
@@ -260,17 +213,26 @@ dat$traits<-ifelse(dat$EFN=="0" & dat$fixer=="0", "None",
                           ifelse(dat$EFN=="0" & dat$fixer=="1", "Rhizobia only",
                                  "Both")))
 
-select(dat, c('EFN','fixer','traits'))
+dat1<-dat %>% mutate(traits=fct_relevel(traits, c("Both","EFN only","Rhizobia only",
+                                                     "None"))) %>% 
+  arrange(traits)
 
-complex_histo<-ggplot(data=dat, aes(x=median_lat, fill=traits))+
+complex_histo<-ggplot(data=dat1, aes(x=median_lat, fill=traits))+
   geom_histogram()+
   theme_classic()+
   scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(axis.title.x=element_text()"median latitude", axis.title.y=element_text(size=18),
+  xlab("median latitude")+
+  theme(axis.title.x=element_text(size=13), axis.title.y=element_text(size=13),
         title.text.y = element_text(size=13), axis.text.y=element_text(size=13),
         axis.text.x=element_text(size=13))+
-  theme(legend.text=element_text(size=13), legend.title=element_text(size=15))+
+  theme(legend.text=element_text(size=13), legend.title=element_text(size=13))+
   guides(fill=guide_legend("Mutualism types"))
+
+
+###############################################################################
+# latitude figure for max and min plots
+
+
 
 
  

@@ -365,3 +365,4 @@ hist(residuals(total_nitro_range))
 
 write.csv(nat_niche, "native_ranges_data.csv")
 write.csv(intro_niche, "introduced_ranges_data.csv")
+write.csv(total_traits, "total_ranges_data.csv")
