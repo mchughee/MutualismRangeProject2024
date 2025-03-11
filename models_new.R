@@ -75,23 +75,23 @@ hist(residuals(precip_mef))
 write_rds(precip_mef, "precip_niche_breadth_mef.rds")
 
 ### Extract predicted values
-EFN_precip_means_mef<-ggpredict(precip_mef, terms=c("abs_med_lat [all]", "EFN [all]"), type="fixed")
+EFN_precip_means_mef<-ggpredict(precip_mef, terms=c("abs_med_lat [all]", "EFN [all]", "hemisphere"), type="fixed")
 plot(EFN_precip_means_mef)
 
 
-fixer_precip_means_mef<-ggpredict(precip_mef, terms=c("abs_med_lat [all]", "fixer [all]"), type="fixed")
+fixer_precip_means_mef<-ggpredict(precip_mef, terms=c("abs_med_lat [all]", "fixer [all]", "hemisphere"), type="fixed")
 plot(fixer_precip_means_mef)
 
 ### Plot
-p1 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=precip_range, color=EFN),
-                          alpha=0.4)+theme_cowplot()+
+p1 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=precip_range, shape= hemisphere, colour=EFN,
+                          alpha=0.4))+theme_cowplot()+
  scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
   ylab("annual precipitation \n range (mm)")+
   xlab("absolute median latitude")+
- geom_line(data=EFN_precip_means_mef, aes(x=x, y=predicted, group = group, 
+ geom_line(data=EFN_precip_means_mef, aes(x=x, y=predicted, linetype = facet, 
                     colour=group), show.legend = FALSE, linewidth=1.2)+
  geom_ribbon(data=EFN_precip_means_mef, aes(x=x, ymin=predicted-exp(std.error), ymax=predicted+exp(std.error), 
-                                            group=group, fill=group, 
+                                             fill=interaction(group, facet),
                                             alpha=0.7), show.legend=FALSE)+
   scale_fill_ghibli_d("YesterdayMedium", direction = -1)
 
@@ -131,10 +131,10 @@ summary(temp_mef)
 write_rds(temp_mef, "temp_niche_breadth_mef.rds")
 
 ### Extract predicted values
-EFN_temp_means_mef<-ggpredict(temp_mef, terms=c("abs_med_lat [all]", "EFN [all]"), type="fixed")
+EFN_temp_means_mef<-ggpredict(temp_mef, terms=c("abs_med_lat [all]", "EFN [all]", "hemisphere"), type="fixed")
 plot(EFN_temp_means_mef)
 
-fixer_temp_means_mef<-ggpredict(temp_mef, terms=c("abs_med_lat [all]", "fixer [all]"), type="fixed")
+fixer_temp_means_mef<-ggpredict(temp_mef, terms=c("abs_med_lat [all]", "fixer [all]", "hemisphere"), type="fixed")
 plot(fixer_temp_means_mef)
 
 ###############################################################################
@@ -185,10 +185,10 @@ hist(residuals(nitro_mef))
 write_rds(nitro_mef, "nitro_niche_breadth_mef.rds")
 
 ### Extract predicted values
-EFN_nitro_means_mef<-ggpredict(nitro_mef, terms=c("abs_med_lat [all]", "EFN [all]"), type="fixed")
+EFN_nitro_means_mef<-ggpredict(nitro_mef, terms=c("abs_med_lat [all]", "EFN [all]", "hemisphere"), type="fixed")
 plot(EFN_nitro_means_mef)
 
-fixer_nitro_means_mef<-ggpredict(nitro_mef, terms=c("abs_med_lat [all]", "fixer [all]"), type="fixed")
+fixer_nitro_means_mef<-ggpredict(nitro_mef, terms=c("abs_med_lat [all]", "fixer [all]", "hemisphere"), type="fixed")
 plot(fixer_nitro_means_mef)
 
 ############################################
