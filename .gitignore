@@ -135,3 +135,17 @@ natvin_knit.Rmd
 natvin_knit.docx
 nitro_abs_lat_efn.pdf
 nitro_abs_lat_fixer.pdf
+nitro_abs_lat_efn_fixer.pdf
+nitro_abs_lat_efn_fixer_nohemisphere.pdf
+nitro_abs_lat_fixer_nohemisphere.pdf
+nitro_niche_breadth_mef.rds
+precip_abs_lat_efn.pdf
+precip_abs_lat_efn_fixer.pdf
+precip_abs_lat_fixer.pdf
+precip_niche_breadth_mef.rds
+temp_abs_lat_efn.pdf
+temp_abs_lat_efn_fixer.pdf
+temp_abs_lat_fixer.pdf
+temp_niche_breadth_mef.rds
+lat_fig_logyaxis_se1
+compound_lat_fig
