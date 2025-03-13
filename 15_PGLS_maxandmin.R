@@ -76,6 +76,10 @@ write_rds(precip_maxquant, "precip_maxquant.rds")
 precip_maxquant<-read_rds("precip_maxquant.rds")
 summary(precip_maxquant)
 
+precip_max<-data.frame(coef(summary(precip_maxquant))) %>% format(scientific=F)
+precip_max$p.value<-as.numeric(precip_max$p.value) %>% round(4)
+write.csv(precip_max, "precip_max_output_table.csv")
+
 ### Extract predicted values
 EFN_precip_max_means<-ggpredict(precip_maxquant, 
                                 terms=c("abs_med_lat [all]", "EFN [all]", "hemisphere"), type="fixed")
@@ -146,6 +150,10 @@ plot(temp_maxquant)
 write_rds(temp_maxquant, "temp_maxquant.rds")
 temp_maxquant<-read_rds("temp_maxquant.rds")
 
+temp_max<-data.frame(coef(summary(temp_maxquant))) %>% format(scientific=F)
+temp_max$p.value<-as.numeric(temp_max$p.value) %>% round(4)
+write.csv(temp_max, "temp_max_output_table.csv")
+
 EFN_temp_max_means<-ggpredict(temp_maxquant, 
                                 terms=c("abs_med_lat [all]", "EFN [all]", "hemisphere"), type="fixed")
 plot(EFN_temp_max_means)
@@ -212,9 +220,15 @@ plot(nitro_maxquant)
 hist(residuals(nitro_maxquant))
 qqnorm(nitro_maxquant, abline = c(0,1))
 
+
 # Write RDS file
 write_rds(nitro_maxquant, "nitro_maxquant.rds")
 nitro_maxquant<-read_rds("nitro_maxquant.rds")
+
+# write into file
+nitro_max<-data.frame(coef(summary(nitro_maxquant))) %>% format(scientific=F)
+nitro_max$p.value<-as.numeric(nitro_max$p.value) %>% round(4)
+write.csv(nitro_max, "nitro_max_output_table.csv")
 
 EFN_nitro_max_means<-ggpredict(nitro_maxquant, 
                                 terms=c("abs_med_lat [all]", "EFN [all]", "hemisphere"), type="fixed")
@@ -238,7 +252,8 @@ p7 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_maxquant,
   #alpha=0.4), show.legend=FALSE)+
   scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
   guides(linetype=guide_legend("hemisphere"))+
-  scale_linetype_manual(values=c(1, 3), labels=c("northern", "southern"))
+  scale_linetype_manual(values=c(1, 3), labels=c("northern", "southern"))+
+  guides(linetype="none")
   
 
 save_plot("nitro_max_efn.pdf", p7)
@@ -260,12 +275,26 @@ p8 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_maxquant, colo
   guides(linetype=guide_legend("hemisphere"))
 
 
+
+
 save_plot("nitro_max_fixer.pdf", p8)
 
 p9 <- plot_grid(p7, p8, nrow=2)
 save_plot("nitro_max_efn_fixer.pdf", p9, base_height=8, base_width=6)
 p9
 
+# cowplot all our maximum plots together
+
+efn_leg_max<-get_legend(p7)
+fixer_leg_max<-get_legend(p8)
+combine_leg<-plot_grid(efn_leg_max, fixer_leg_max, ncol=1, nrow=2)
+
+maximum_plots<-cowplot::plot_grid(p1+theme(axis.title.x = element_blank()), p2+theme(axis.title.y = element_blank(), axis.title.x = element_blank()), combine_leg,
+                                  p4+theme(axis.title.x = element_blank()), p5+theme(axis.title.y = element_blank(), axis.title.x = element_blank()), NA,
+                                  p7+ theme(legend.position="none"), p8+ theme(legend.position="none", axis.title.y = element_blank()), NA,
+                                  ncol=3, nrow=3)
+
+################################################################################
 ################################################################################
 ### Running PGLS on minquant data
 
@@ -289,6 +318,11 @@ qqnorm(precip_minquant, abline = c(0,1))
 
 write_rds(precip_minquant, "precip_minquant.rds")
 precip_minquant<-read_rds("precip_minquant.rds")
+
+# output table
+precip_min<-data.frame(coef(summary(precip_minquant))) %>% format(scientific=F)
+precip_min$p.value<-as.numeric(precip_min$p.value) %>% round(4)
+write.csv(precip_min, "precip_min_output_table.csv")
 
 # grab model output
 EFN_precip_min_means<-ggpredict(precip_minquant, 
@@ -363,6 +397,12 @@ plot(temp_minquant)
 write_rds(temp_minquant, "temp_minquant.rds")
 temp_minquant<-read_rds("temp_minquant.rds")
 
+# output table
+temp_min<-data.frame(coef(summary(temp_minquant))) %>% format(scientific=F)
+temp_min$p.value<-as.numeric(temp_min$p.value) %>% round(4)
+write.csv(temp_min, "temp_min_output_table.csv")
+
+# pull model output
 EFN_temp_min_means<-ggpredict(temp_minquant, 
                                 terms=c("abs_med_lat [all]", "EFN [all]", "hemisphere"), type="fixed")
 plot(EFN_temp_min_means)
@@ -437,6 +477,11 @@ qqnorm(nitro_minquant, abline = c(0,1))
 write_rds(nitro_minquant, "nitro_minquant.rds")
 nitro_minquant<-read_rds("nitro_minquant.rds")
 
+# output table
+nitro_min<-data.frame(coef(summary(nitro_minquant))) %>% format(scientific=F)
+nitro_min$p.value<-as.numeric(nitro_min$p.value) %>% round(4)
+write.csv(nitro_min, "nitro_min_output_table.csv")
+
 # Pull model output
 EFN_nitro_min_means<-ggpredict(nitro_minquant, 
                               terms=c("abs_med_lat [all]", "EFN [all]", "hemisphere"), type="fixed")
@@ -452,7 +497,7 @@ p16 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_minquant,
                                             colour=EFN
                                             ), alpha=0.1)+theme_cowplot()+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
-  ylab("minimum nitrogen (cg/kg)")+
+  ylab("minimum nitrogen \n (cg/kg)")+
   xlab("absolute median latitude")+
   geom_line(data=EFN_nitro_min_means, aes(x=x, y=predicted, linetype = facet, 
                                          colour=group), linewidth=1.3)+
@@ -470,7 +515,7 @@ p17 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_minquant,
                                             color=fixer),
                            alpha=0.2)+theme_cowplot()+
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
-  ylab("minimum nitrogen (cg/kg)")+
+  ylab("minimum nitrogen \n (cg/kg)")+
   xlab("absolute median latitude")+
   geom_line(data=fixer_nitro_min_means, aes(x=x, y=predicted, linetype = facet, 
                                            colour=group), linewidth=1.2)+
@@ -481,12 +526,18 @@ p17 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_minquant,
   scale_linetype_manual(values=c(1, 3), labels=c("northern", "southern"))
 
 
-save_plot("nitro_min_fixer.pdf", p14)
+save_plot("nitro_min_fixer.pdf", p17)
 
 p18 <- plot_grid(p16, p17, nrow=2)
 save_plot("nitro_min_efn_fixer.pdf", p15, base_height=8, base_width=6)
 p18
 
-p19<-cowplot::plot_grid(p3, p6, p9, ncol=3, nrow=1)
+efn_leg_min<-get_legend(p16)
+fixer_leg_min<-get_legend(p17)
+combine_leg_min<-plot_grid(efn_leg_min, fixer_leg_min, ncol=1, nrow=2)
 
-p20<-cowplot::plot_grid(p12, p15, p18, ncol=3, nrow=1)
+minimum_plots<-plot_grid(p10+theme(axis.title.x = element_blank()), p11+theme(axis.title.y = element_blank(), axis.title.x = element_blank()), combine_leg,
+                         p13+theme(axis.title.x = element_blank()), p14+theme(axis.title.y = element_blank(), axis.title.x = element_blank()), NA,
+                         p16+ theme(legend.position="none"), 
+                         p17+ theme(legend.position="none", axis.title.y = element_blank()), NA,
+                         ncol=3, nrow=3)

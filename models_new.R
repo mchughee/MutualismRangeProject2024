@@ -75,6 +75,13 @@ hist(residuals(precip_mef))
 
 write_rds(precip_mef, "precip_niche_breadth_mef.rds")
 precip_mef<-read_rds("precip_niche_breadth_mef.rds")
+summary(precip_mef)
+
+# save model output!:')
+precip_df<-data.frame(coef(summary(precip_mef))) %>% format(scientific=F)
+precip_df$p.value<-as.numeric(precip_df$p.value) %>% round(4)
+write.csv(precip_df, "precip_breadth_output_table.csv")
+
 
 ### Extract predicted values
 EFN_precip_means_mef<-ggpredict(precip_mef, terms=c("abs_med_lat [all]", "EFN [all]", "hemisphere"), type="fixed")
@@ -143,6 +150,11 @@ hist(residuals(temp_mef))
 
 write_rds(temp_mef, "temp_niche_breadth_mef.rds")
 temp_mef<-read_rds("temp_niche_breadth_mef.rds")
+
+# pull model summary table, put into conventional notation, and export
+temp_df<-data.frame(coef(summary(temp_mef))) %>% format(scientific=F)
+temp_df$p.value<-as.numeric(temp_df$p.value) %>% round(4)
+write.csv(temp_df, "temp_breadth_output_table.csv")
   
 ### Extract predicted values
 EFN_temp_means_mef<-ggpredict(temp_mef, terms=c("abs_med_lat [all]", "EFN [all]", "hemisphere"), type="fixed")
@@ -207,6 +219,11 @@ hist(residuals(nitro_mef))
 write_rds(nitro_mef, "nitro_niche_breadth_mef.rds")
 nitro_mef<-read_rds("nitro_niche_breadth_mef.rds")
 
+# pull model summary table, put into conventional notation, and export
+nitro_df<-data.frame(coef(summary(nitro_mef))) %>% format(scientific=F)
+nitro_df$p.value<-as.numeric(nitro_df$p.value) %>% round(4)
+write.csv(nitro_df, "nitro_breadth_output_table.csv")
+
 ### Extract predicted values
 EFN_nitro_means_mef<-ggpredict(nitro_mef, terms=c("abs_med_lat [all]", "EFN [all]", "hemisphere"), type="fixed")
 plot(EFN_nitro_means_mef)
@@ -256,6 +273,11 @@ p9 <- plot_grid(p7, p8, nrow=2)
 save_plot("nitro_abs_lat_efn_fixer.pdf", p9, base_height=8, base_width=6)
 p9
 
+leg_fixer<-cowplot::get_legend(p8)
+leg_efn<-cowplot::get_legend(p7)
 
-p10<-cowplot::plot_grid(p3, p6, p9, nrow=1, ncol=3)
+p10<-cowplot::plot_grid(p1, p4, p7,  
+                        p2, p5, p8,
+                        leg_efn, leg_fixer,
+                        nrow=2, ncol=3)
 p10

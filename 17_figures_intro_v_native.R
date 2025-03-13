@@ -158,15 +158,15 @@ fixer_nitro<-data_melt %>%
   guides(fill = guide_legend(nrow = 1))
 
 
-legend_efn <- as_ggplot(cowplot::get_legend(EFN_temp))
-legend_fixer<-as_ggplot(cowplot::get_legend(fixer_temp))
+legend_efn <- cowplot::get_legend(EFN_temp)
+legend_fixer<-cowplot::get_legend(fixer_temp)
 legends<-cowplot::plot_grid(legend_efn, legend_fixer, ncol=1, nrow=2)
 
 
 
 P<-cowplot::plot_grid(EFN_temp+ theme(legend.position="none"),  
                       fixer_temp+ theme(legend.position="none"),
-                      legends+theme(legend.position = "left"),
+                      legends+ theme(plot.tag.position = 'left'),
                       EFN_precip, fixer_precip, NA,
                       EFN_nitro, fixer_nitro, NA,
                       ncol=3, nrow=3,

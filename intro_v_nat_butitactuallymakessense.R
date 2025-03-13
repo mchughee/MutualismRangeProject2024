@@ -151,6 +151,11 @@ plot(precip_range)
 qqnorm(precip_range, abline = c(0,1))
 hist(residuals(precip_range))
 
+# save model output
+precip_intro<-data.frame(coef(summary(intro_precip_range))) %>% format(scientific=F)
+precip_intro$p.value<-as.numeric(precip_intro$p.value) %>% round(4)
+#write.csv(precip_intro, "precip_intro_output_table.csv")
+
 
 # pull model output
 
@@ -207,7 +212,7 @@ save_plot("precip_abs_lat_fixer.pdf", p2)
 hist(intro_niche$temp_range)
 
 
-temp_range <- gls(temp_range ~ EFN*abs_med_lat*hemisphere+fixer*abs_med_lat*hemisphere+woody+uses_num_uses+annual,
+intro_temp_range <- gls(temp_range ~ EFN*abs_med_lat*hemisphere+fixer*abs_med_lat*hemisphere+woody+uses_num_uses+annual,
                   data=intro_niche, 
                   correlation=corPagel(0.368, tree_pruned, form=~species, fixed=TRUE), 
                   method="ML")
@@ -217,6 +222,11 @@ summary(temp_range)
 plot(temp_range)
 qqnorm(temp_range, abline = c(0,1))
 hist(residuals(temp_range))
+
+# save model output
+temp_intro<-data.frame(coef(summary(intro_temp_range))) %>% format(scientific=F)
+temp_intro$p.value<-as.numeric(temp_intro$p.value) %>% round(4)
+#write.csv(temp_intro, "temp_intro_output_table.csv")
 
 # pull model output
 
@@ -270,16 +280,20 @@ save_plot("precip_abs_lat_fixer.pdf", p2)
 
 hist(log(intro_niche$nitro_range))
 
-nitro_range <- gls(log(nitro_range) ~ EFN*abs_med_lat*hemisphere+fixer*abs_med_lat*hemisphere+woody+uses_num_uses+annual,
+intro_nitro_range <- gls(log(nitro_range) ~ EFN*abs_med_lat*hemisphere+fixer*abs_med_lat*hemisphere+woody+uses_num_uses+annual,
                    data=intro_niche, 
                    correlation=corPagel(0.288, tree_pruned, form=~species, fixed=TRUE),
                    method="ML")
 
-summary(nitro_range)
+summary(intro_nitro_range)
 
-plot(nitro_range)
-qqnorm(nitro_range, abline = c(0,1))
-hist(residuals(nitro_range))
+plot(intro_nitro_range)
+qqnorm(intro_nitro_range, abline = c(0,1))
+hist(residuals(intro_nitro_range))
+
+nitro_intro<-data.frame(coef(summary(intro_nitro_range))) %>% format(scientific=F)
+nitro_intro$p.value<-as.numeric(nitro_intro$p.value) %>% round(4)
+#write.csv(nitro_intro, "nitro_intro_output_table.csv")
 
 
 ###############################################################################
@@ -301,6 +315,10 @@ plot(nat_precip_range)
 qqnorm(nat_precip_range, abline = c(0,1))
 hist(residuals(nat_precip_range))
 
+precip_nat<-data.frame(coef(summary(nat_precip_range))) %>% format(scientific=F)
+precip_nat$p.value<-as.numeric(precip_nat$p.value) %>% round(4)
+#write.csv(precip_nat, "precip_nat_output_table.csv")
+
 
 
 # pgls for temp range
@@ -319,6 +337,11 @@ plot(nat_temp_range)
 qqnorm(nat_temp_range, abline = c(0,1))
 hist(residuals(nat_temp_range))
 
+# save model output
+temp_nat<-data.frame(coef(summary(nat_temp_range))) %>% format(scientific=F)
+temp_nat$p.value<-as.numeric(temp_nat$p.value) %>% round(4)
+#write.csv(temp_nat, "temp_nat_output_table.csv")
+
 
 
 #### pgls for nitro range
@@ -336,6 +359,11 @@ summary(nat_nitro_range)
 plot(nat_nitro_range)
 qqnorm(nat_nitro_range, abline = c(0,1))
 hist(residuals(nat_nitro_range))
+
+# save model output
+nitro_nat<-data.frame(coef(summary(nat_nitro_range))) %>% format(scientific=F)
+nitro_nat$p.value<-as.numeric(nitro_nat$p.value) %>% round(4)
+#write.csv(nitro_nat, "nitro_nat_output_table.csv")
 
 ################################################################################
 ### Running on total
@@ -378,25 +406,35 @@ total_traits$nitro_range<-total_traits$nitro_maxquant-total_traits$nitro_minquan
 total_traits$EFN<-as.factor(total_traits$EFN)
 total_traits$fixer<-as.factor(total_traits$fixer)
 
+# add in absolute median latitude
+total_traits$abs_med_lat<-abs(total_traits$median_lat)
+
+# adding in hemisphere
+total_traits$hemisphere<-ifelse(total_traits$median_lat>0, "0", "1")
+total_traits$hemisphere<-as.factor(total_traits$hemisphere)
+
+###############################################################################
 ### Run models!!
 hist(total_traits$precip_range)
 hist(log(total_traits$precip_range))
 
-total_precip_range <- gls(log(precip_range) ~ EFN + fixer + woody+
-                          uses_num_uses + annual + poly(median_lat, 2) +
-                          EFN*poly(median_lat, 2)+fixer*poly(median_lat, 2),
+total_precip_range <- gls(log(precip_range) ~ EFN*abs_med_lat*hemisphere+
+                            fixer*abs_med_lat*hemisphere+woody+uses_num_uses+annual,
                         data=total_traits, 
-                        correlation=corPagel(0.445, tree_pruned, form=~species, fixed=TRUE),
+                        correlation=corPagel(0.388, tree_pruned, form=~species, fixed=TRUE),
                         method="ML")
 
 
 summary(total_precip_range)
 
 plot(total_precip_range)
-
 qqnorm(total_precip_range, abline = c(0,1))
-
 hist(residuals(total_precip_range))
+
+# save model output
+precip_total<-data.frame(coef(summary(total_precip_range))) %>% format(scientific=F)
+precip_total$p.value<-as.numeric(precip_total$p.value) %>% round(4)
+#write.csv(precip_total, "precip_tot_output_table.csv")
 
 
 
@@ -405,9 +443,8 @@ hist(residuals(total_precip_range))
 hist(total_traits$temp_range)
 hist(log(total_traits$temp_range))
 
-total_temp_range <- gls(temp_range ~ EFN + fixer + woody
-                      + uses_num_uses + annual + poly(median_lat, 2) +
-                        EFN*poly(median_lat, 2)+ fixer*poly(median_lat, 2),
+total_temp_range <- gls(temp_range ~ EFN*abs_med_lat*hemisphere+
+                          fixer*abs_med_lat*hemisphere+woody+uses_num_uses+annual,
                       data=total_traits, 
                       correlation=corPagel(0.373, tree_pruned, form=~species, fixed=TRUE),
                       method="ML")
@@ -415,10 +452,12 @@ total_temp_range <- gls(temp_range ~ EFN + fixer + woody
 summary(total_temp_range)
 
 plot(total_temp_range)
-
 qqnorm(total_temp_range, abline = c(0,1))
-
 hist(residuals(total_temp_range))
+
+temp_total<-data.frame(coef(summary(total_temp_range))) %>% format(scientific=F)
+temp_total$p.value<-as.numeric(temp_total$p.value) %>% round(4)
+#write.csv(temp_total, "temp_tot_output_table.csv")
 
 
 
@@ -427,9 +466,8 @@ hist(residuals(total_temp_range))
 hist(total_traits$nitro_range)
 hist(log(total_traits$nitro_range))
 
-total_nitro_range <- gls(log(nitro_range) ~ EFN + fixer + woody
-                       + uses_num_uses + annual + poly(median_lat, 2) +
-                         EFN*poly(median_lat, 2)+ fixer*poly(median_lat, 2),
+total_nitro_range <- gls(log(nitro_range) ~ EFN*abs_med_lat*hemisphere+
+                           fixer*abs_med_lat*hemisphere+woody+uses_num_uses+annual,
                        data=total_traits, 
                        correlation=corPagel(0.330, tree_pruned, form=~species, fixed=TRUE),
                        method="ML")
@@ -437,10 +475,12 @@ total_nitro_range <- gls(log(nitro_range) ~ EFN + fixer + woody
 summary(total_nitro_range)
 
 plot(total_nitro_range)
-
 qqnorm(total_nitro_range, abline = c(0,1))
-
 hist(residuals(total_nitro_range))
+
+nitro_total<-data.frame(coef(summary(total_nitro_range))) %>% format(scientific=F)
+nitro_total$p.value<-as.numeric(nitro_total$p.value) %>% round(4)
+#write.csv(nitro_total, "nitro_tot_output_table.csv")
 
 ###############################################################################
 ### saving files to make figure down the road
