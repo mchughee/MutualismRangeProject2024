@@ -149,7 +149,7 @@ fixer_nitro<-data_melt %>%
   theme_classic()+
   xlab("Fixer")+
   ylab("Nitrogen range (cg/kg)")+
-  scale_x_discrete(labels=c("introduced", "native", "introduced"))+
+  scale_x_discrete(labels=c("introduced", "native", "total"))+
   scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
   theme(legend.position="none", axis.title.y=element_blank(), axis.title.x=element_blank())+
   theme(axis.title.x=element_blank(), axis.title=element_text(size=12), 
@@ -166,7 +166,7 @@ legends<-cowplot::plot_grid(legend_efn, legend_fixer, ncol=1, nrow=2)
 
 P<-cowplot::plot_grid(EFN_temp+ theme(legend.position="none"),  
                       fixer_temp+ theme(legend.position="none"),
-                      legends+ theme(plot.tag.position = 'left'),
+                      legends,
                       EFN_precip, fixer_precip, NA,
                       EFN_nitro, fixer_nitro, NA,
                       ncol=3, nrow=3,

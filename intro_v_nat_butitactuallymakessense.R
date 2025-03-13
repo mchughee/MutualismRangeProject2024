@@ -145,11 +145,11 @@ intro_precip_range <- gls(log(precip_range) ~ EFN*abs_med_lat*hemisphere+fixer*a
                     correlation=corPagel(0.388, tree_pruned, form=~species, fixed=TRUE),
                     method="ML")
 
-summary(precip_range)
+summary(intro_precip_range)
 
-plot(precip_range)
-qqnorm(precip_range, abline = c(0,1))
-hist(residuals(precip_range))
+plot(intro_precip_range)
+qqnorm(intro_precip_range, abline = c(0,1))
+hist(residuals(intro_precip_range))
 
 # save model output
 precip_intro<-data.frame(coef(summary(intro_precip_range))) %>% format(scientific=F)
