@@ -8,13 +8,7 @@ library(ggplot2)
 library(cowplot)
 #install.packages("ggeffects")
 library(ggeffects)
-#install.packages("gtsummary")
-library(gtsummary)
-#install.packages("stargazer")
-library(stargazer)
-library(broom)
-install.packages("kableExtra")
-library(kableExtra)
+
 
 # Removing these weird species with 0-little niche breadth at all, and writing 
 # it into a new file that I can read in at any time (very exciting stuff):
@@ -74,140 +68,228 @@ data_1$fixer<-as.factor(data_1$fixer)
 
 # I took n out to try without it!!!! But please know that it should be put back
 # in!
-precip_range <- gls(log(precip_range) ~ EFN + fixer+woody
-                    + uses_num_uses + annual+poly(median_lat, 2)+EFN*poly(median_lat, 2)+
-                      fixer*poly(median_lat, 2),
+precip_range <- gls(log(precip_range) ~ EFN*poly(median_lat, 2) + fixer*poly(median_lat, 2)+woody
+                    + uses_num_uses + annual,
                     data=data_1, 
                     correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
-summary(precip_range)$coefficients
+summary(precip_range)
 
 plot(precip_range)
-
 qqnorm(precip_range, abline = c(0,1))
-
 hist(residuals(precip_range))
-
-precip_range|>
-  tbl_regression(exponentiate = TRUE)|>
-  bold_p(t = 0.05)
-
-tidy(precip_range)
-
-precip_range %>% 
-  kbl() %>%
-  kable_styling()
 
 
 ### Save as RDS file
 
 write_rds(precip_range, "precip_niche_breadth.rds")
-precip_range<-readRDS("precip_niche_breadth.rds")
+
+# Read in RDS file (if coming back to code)
+precip_range<-read_rds("precip_niche_breadth_mef.rds")
+
+# save model output!:')
+precip_df<-data.frame(coef(summary(precip_range))) %>% format(scientific=F)
+precip_df$p.value<-as.numeric(precip_df$p.value) %>% round(4)
+write.csv(precip_df, "precip_breadth_output_table.csv")
+
 
 ##################################
 
-### Pull predicted means for EFN
+### Pull predicted means for EFN and fixer
 
-EFN_precip_means<-ggpredict(precip_range, terms=c("median_lat", "EFN [all]"), type="fixed")
+EFN_precip_means<-ggpredict(precip_range, terms=c("median_lat [all]", "EFN [all]"), type="fixed")
 plot(EFN_precip_means)
 
 
-### save df
-write.csv(EFN_precip_means, "nichebreadth_modelfit_new/precip_EFN_breadth_means.csv")
+fixer_precip_means<-ggpredict(precip_range, terms=c("median_lat [all]", "fixer [all]"), type="fixed")
+plot(fixer_precip_means)
 
 
 ###########################
+# make ggplots
 
-### Pull predicted means for fixers
+p1 <- ggplot()+geom_point(data=data_1, aes(x=median_lat, y=precip_range, 
+                                           colour=EFN),
+                          alpha=0.1)+theme_cowplot()+
+  scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
+  ylab("annual precipitation \n range (mm)")+
+  xlab("absolute median latitude")+
+  geom_line(data=EFN_precip_means, aes(x=x, y=predicted, 
+                                           colour=group), linewidth=1.2)+
+  geom_ribbon(data=EFN_precip_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
+  fill=group,
+  alpha=0.4), show.legend=FALSE)+
+  scale_fill_ghibli_d("YesterdayMedium", direction = -1)
 
-fix_precip_means<-ggpredict(precip_range, terms=c("median_lat", "fixer [all]"), type="fixed")
-plot(fix_precip_means)
 
-### save df
-write.csv(fix_precip_means, "nichebreadth_modelfit_new/precip_fix_breadth_means.csv")
+save_plot("precip_lat_efn.pdf", p1)
+
+
+
+p2 <- ggplot()+geom_point(data=data_1, aes(x=median_lat, y=precip_range, color=fixer),
+                          alpha=0.1)+theme_cowplot()+
+  scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
+  ylab("annual precipitation \n range (mm)")+
+  xlab("absolute median latitude")+
+  geom_line(data=fixer_precip_means, aes(x=x, y=predicted,  
+                                             colour=group), linewidth=1.2)+
+  geom_ribbon(data=fixer_precip_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
+  fill=group, 
+  alpha=0.4), show.legend=FALSE)+
+  scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))
+  
+  
+save_plot("precip_lat_fixer.pdf", p2)
 
 ################################################################################
 # pgls for temp range
 
-temp_range <- gls(temp_range ~ EFN + fixer + woody + uses_num_uses
-                  + annual + poly(median_lat, 2)+EFN*poly(median_lat, 2)+
-                    fixer*poly(median_lat, 2),
+temp_range <- gls(temp_range ~ EFN*poly(median_lat, 2) + fixer*poly(median_lat, 2)
+                  + woody + uses_num_uses
+                  + annual,
                   data=data_1, 
                   correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
 summary(temp_range)
 
 qqnorm(temp_range, abline = c(0,1))
-
 hist(residuals(temp_range))
-
 plot(temp_range)
 
-temp_range|>
-  tbl_regression(exponentiate = TRUE)|>
-  bold_p(t = 0.05)
 
 ### Save as RDS file
 
 write_rds(temp_range, "temp_niche_breadth.rds")
 
-### Pull predicted means for EFN
+# Read in RDS file (if coming back to code)
+temp_range<-read_rds("temp_niche_breadth_mef.rds")
 
-EFN_temp_means<-ggpredict(temp_range, terms=c("median_lat", "EFN [all]"), type="fixed")
+# save model output!:')
+temp_df<-data.frame(coef(summary(temp_range))) %>% format(scientific=F)
+temp_df$p.value<-as.numeric(temp_df$p.value) %>% round(4)
+write.csv(temp_df, "temp_breadth_output_table.csv")
+
+
+##################################
+
+### Pull predicted means for EFN and fixer
+
+EFN_temp_means<-ggpredict(temp_range, terms=c("median_lat [all]", "EFN [all]"), type="fixed")
 plot(EFN_temp_means)
 
-### save df
-write.csv(EFN_temp_means, "nichebreadth_modelfit_new/temp_EFN_breadth_means.csv")
 
-################################################################################
-### Pull predicted means for fixers
+fixer_temp_means<-ggpredict(temp_range, terms=c("median_lat [all]", "fixer [all]"), type="fixed")
+plot(fixer_temp_means)
 
-fix_temp_means<-ggpredict(temp_range, terms=c("median_lat", "fixer [all]"), type="fixed")
-plot(fix_temp_means)
 
-### save df
-write.csv(fix_temp_means, "nichebreadth_modelfit_new/temp_fix_breadth_means.csv")
+###########################
+# make ggplots
 
+p3 <- ggplot()+geom_point(data=data_1, aes(x=median_lat, y=temp_range, 
+                                           colour=EFN),
+                          alpha=0.1)+theme_cowplot()+
+  scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
+  ylab("average annual temp. (\u00B0C)")+
+  xlab("absolute median latitude")+
+  geom_line(data=EFN_temp_means, aes(x=x, y=predicted, 
+                                       colour=group), linewidth=1.2)+
+  geom_ribbon(data=EFN_temp_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
+                                         fill=group,
+                                         alpha=0.4), show.legend=FALSE)+
+  scale_fill_ghibli_d("YesterdayMedium", direction = -1)
+
+
+save_plot("temp_lat_efn.pdf", p3)
+
+
+
+p4 <- ggplot()+geom_point(data=data_1, aes(x=median_lat, y=temp_range, color=fixer),
+                          alpha=0.4)+theme_cowplot()+
+  scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
+  ylab("average annual temp. (\u00B0C)")+
+  xlab("absolute median latitude")+
+  geom_line(data=fixer_temp_means, aes(x=x, y=predicted,  
+                                         colour=group), linewidth=1.2)+
+  geom_ribbon(data=fixer_temp_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
+                                           fill=group, 
+                                           alpha=0.4), show.legend=FALSE)+
+  scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))
+
+
+save_plot("temp_lat_fixer.pdf", p4)
 
 
 ##########################################################################
 #### pgls for nitro range
 
-nitro_range <- gls(log(nitro_range) ~ EFN + fixer+woody + uses_num_uses
-                   + annual+poly(median_lat, 2)+EFN*poly(median_lat, 2)+
-                     fixer*poly(median_lat, 2),
-
-                   data=data_1, 
-
-                   correlation=corPagel(1, tree_pruned, form=~species), method="ML")
+nitro_range <- gls(log(nitro_range) ~ EFN*poly(median_lat, 2) + fixer*poly(median_lat, 2)
+              + woody + uses_num_uses + annual,
+              data=data_1, 
+              correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
 summary(nitro_range)
 
 plot(nitro_range)
-
 hist(residuals(nitro_range))
-
 qqnorm(temp_range, abline = c(0,1))
 
 ### Save as RDS file
 
 write_rds(nitro_range, "nitro_niche_breadth.rds")
 
-### Pull predicted means for EFN
+# Read in RDS file (if coming back to code)
+nitro_range<-read_rds("nitro_niche_breadth_mef.rds")
 
-EFN_nitro_means<-ggpredict(nitro_range, terms=c("median_lat", "EFN [all]"), type="fixed")
+# save model output!:')
+nitro_df<-data.frame(coef(summary(nitro_range))) %>% format(scientific=F)
+nitro_df$p.value<-as.numeric(nitro_df$p.value) %>% round(4)
+write.csv(nitro_df, "nitro_breadth_output_table.csv")
+
+
+##################################
+
+### Pull predicted means for EFN and fixer
+
+EFN_nitro_means<-ggpredict(nitro_range, terms=c("median_lat [all]", "EFN [all]"), type="fixed")
 plot(EFN_nitro_means)
 
-### save df
-write.csv(EFN_nitro_means, "nichebreadth_modelfit_new/nitro_EFN_breadth_means.csv")
+
+fixer_nitro_means<-ggpredict(nitro_range, terms=c("median_lat [all]", "fixer [all]"), type="fixed")
+plot(fixer_nitro_means)
 
 
-### Pull predicted means for fixers
+###########################
+# make ggplots
 
-fix_nitro_means<-ggpredict(nitro_range, terms=c("median_lat", "fixer [all]"), type="fixed")
-plot(fix_nitro_means)
+p5 <- ggplot()+geom_point(data=data_1, aes(x=median_lat, y=nitro_range, 
+                                           colour=EFN),
+                          alpha=0.5)+theme_cowplot()+
+  scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
+  ylab("average annual temp. (\u00B0C)")+
+  xlab("absolute median latitude")+
+  geom_line(data=EFN_nitro_means, aes(x=x, y=predicted, 
+                                     colour=group), linewidth=1.2)+
+  geom_ribbon(data=EFN_nitro_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
+                                       fill=group,
+                                       alpha=0.4), show.legend=FALSE)+
+  scale_fill_ghibli_d("YesterdayMedium", direction = -1)
 
-### save df
-write.csv(fix_nitro_means, "nichebreadth_modelfit_new/nitro_fix_breadth_means.csv")
+
+save_plot("nitro_lat_efn.pdf", p5)
 
 
+
+p6 <- ggplot()+geom_point(data=data_1, aes(x=median_lat, y=nitro_range, color=fixer),
+                          alpha=0.5)+theme_cowplot()+
+  scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
+  ylab("average annual temp. (\u00B0C)")+
+  xlab("absolute median latitude")+
+  geom_line(data=fixer_nitro_means, aes(x=x, y=predicted,  
+                                       colour=group), linewidth=1.2)+
+  geom_ribbon(data=fixer_nitro_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
+                                         fill=group, 
+                                         alpha=0.4), show.legend=FALSE)+
+  scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))
+
+
+save_plot("nitro_lat_fixer.pdf", p6)
