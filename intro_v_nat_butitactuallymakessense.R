@@ -7,6 +7,7 @@ library(ggplot2)
 library(ghibli)
 library(nlme)
 library(broom)
+library(ggeffects)
 
 # Read in my data
 points<-read_csv("invasiveclass_thindat_climadd_soilgridsadd.csv")
@@ -140,9 +141,9 @@ nat_niche$hemisphere<-as.factor(nat_niche$hemisphere)
 hist(log(intro_niche$precip_range))
 
 
-intro_precip_range <- gls(log(precip_range) ~ EFN*abs_med_lat*hemisphere+fixer*abs_med_lat*hemisphere+woody+uses_num_uses+annual,
+intro_precip_range <- gls(log(precip_range) ~ EFN*abs_med_lat+fixer*abs_med_lat+woody+uses_num_uses+annual,
                     data=intro_niche, 
-                    correlation=corPagel(0.388, tree_pruned, form=~species, fixed=TRUE),
+                    correlation=corPagel(0.5197, tree_pruned, form=~species, fixed=TRUE),
                     method="ML")
 
 summary(intro_precip_range)
@@ -154,33 +155,31 @@ hist(residuals(intro_precip_range))
 # save model output
 precip_intro<-data.frame(coef(summary(intro_precip_range))) %>% format(scientific=F)
 precip_intro$p.value<-as.numeric(precip_intro$p.value) %>% round(4)
-#write.csv(precip_intro, "precip_intro_output_table.csv")
+write.csv(precip_intro, "precip_intro_output_table.csv")
 
 
 # pull model output
 
-EFN_intro_precip_range<-ggpredict(intro_precip_range, terms=c("abs_med_lat [all]", "EFN [all]", "hemisphere"), type="fixed")
+EFN_intro_precip_range<-ggpredict(intro_precip_range, terms=c("abs_med_lat [all]", "EFN [all]"), type="fixed")
 plot(EFN_intro_precip_range)
 
-fixer_intro_precip_range<-ggpredict(intro_precip_range, terms=c("abs_med_lat [all]", "fixer [all]", "hemisphere"), type="fixed")
+fixer_intro_precip_range<-ggpredict(intro_precip_range, terms=c("abs_med_lat [all]", "fixer [all]"), type="fixed")
 plot(fixer_intro_precip_range)
 
 # plot values!
 
 p1 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=precip_range, 
                                            colour=EFN),
-                          alpha=0.3)+theme_cowplot()+
+                          alpha=0.5)+theme_cowplot()+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
   ylab("annual precipitation \n range (mm)")+
   xlab("absolute median latitude")+
-  geom_line(data=EFN_intro_precip_range, aes(x=x, y=predicted, linetype = facet, 
+  geom_line(data=EFN_intro_precip_range, aes(x=x, y=predicted, 
                                            colour=group), linewidth=1.2)+
-  #geom_ribbon(data=EFN_precip_means_mef, aes(x=x, ymin=conf.low, ymax=conf.high, 
-  #fill=group, linetype=facet,
-  #alpha=0.4), show.legend=FALSE)+
+  geom_ribbon(data=EFN_intro_precip_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
+  fill=group, 
+  alpha=0.4), show.legend=FALSE)+
   scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
-  guides(linetype=guide_legend("hemisphere"))+
-  scale_linetype_manual(values=c(1, 3), labels=c("northern", "southern"))+
   theme(legend.position="none")
 
 save_plot("precip_abs_lat_efn.pdf", p1)
@@ -188,18 +187,16 @@ save_plot("precip_abs_lat_efn.pdf", p1)
 
 
 p2 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=precip_range, color=fixer),
-                          alpha=0.3)+theme_cowplot()+
+                          alpha=0.5)+theme_cowplot()+
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
   ylab("annual precipitation \n range (mm)")+
   xlab("absolute median latitude")+
-  geom_line(data=fixer_intro_precip_range, aes(x=x, y=predicted, linetype = facet, 
+  geom_line(data=fixer_intro_precip_range, aes(x=x, y=predicted,
                                              colour=group), linewidth=1.2)+
-  #geom_ribbon(data=fixer_precip_means_mef, aes(x=x, ymin=conf.low, ymax=conf.high, 
-  #linetype=facet, fill=group, 
-  #alpha=0.4), show.legend=FALSE)+
+  geom_ribbon(data=fixer_intro_precip_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
+  fill=group, 
+  alpha=0.4), show.legend=FALSE)+
   scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
-  guides(linetype=guide_legend("hemisphere"))+
-  scale_linetype_manual(values=c(1, 3), labels=c("northern", "southern"))+
   theme(legend.position="none")
 
 
@@ -212,65 +209,61 @@ save_plot("precip_abs_lat_fixer.pdf", p2)
 hist(intro_niche$temp_range)
 
 
-intro_temp_range <- gls(temp_range ~ EFN*abs_med_lat*hemisphere+fixer*abs_med_lat*hemisphere+woody+uses_num_uses+annual,
+intro_temp_range <- gls(temp_range ~ EFN*abs_med_lat+fixer*abs_med_lat+woody+uses_num_uses+annual,
                   data=intro_niche, 
-                  correlation=corPagel(0.368, tree_pruned, form=~species, fixed=TRUE), 
+                  correlation=corPagel(0.5025, tree_pruned, form=~species, fixed=TRUE), 
                   method="ML")
 
-summary(temp_range)
+summary(intro_temp_range)
 
-plot(temp_range)
-qqnorm(temp_range, abline = c(0,1))
-hist(residuals(temp_range))
+plot(intro_temp_range)
+qqnorm(intro_temp_range, abline = c(0,1))
+hist(residuals(intro_temp_range))
 
 # save model output
 temp_intro<-data.frame(coef(summary(intro_temp_range))) %>% format(scientific=F)
 temp_intro$p.value<-as.numeric(temp_intro$p.value) %>% round(4)
-#write.csv(temp_intro, "temp_intro_output_table.csv")
+write.csv(temp_intro, "temp_intro_output_table.csv")
 
 # pull model output
 
-EFN_intro_temp_range<-ggpredict(intro_precip_range, terms=c("abs_med_lat [all]", "EFN [all]", "hemisphere"), type="fixed")
-plot(EFN_intro_precip_range)
+EFN_intro_temp_range<-ggpredict(intro_temp_range, terms=c("abs_med_lat [all]", "EFN [all]"), type="fixed")
+plot(EFN_intro_temp_range)
 
-fixer_intro_temp_range<-ggpredict(intro_precip_range, terms=c("abs_med_lat [all]", "fixer [all]", "hemisphere"), type="fixed")
-plot(fixer_intro_precip_range)
+fixer_intro_temp_range<-ggpredict(intro_temp_range, terms=c("abs_med_lat [all]", "fixer [all]"), type="fixed")
+plot(fixer_intro_temp_range)
 
 # plot values!
 
-p1 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=precip_range, 
+p3 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=temp_range, 
                                                 colour=EFN),
-                          alpha=0.3)+theme_cowplot()+
+                          alpha=0.5)+theme_cowplot()+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
-  ylab("annual precipitation \n range (mm)")+
+  ylab("yeah yeah temperature or whatever")+
   xlab("absolute median latitude")+
-  geom_line(data=EFN_intro_precip_range, aes(x=x, y=predicted, linetype = facet, 
+  geom_line(data=EFN_intro_temp_range, aes(x=x, y=predicted, 
                                              colour=group), linewidth=1.2)+
-  #geom_ribbon(data=EFN_precip_means_mef, aes(x=x, ymin=conf.low, ymax=conf.high, 
-  #fill=group, linetype=facet,
-  #alpha=0.4), show.legend=FALSE)+
+  geom_ribbon(data=EFN_intro_temp_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
+  fill=group,
+  alpha=0.4), show.legend=FALSE)+
   scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
-  guides(linetype=guide_legend("hemisphere"))+
-  scale_linetype_manual(values=c(1, 3), labels=c("northern", "southern"))+
   theme(legend.position="none")
 
 save_plot("precip_abs_lat_efn.pdf", p1)
 
 
 
-p2 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=precip_range, color=fixer),
+p4 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=temp_range, color=fixer),
                           alpha=0.3)+theme_cowplot()+
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
-  ylab("annual precipitation \n range (mm)")+
+  ylab("average annual \n temp range")+
   xlab("absolute median latitude")+
-  geom_line(data=fixer_intro_precip_range, aes(x=x, y=predicted, linetype = facet, 
+  geom_line(data=fixer_intro_temp_range, aes(x=x, y=predicted,  
                                                colour=group), linewidth=1.2)+
-  #geom_ribbon(data=fixer_precip_means_mef, aes(x=x, ymin=conf.low, ymax=conf.high, 
-  #linetype=facet, fill=group, 
-  #alpha=0.4), show.legend=FALSE)+
+  geom_ribbon(data=fixer_intro_temp_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
+  fill=group, 
+  alpha=0.4), show.legend=FALSE)+
   scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
-  guides(linetype=guide_legend("hemisphere"))+
-  scale_linetype_manual(values=c(1, 3), labels=c("northern", "southern"))+
   theme(legend.position="none")
 
 
@@ -280,9 +273,9 @@ save_plot("precip_abs_lat_fixer.pdf", p2)
 
 hist(log(intro_niche$nitro_range))
 
-intro_nitro_range <- gls(log(nitro_range) ~ EFN*abs_med_lat*hemisphere+fixer*abs_med_lat*hemisphere+woody+uses_num_uses+annual,
+intro_nitro_range <- gls(log(nitro_range) ~ EFN*abs_med_lat+fixer*abs_med_lat+woody+uses_num_uses+annual,
                    data=intro_niche, 
-                   correlation=corPagel(0.288, tree_pruned, form=~species, fixed=TRUE),
+                   correlation=corPagel(0.5519, tree_pruned, form=~species, fixed=TRUE),
                    method="ML")
 
 summary(intro_nitro_range)
@@ -293,7 +286,41 @@ hist(residuals(intro_nitro_range))
 
 nitro_intro<-data.frame(coef(summary(intro_nitro_range))) %>% format(scientific=F)
 nitro_intro$p.value<-as.numeric(nitro_intro$p.value) %>% round(4)
-#write.csv(nitro_intro, "nitro_intro_output_table.csv")
+write.csv(nitro_intro, "nitro_intro_output_table.csv")
+
+p1 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=precip_range, 
+                                                colour=EFN),
+                          alpha=0.5)+theme_cowplot()+
+  scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
+  ylab("annual precipitation \n range (mm)")+
+  xlab("absolute median latitude")+
+  geom_line(data=EFN_intro_precip_range, aes(x=x, y=predicted, 
+                                             colour=group), linewidth=1.2)+
+  geom_ribbon(data=EFN_intro_precip_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
+                                               fill=group, 
+                                               alpha=0.4), show.legend=FALSE)+
+  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
+  theme(legend.position="none")
+
+save_plot("precip_abs_lat_efn.pdf", p1)
+
+
+
+p2 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=precip_range, color=fixer),
+                          alpha=0.5)+theme_cowplot()+
+  scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
+  ylab("annual precipitation \n range (mm)")+
+  xlab("absolute median latitude")+
+  geom_line(data=fixer_intro_precip_range, aes(x=x, y=predicted,
+                                               colour=group), linewidth=1.2)+
+  geom_ribbon(data=fixer_intro_precip_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
+                                                 fill=group, 
+                                                 alpha=0.4), show.legend=FALSE)+
+  scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
+  theme(legend.position="none")
+
+
+save_plot("precip_abs_lat_fixer.pdf", p2)
 
 
 ###############################################################################
@@ -303,9 +330,9 @@ nitro_intro$p.value<-as.numeric(nitro_intro$p.value) %>% round(4)
 hist(nat_niche$precip_range)
 hist(log(nat_niche$precip_range))
 
-nat_precip_range <- gls(log(precip_range) ~ EFN*abs_med_lat*hemisphere+fixer*abs_med_lat*hemisphere+woody+uses_num_uses+annual,
+nat_precip_range <- gls(log(precip_range) ~ EFN*abs_med_lat+fixer*abs_med_lat+woody+uses_num_uses+annual,
                         data=nat_niche, 
-                        correlation=corPagel(0.388, tree_pruned, form=~species, fixed=TRUE),
+                        correlation=corPagel(0.5197, tree_pruned, form=~species, fixed=TRUE),
                         method="ML")
 
 
@@ -317,7 +344,7 @@ hist(residuals(nat_precip_range))
 
 precip_nat<-data.frame(coef(summary(nat_precip_range))) %>% format(scientific=F)
 precip_nat$p.value<-as.numeric(precip_nat$p.value) %>% round(4)
-#write.csv(precip_nat, "precip_nat_output_table.csv")
+write.csv(precip_nat, "precip_nat_output_table.csv")
 
 
 
@@ -326,9 +353,9 @@ precip_nat$p.value<-as.numeric(precip_nat$p.value) %>% round(4)
 hist(nat_niche$temp_range)
 hist(log(nat_niche$temp_range))
 
-nat_temp_range <- gls(temp_range ~ EFN*abs_med_lat*hemisphere+fixer*abs_med_lat*hemisphere+woody+uses_num_uses+annual,
+nat_temp_range <- gls(temp_range ~ EFN*abs_med_lat+fixer*abs_med_lat+woody+uses_num_uses+annual,
                       data=nat_niche, 
-                      correlation=corPagel(0.368, tree_pruned, form=~species, fixed=TRUE),
+                      correlation=corPagel(0.5025, tree_pruned, form=~species, fixed=TRUE),
                       method="ML")
 
 summary(nat_temp_range)
@@ -349,9 +376,9 @@ temp_nat$p.value<-as.numeric(temp_nat$p.value) %>% round(4)
 hist(nat_niche$nitro_range)
 hist(log(nat_niche$nitro_range))
 
-nat_nitro_range <- gls(log(nitro_range) ~ EFN*abs_med_lat*hemisphere+fixer*abs_med_lat*hemisphere+woody+uses_num_uses+annual,
+nat_nitro_range <- gls(log(nitro_range) ~ EFN*abs_med_lat+fixer*abs_med_lat+woody+uses_num_uses+annual,
                        data=nat_niche, 
-                       correlation=corPagel(0.288, tree_pruned, form=~species, fixed=TRUE),
+                       correlation=corPagel(0.5519, tree_pruned, form=~species, fixed=TRUE),
                        method="ML")
 
 summary(nat_nitro_range)
@@ -418,10 +445,10 @@ total_traits$hemisphere<-as.factor(total_traits$hemisphere)
 hist(total_traits$precip_range)
 hist(log(total_traits$precip_range))
 
-total_precip_range <- gls(log(precip_range) ~ EFN*abs_med_lat*hemisphere+
-                            fixer*abs_med_lat*hemisphere+woody+uses_num_uses+annual,
+total_precip_range <- gls(log(precip_range) ~ EFN*abs_med_lat+
+                            fixer*abs_med_lat+woody+uses_num_uses+annual,
                         data=total_traits, 
-                        correlation=corPagel(0.388, tree_pruned, form=~species, fixed=TRUE),
+                        correlation=corPagel(0.5197, tree_pruned, form=~species, fixed=TRUE),
                         method="ML")
 
 
@@ -443,10 +470,10 @@ precip_total$p.value<-as.numeric(precip_total$p.value) %>% round(4)
 hist(total_traits$temp_range)
 hist(log(total_traits$temp_range))
 
-total_temp_range <- gls(temp_range ~ EFN*abs_med_lat*hemisphere+
-                          fixer*abs_med_lat*hemisphere+woody+uses_num_uses+annual,
+total_temp_range <- gls(temp_range ~ EFN*abs_med_lat+
+                          fixer*abs_med_lat+woody+uses_num_uses+annual,
                       data=total_traits, 
-                      correlation=corPagel(0.373, tree_pruned, form=~species, fixed=TRUE),
+                      correlation=corPagel(0.5025, tree_pruned, form=~species, fixed=TRUE),
                       method="ML")
 
 summary(total_temp_range)
@@ -466,10 +493,10 @@ temp_total$p.value<-as.numeric(temp_total$p.value) %>% round(4)
 hist(total_traits$nitro_range)
 hist(log(total_traits$nitro_range))
 
-total_nitro_range <- gls(log(nitro_range) ~ EFN*abs_med_lat*hemisphere+
-                           fixer*abs_med_lat*hemisphere+woody+uses_num_uses+annual,
+total_nitro_range <- gls(log(nitro_range) ~ EFN*abs_med_lat+
+                           fixer*abs_med_lat+woody+uses_num_uses+annual,
                        data=total_traits, 
-                       correlation=corPagel(0.330, tree_pruned, form=~species, fixed=TRUE),
+                       correlation=corPagel(0.5519, tree_pruned, form=~species, fixed=TRUE),
                        method="ML")
 
 summary(total_nitro_range)

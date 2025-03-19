@@ -18,7 +18,7 @@ library(ggeffects)
 
 # Read back in PGLS dataframe
 data<-read.csv("pgls_polydropped_final.csv")
-#data$mutualism<-ifelse(data$EFN==1 | data$Domatia==1 | data$fixer==1, "1", "0")
+data$mutualism<-ifelse(data$EFN==1 | data$fixer==1, "1", "0")
 
 
 # Bring in tree-- this tree has the polytomy removed,
@@ -62,6 +62,15 @@ min(data_1$nitro_range)
 data_1$EFN<-as.factor(data_1$EFN)
 data_1$Domatia<-as.factor(data_1$Domatia)
 data_1$fixer<-as.factor(data_1$fixer)
+
+sum(data_1$mutualism=="0")
+sum(data_1$mutualism=="1")
+
+sum(data_1$EFN=="0")
+sum(data_1$EFN=="1")
+
+sum(data_1$fixer=="0")
+sum(data_1$fixer=="1")
 
 ######################################
 ## precip first
@@ -128,7 +137,7 @@ save_plot("precip_breadth_lat_efn.pdf", p1)
 
 
 p2 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=precip_range, color=fixer),
-                          alpha=0.1)+theme_cowplot()+scale_y_log10()+
+                          alpha=0.4)+theme_cowplot()+scale_y_log10()+
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
   ylab("legged annual \n precipitation range (mm)")+
   xlab("absolute median latitude")+
@@ -189,7 +198,7 @@ plot(fixer_temp_means)
 
 p3 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=temp_range, 
                                            colour=EFN),
-                          alpha=0.1)+theme_cowplot()+
+                          alpha=0.4)+theme_cowplot()+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
   ylab("average annual temp. range \n (\u00B0C)")+
   xlab("absolute median latitude")+
@@ -267,7 +276,7 @@ plot(fixer_nitro_means)
 
 p5 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_range, 
                                            colour=EFN),
-                          alpha=0.5)+theme_cowplot()+scale_y_log10()+
+                          alpha=0.4)+theme_cowplot()+scale_y_log10()+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
   ylab("logged soil nitrogen \n range (cg/kg)")+
   xlab("absolute median latitude")+
@@ -285,7 +294,7 @@ save_plot("nitro_lat_efn.pdf", p5)
 
 
 p6 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_range, color=fixer),
-                          alpha=0.5)+theme_cowplot()+scale_y_log10()+
+                          alpha=0.4)+theme_cowplot()+scale_y_log10()+
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
   ylab("logged soil nitrogen \n range (cg/kg)")+
   xlab("absolute median latitude")+

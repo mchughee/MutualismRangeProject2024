@@ -519,7 +519,7 @@ plot(fixer_nitro_min_means)
 
 # Plot values
 
-p16 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_minquant, 
+p15 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_minquant, 
                                             colour=EFN
                                             ), alpha=0.4)+theme_cowplot()+scale_y_log10()+
   scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
@@ -532,11 +532,11 @@ p16 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_minquant,
   alpha=0.4), show.legend=FALSE)+
   scale_fill_ghibli_d("YesterdayMedium", direction = -1)
 
-save_plot("nitro_min_efn.pdf", p16)
+save_plot("nitro_min_efn.pdf", p15)
 
 
 
-p17 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_minquant, 
+p16 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_minquant, 
                                             color=fixer),
                            alpha=0.4)+theme_cowplot()+scale_y_log10()+
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
@@ -550,7 +550,7 @@ p17 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_minquant,
   scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))
 
 
-save_plot("nitro_min_fixer.pdf", p17)
+save_plot("nitro_min_fixer.pdf", p16)
 
 
 efn_leg_min<-get_legend(p16)
@@ -566,3 +566,14 @@ minimum_plots<-plot_grid(p10+theme(axis.title.x = element_blank()), p11+theme(ax
 minimum_plots <- add_sub(minimum_plots, "median latitude", hjust = 1.1, size=12)
 
 plot(minimum_plots)
+
+###############################################################################
+
+plot_grid(p10+theme(axis.title.x = element_blank()), p13+theme(axis.title.x = element_blank()), 
+          p15+theme(axis.title.x = element_blank()), p1+theme(axis.title.x = element_blank()), 
+          p3+theme(axis.title.x = element_blank()), p5+theme(axis.title.x = element_blank(), legend.position="none"))
+
+
+plot_grid(p11+theme(axis.title.x = element_blank()), p14+theme(axis.title.x = element_blank()), 
+          p16+theme(axis.title.x = element_blank()), p2+theme(axis.title.x = element_blank()), 
+          p4+theme(axis.title.x = element_blank()), p6+theme(axis.title.x = element_blank(), legend.position="none"))
