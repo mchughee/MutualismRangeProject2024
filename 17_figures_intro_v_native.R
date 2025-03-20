@@ -57,7 +57,7 @@ EFN_temp<-data_melt %>%
   xlab("EFN")+
   ylab("Average annual \n temp range (\u00B0C)")+
   scale_x_discrete(labels=c("introduced", "native", "total"))+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
+  scale_fill_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
  # theme(legend.position="none")+
   theme(axis.title.x=element_blank(), axis.title=element_text(size=12), 
         axis.text.x = element_text(size=12),
@@ -77,7 +77,7 @@ EFN_precip<-data_melt %>%
   xlab("EFN")+
   ylab("Annual precipitation \n range (mm)")+
   scale_x_discrete(labels=c("introduced", "native", "total"))+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
+  scale_fill_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
   theme(legend.position="none", axis.title.x=element_blank())+
   theme(axis.title.x=element_blank(), axis.title=element_text(size=12), 
         axis.text.x = element_text(size=12),
@@ -95,7 +95,7 @@ EFN_nitro<-data_melt %>%
   xlab("EFN")+
   ylab("Nitrogen range \n (cg/kg)")+
   scale_x_discrete(labels=c("introduced", "native", "total"))+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
+  scale_fill_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
   theme(legend.position="none", axis.title.x=element_blank())+
   theme(axis.title.x=element_blank(), axis.title=element_text(size=12), 
         axis.text.x = element_text(size=12),
@@ -175,7 +175,8 @@ P<-cowplot::plot_grid(EFN_temp+ theme(legend.position="none"),
                       label_x = c(0.05, -0.05, 0, 0.05, -0.05, 0, 0.05, -0.05, 0))
 
 plot(P)
-
+###############################################################################
+## Making plot with number of human uses 
 
 
 

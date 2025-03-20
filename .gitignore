@@ -195,3 +195,9 @@ nitro_intro_output_table.csv
 precip_intro_output_table.csv
 precip_nat_output_table.csv
 temp_intro_output_table.csv
+nitro_nat_output_table.csv
+nitro_tot_output_table.csv
+precip_tot_output_table.csv
+temp_nat_output_table.csv
+temp_tot_output_table.csv
+ (2).Rhistory1

@@ -165,13 +165,14 @@ plot(EFN_intro_precip_range)
 
 fixer_intro_precip_range<-ggpredict(intro_precip_range, terms=c("abs_med_lat [all]", "fixer [all]"), type="fixed")
 plot(fixer_intro_precip_range)
+  
 
 # plot values!
 
 p1 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=precip_range, 
                                            colour=EFN),
-                          alpha=0.5)+theme_cowplot()+
-  scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
+                          alpha=0.5)+theme_cowplot()+scale_y_log10()+
+  scale_colour_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
   ylab("annual precipitation \n range (mm)")+
   xlab("absolute median latitude")+
   geom_line(data=EFN_intro_precip_range, aes(x=x, y=predicted, 
@@ -179,7 +180,7 @@ p1 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=precip_range,
   geom_ribbon(data=EFN_intro_precip_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
   fill=group, 
   alpha=0.4), show.legend=FALSE)+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
+  scale_fill_manual(values=c("#92BBD9FF", "#B50A2AFF"))+
   theme(legend.position="none")
 
 save_plot("precip_abs_lat_efn.pdf", p1)
@@ -238,37 +239,37 @@ plot(fixer_intro_temp_range)
 p3 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=temp_range, 
                                                 colour=EFN),
                           alpha=0.5)+theme_cowplot()+
-  scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
-  ylab("yeah yeah temperature or whatever")+
+  scale_colour_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
+  ylab("average annual temp. range \n (\u00B0C)")+
   xlab("absolute median latitude")+
   geom_line(data=EFN_intro_temp_range, aes(x=x, y=predicted, 
                                              colour=group), linewidth=1.2)+
   geom_ribbon(data=EFN_intro_temp_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
-  fill=group,
-  alpha=0.4), show.legend=FALSE)+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
+                                               fill=group, 
+                                               alpha=0.4), show.legend=FALSE)+
+  scale_fill_manual(values=c("#92BBD9FF", "#B50A2AFF"))+
   theme(legend.position="none")
 
-save_plot("precip_abs_lat_efn.pdf", p1)
+save_plot("temp_abs_lat_efn.pdf", p3)
 
 
 
 p4 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=temp_range, color=fixer),
-                          alpha=0.3)+theme_cowplot()+
+                          alpha=0.5)+theme_cowplot()+
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
-  ylab("average annual \n temp range")+
+  ylab("average annual temp. range \n (\u00B0C)")+
   xlab("absolute median latitude")+
-  geom_line(data=fixer_intro_temp_range, aes(x=x, y=predicted,  
+  geom_line(data=fixer_intro_temp_range, aes(x=x, y=predicted,
                                                colour=group), linewidth=1.2)+
   geom_ribbon(data=fixer_intro_temp_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
-  fill=group, 
-  alpha=0.4), show.legend=FALSE)+
+                                                 fill=group, 
+                                                 alpha=0.4), show.legend=FALSE)+
   scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
   theme(legend.position="none")
 
 
-save_plot("precip_abs_lat_fixer.pdf", p2)
-
+save_plot("temp_abs_lat_fixer.pdf", p4)
+#############################################
 #### pgls for nitro range
 
 hist(log(intro_niche$nitro_range))
@@ -288,39 +289,46 @@ nitro_intro<-data.frame(coef(summary(intro_nitro_range))) %>% format(scientific=
 nitro_intro$p.value<-as.numeric(nitro_intro$p.value) %>% round(4)
 write.csv(nitro_intro, "nitro_intro_output_table.csv")
 
-p1 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=precip_range, 
+EFN_intro_nitro_range<-ggpredict(intro_nitro_range, terms=c("abs_med_lat [all]", "EFN [all]"), type="fixed")
+plot(EFN_intro_nitro_range)
+
+fixer_intro_nitro_range<-ggpredict(intro_nitro_range, terms=c("abs_med_lat [all]", "fixer [all]"), type="fixed")
+plot(fixer_intro_nitro_range)
+
+
+p5 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=nitro_range, 
                                                 colour=EFN),
-                          alpha=0.5)+theme_cowplot()+
-  scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
-  ylab("annual precipitation \n range (mm)")+
+                          alpha=0.5)+theme_cowplot()+scale_y_log10()+
+  scale_colour_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
+  ylab("logged soil nitrogen \n range (cg/kg)")+
   xlab("absolute median latitude")+
-  geom_line(data=EFN_intro_precip_range, aes(x=x, y=predicted, 
+  geom_line(data=EFN_intro_nitro_range, aes(x=x, y=predicted, 
                                              colour=group), linewidth=1.2)+
-  geom_ribbon(data=EFN_intro_precip_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
+  geom_ribbon(data=EFN_intro_nitro_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
                                                fill=group, 
-                                               alpha=0.4), show.legend=FALSE)+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
+                                               alpha=0.2), show.legend=FALSE)+
+  scale_fill_manual(values=c("#92BBD9FF", "#B50A2AFF"))+
   theme(legend.position="none")
 
-save_plot("precip_abs_lat_efn.pdf", p1)
+save_plot("precip_abs_lat_efn.pdf", p5)
 
 
 
-p2 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=precip_range, color=fixer),
-                          alpha=0.5)+theme_cowplot()+
+p6 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=nitro_range, color=fixer),
+                          alpha=0.5)+theme_cowplot()+scale_y_log10()+
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
-  ylab("annual precipitation \n range (mm)")+
+  ylab("logged soil nitrogen \n range (cg/kg)")+
   xlab("absolute median latitude")+
-  geom_line(data=fixer_intro_precip_range, aes(x=x, y=predicted,
+  geom_line(data=fixer_intro_nitro_range, aes(x=x, y=predicted,
                                                colour=group), linewidth=1.2)+
-  geom_ribbon(data=fixer_intro_precip_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
+  geom_ribbon(data=fixer_intro_nitro_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
                                                  fill=group, 
                                                  alpha=0.4), show.legend=FALSE)+
   scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
   theme(legend.position="none")
 
 
-save_plot("precip_abs_lat_fixer.pdf", p2)
+save_plot("precip_abs_lat_fixer.pdf", p6)
 
 
 ###############################################################################
@@ -346,8 +354,48 @@ precip_nat<-data.frame(coef(summary(nat_precip_range))) %>% format(scientific=F)
 precip_nat$p.value<-as.numeric(precip_nat$p.value) %>% round(4)
 write.csv(precip_nat, "precip_nat_output_table.csv")
 
+EFN_intro_precip_range<-ggpredict(intro_precip_range, terms=c("abs_med_lat [all]", "EFN [all]"), type="fixed")
+plot(EFN_intro_precip_range)
+
+fixer_intro_precip_range<-ggpredict(intro_precip_range, terms=c("abs_med_lat [all]", "fixer [all]"), type="fixed")
+plot(fixer_intro_precip_range)
+
+# plot values!
+
+p1 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=precip_range, 
+                                                colour=EFN),
+                          alpha=0.6)+theme_cowplot()+scale_y_log10()+
+  scale_colour_manual(values=c("#92BBD9FF", "#DCCA2CFF"), labels=c("no", "yes"))+
+  ylab("annual precipitation \n range (mm)")+
+  xlab("absolute median latitude")+
+  geom_line(data=EFN_intro_precip_range, aes(x=x, y=predicted, 
+                                             colour=group), linewidth=1.2)+
+  geom_ribbon(data=EFN_intro_precip_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
+                                               fill=group), alpha=0.3, show.legend=FALSE)+
+  scale_fill_manual(values=c("#92BBD9FF", "#DCCA2CFF"))+
+  theme(legend.position="none")
+
+save_plot("precip_abs_lat_efn.pdf", p1)
 
 
+
+p2 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=precip_range, color=fixer),
+                          alpha=0.6)+theme_cowplot()+scale_y_log10()+
+  scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
+  ylab("annual precipitation \n range (mm)")+
+  xlab("absolute median latitude")+
+  geom_line(data=fixer_intro_precip_range, aes(x=x, y=predicted,
+                                               colour=group), linewidth=1.2)+
+  geom_ribbon(data=fixer_intro_precip_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
+                                                 fill=group), 
+                                                 alpha=0.3, show.legend=FALSE)+
+  scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
+  theme(legend.position="none")
+
+
+save_plot("precip_abs_lat_fixer.pdf", p2)
+
+#################################
 # pgls for temp range
 
 hist(nat_niche$temp_range)
@@ -367,7 +415,49 @@ hist(residuals(nat_temp_range))
 # save model output
 temp_nat<-data.frame(coef(summary(nat_temp_range))) %>% format(scientific=F)
 temp_nat$p.value<-as.numeric(temp_nat$p.value) %>% round(4)
-#write.csv(temp_nat, "temp_nat_output_table.csv")
+write.csv(temp_nat, "temp_nat_output_table.csv")
+
+EFN_intro_temp_range<-ggpredict(intro_temp_range, terms=c("abs_med_lat [all]", "EFN [all]"), type="fixed")
+plot(EFN_intro_temp_range)
+
+fixer_intro_temp_range<-ggpredict(intro_temp_range, terms=c("abs_med_lat [all]", "fixer [all]"), type="fixed")
+plot(fixer_intro_temp_range)
+
+# plot values!
+
+p3 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=temp_range, 
+                                                colour=EFN),
+                          alpha=0.6)+theme_cowplot()+scale_y_log10()+
+  scale_colour_manual(values=c("#92BBD9FF", "#DCCA2CFF"), labels=c("no", "yes"))+
+  ylab("")+
+  xlab("absolute median latitude")+
+  geom_line(data=EFN_intro_precip_range, aes(x=x, y=predicted, 
+                                             colour=group), linewidth=1.2)+
+  geom_ribbon(data=EFN_intro_precip_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
+                                               fill=group),
+                                               alpha=0.3, show.legend=FALSE)+
+  scale_fill_manual(values=c("#92BBD9FF", "#DCCA2CFF"))+
+  theme(legend.position="none")
+
+save_plot("precip_abs_lat_efn.pdf", p1)
+
+
+
+p2 <- ggplot()+geom_point(data=intro_niche, aes(x=abs_med_lat, y=precip_range, color=fixer),
+                          alpha=0.5)+theme_cowplot()+
+  scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
+  ylab("annual precipitation \n range (mm)")+
+  xlab("absolute median latitude")+
+  geom_line(data=fixer_intro_precip_range, aes(x=x, y=predicted,
+                                               colour=group), linewidth=1.2)+
+  geom_ribbon(data=fixer_intro_precip_range, aes(x=x, ymin=conf.low, ymax=conf.high, 
+                                                 fill=group, 
+                                                 alpha=0.4), show.legend=FALSE)+
+  scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
+  theme(legend.position="none")
+
+
+save_plot("precip_abs_lat_fixer.pdf", p2)
 
 
 
@@ -390,7 +480,7 @@ hist(residuals(nat_nitro_range))
 # save model output
 nitro_nat<-data.frame(coef(summary(nat_nitro_range))) %>% format(scientific=F)
 nitro_nat$p.value<-as.numeric(nitro_nat$p.value) %>% round(4)
-#write.csv(nitro_nat, "nitro_nat_output_table.csv")
+write.csv(nitro_nat, "nitro_nat_output_table.csv")
 
 ################################################################################
 ### Running on total
@@ -461,7 +551,7 @@ hist(residuals(total_precip_range))
 # save model output
 precip_total<-data.frame(coef(summary(total_precip_range))) %>% format(scientific=F)
 precip_total$p.value<-as.numeric(precip_total$p.value) %>% round(4)
-#write.csv(precip_total, "precip_tot_output_table.csv")
+write.csv(precip_total, "precip_tot_output_table.csv")
 
 
 
@@ -484,7 +574,7 @@ hist(residuals(total_temp_range))
 
 temp_total<-data.frame(coef(summary(total_temp_range))) %>% format(scientific=F)
 temp_total$p.value<-as.numeric(temp_total$p.value) %>% round(4)
-#write.csv(temp_total, "temp_tot_output_table.csv")
+write.csv(temp_total, "temp_tot_output_table.csv")
 
 
 
@@ -507,7 +597,7 @@ hist(residuals(total_nitro_range))
 
 nitro_total<-data.frame(coef(summary(total_nitro_range))) %>% format(scientific=F)
 nitro_total$p.value<-as.numeric(nitro_total$p.value) %>% round(4)
-#write.csv(nitro_total, "nitro_tot_output_table.csv")
+write.csv(nitro_total, "nitro_tot_output_table.csv")
 
 ###############################################################################
 ### saving files to make figure down the road

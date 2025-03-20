@@ -138,16 +138,19 @@ plot(fixer_precip_max_means)
 p1 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=precip_maxquant, 
                                             colour=EFN),
                                            alpha=0.4)+theme_cowplot()+scale_y_log10()+
-  scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-  ylab("maximum annual \n precipitation (mm)")+
+  #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+  scale_colour_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
+  ylab("logged annual \n maximum precip. (mm)")+
   xlab("absolute median latitude")+
   geom_line(data=EFN_precip_max_means, aes(x=x, y=predicted, 
-                                           colour=group), show.legend = FALSE, linewidth=1.3)+
+                                           colour=group), show.legend = FALSE, linewidth=1.4)+
   geom_ribbon(data=EFN_precip_max_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-  fill=group,
-  alpha=0.4), show.legend=FALSE)+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(legend.position="none")
+  fill=group),
+  alpha=0.4, show.legend=FALSE)+
+  #scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
+  scale_fill_manual(values=c("#92BBD9FF", "#B50A2AFF"))+
+  theme(legend.position="none")+
+  annotate("text", label="EFN: *\nInt.:  NS", x=45, y=3700, lineheight = .75, hjust=0)
 
 save_plot("precip_max_efn.pdf", p1)
 
@@ -156,15 +159,16 @@ save_plot("precip_max_efn.pdf", p1)
 p2 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=precip_maxquant, color=fixer),
                           alpha=0.4)+theme_cowplot()+scale_y_log10()+
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"))+
-  ylab("maximum annual \n precipitation (mm)")+
+  ylab("logged annual \n maximum precip. (mm)")+
   xlab("absolute median latitude")+
   geom_line(data=fixer_precip_max_means, aes(x=x, y=predicted, 
-                                             colour=group), linewidth=1.3)+
+                                             colour=group), linewidth=1.4)+
   geom_ribbon(data=fixer_precip_max_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-  fill=group, 
-  alpha=0.4), show.legend=FALSE)+
+  fill=group), 
+  alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
-  theme(legend.position="none")
+  theme(legend.position="none")+
+  annotate("text", label="Fixer: **\nInt.:    ***", x=45, y=3700, lineheight = .75, hjust=0)
 
 
 save_plot("precip_max_fixer.pdf", p2)
@@ -210,16 +214,19 @@ plot(fixer_temp_max_means)
 p3 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=temp_maxquant, 
                                            colour=EFN),
                           alpha=0.4)+theme_cowplot()+
-  scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+  #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+  scale_colour_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
   ylab("maximum avg. annual \n temp.(\u00B0C)")+
   xlab("absolute median latitude")+
   geom_line(data=EFN_temp_max_means, aes(x=x, y=predicted, 
-                                           colour=group), show.legend = FALSE, linewidth=1.3)+
+                                           colour=group), show.legend = FALSE, linewidth=1.4)+
   geom_ribbon(data=EFN_temp_max_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-                                             fill=group,
-                                             alpha=0.4), show.legend=FALSE)+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(legend.position="none")
+                                             fill=group),
+                                             alpha=0.4, show.legend=FALSE)+
+  #scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
+  scale_fill_manual(values=c("#92BBD9FF", "#B50A2AFF"))+
+  theme(legend.position="none")+
+  annotate("text", label="EFN: NS\nInt.:   NS", x=45, y=25, lineheight = .75, hjust=0)
 
 save_plot("temp_max_efn.pdf", p3)
 
@@ -228,15 +235,16 @@ save_plot("temp_max_efn.pdf", p3)
 p4 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=temp_maxquant, color=fixer),
                           alpha=0.4)+theme_cowplot()+
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"))+
-  ylab("maximum avg. annual temp.\n(\u00B0C)")+
+  ylab("maximum avg. annual \n temp.(\u00B0C)")+
   xlab("absolute median latitude")+
   geom_line(data=fixer_temp_max_means, aes(x=x, y=predicted, 
-                                             colour=group), linewidth=1.3)+
+                                             colour=group), linewidth=1.4)+
   geom_ribbon(data=fixer_temp_max_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-                                               fill=group, 
-                                               alpha=0.4), show.legend=FALSE)+
+                                               fill=group), 
+                                               alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
-  theme(legend.position="none")
+  theme(legend.position="none")+
+  annotate("text", label="Fixer: ***\nInt.:  ***", x=45, y=25, lineheight = .75, hjust=0)
 
 
 save_plot("temp_max_fixer.pdf", p4)
@@ -268,6 +276,7 @@ nitro_max<-data.frame(coef(summary(nitro_maxquant))) %>% format(scientific=F)
 nitro_max$p.value<-as.numeric(nitro_max$p.value) %>% round(4)
 write.csv(nitro_max, "nitro_max_output_table.csv")
 
+### PULL MODEL OUTPUT
 EFN_nitro_max_means<-ggpredict(nitro_maxquant, 
                                 terms=c("abs_med_lat [all]", "EFN [all]"), type="fixed")
 plot(EFN_nitro_max_means)
@@ -280,15 +289,18 @@ plot(fixer_nitro_max_means)
 p5 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_maxquant, 
                                             colour=EFN),
                                            alpha=0.4)+theme_cowplot()+scale_y_log10()+
-  scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
-  ylab("maximum nitrogen \n(cg/kg)")+
+  #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
+  scale_colour_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
+  ylab("logged maximum soil \n nitrogen (cg/kg)")+
   xlab("absolute median latitude")+
   geom_line(data=EFN_nitro_max_means, aes(x=x, y=predicted, 
-                                         colour=group), linewidth=1.3)+
+                                         colour=group), linewidth=1.4)+
   geom_ribbon(data=EFN_nitro_max_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
   fill=group,
   alpha=0.4), show.legend=FALSE)+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)
+  #scale_fill_ghibli_d("YesterdayMedium", direction = -1)
+  scale_fill_manual(values=c("#92BBD9FF", "#B50A2AFF"))+
+  annotate("text", label="EFN: **\nInt.:  NS", x=45, y=1800, lineheight = .75, hjust=0)
   
 
 save_plot("nitro_max_efn.pdf", p5)
@@ -296,37 +308,22 @@ save_plot("nitro_max_efn.pdf", p5)
 
 
 p6 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_maxquant, color=fixer),
-                          alpha=0.1)+theme_cowplot()+scale_y_log10()+
+                          alpha=0.4)+theme_cowplot()+scale_y_log10()+
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
-  ylab("maximum nitrogen \n(cg/kg)")+
+  ylab("logged maximum soil \n nitrogen (cg/kg)")+
   xlab("absolute median latitude")+
   geom_line(data=fixer_nitro_max_means, aes(x=x, y=predicted, 
-                                           colour=group), linewidth=1.2)+
+                                           colour=group), linewidth=1.4)+
   geom_ribbon(data=fixer_nitro_max_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-  fill=group, 
-  alpha=0.4), show.legend=FALSE)+
-  scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))
+  fill=group), 
+  alpha=0.4, show.legend=FALSE)+
+  scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
+  annotate("text", label="Fixer: **\nInt.:  ***", x=45, y=1800, lineheight = .75, hjust=0)
   
 
 
 save_plot("nitro_max_fixer.pdf", p6)
 
-
-
-# cowplot all our maximum plots together
-
-efn_leg_max<-get_legend(p5)
-fixer_leg_max<-get_legend(p6)
-combine_leg<-plot_grid(efn_leg_max, fixer_leg_max, ncol=1, nrow=2)
-
-maximum_plots<-cowplot::plot_grid(p1+theme(axis.title.x = element_blank()), p2+theme(axis.title.y = element_blank(), axis.title.x = element_blank()), combine_leg,
-                                  p3+theme(axis.title.x = element_blank()), p4+theme(axis.title.y = element_blank(), axis.title.x = element_blank()), NA,
-                                  p5+ theme(legend.position="none", axis.title.x = element_blank()), p6+ theme(legend.position="none", axis.title.y = element_blank(), axis.title.x = element_blank()), NA,
-                                  ncol=3, nrow=3)
-
-maximum_plots <- add_sub(maximum_plots, "median latitude", hjust = 1.2, size=12)
-
-plot(maximum_plots)
 
 ################################################################################
 ################################################################################
@@ -372,18 +369,21 @@ plot(fixer_precip_min_means)
 p10 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=precip_minquant, 
                                             colour=EFN
                                            ), alpha=0.4)+theme_cowplot()+scale_y_log10()+
-  scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
-  ylab("minimum annual \n precipitation (mm)")+
+  #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
+  scale_colour_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
+  ylab("logged annual \n minimum precip. (mm)")+
   xlab("absolute median latitude")+
   geom_line(data=EFN_precip_min_means, aes(x=x, y=predicted, 
-                                          colour=group), linewidth=1.3)+
+                                          colour=group), linewidth=1.4)+
   geom_ribbon(data=EFN_precip_min_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-  fill=group,
-  alpha=0.4), show.legend=FALSE)+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
+  fill=group),
+  alpha=0.4, show.legend=FALSE)+
+  #scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
   #guides(linetype=guide_legend("hemisphere"))+
   #scale_linetype_manual(values=c(1, 3), labels=c("northern", "southern"))+
-  theme(legend.position="none")
+  scale_fill_manual(values=c("#92BBD9FF", "#B50A2AFF"))+
+  theme(legend.position="none")+
+  annotate("text", label="EFN: NS\nInt.:   NS", x=45, y=1100, lineheight = .75, hjust=0)
 
 save_plot("precip_min_efn.pdf", p10)
 
@@ -393,15 +393,16 @@ p11 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=precip_minquant,
                                              color=fixer), alpha=0.4
                                             )+theme_cowplot()+scale_y_log10()+
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
-  ylab("minimum annual \n precipitation (mm)")+
+  ylab("logged annual \n minimum precip. (mm)")+
   xlab("absolute median latitude")+
   geom_line(data=fixer_precip_min_means, aes(x=x, y=predicted, 
-                                            colour=group), linewidth=1.2)+
+                                            colour=group), linewidth=1.4)+
   geom_ribbon(data=fixer_precip_min_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-  fill=group, 
-  alpha=0.4), show.legend=FALSE)+
+  fill=group), 
+  alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
-  theme(legend.position="none")
+  theme(legend.position="none")+
+  annotate("text", label="Fixer: ***\nInt.:    ***", x=45, y=1500, lineheight = .75, hjust=0)
 
 
 save_plot("precip_min_fixer.pdf", p11)
@@ -446,16 +447,19 @@ p13 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=temp_minquant,
                                             colour=EFN),
                                             alpha=0.4)+
   theme_cowplot()+
-  scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
-  ylab("minimum average annual \n temp. (\u00B0C)")+
+  #scale_colour_ghibli_d("YesterdayMedium", direction = -1)+
+  scale_colour_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
+  ylab("minimum avg. annual \n temp. (\u00B0C)")+
   xlab("absolute median latitude")+
   geom_line(data=EFN_temp_min_means, aes(x=x, y=predicted,
-                                           colour=group), show.legend = FALSE, linewidth=1.3)+
+                                           colour=group), show.legend = FALSE, linewidth=1.4)+
   geom_ribbon(data=EFN_temp_min_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-  fill=group,
-  alpha=0.4), show.legend=FALSE)+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
-  theme(legend.position="none")
+  fill=group),
+  alpha=0.4, show.legend=FALSE)+
+  #scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
+  scale_fill_manual(values=c("#92BBD9FF", "#B50A2AFF"))+
+  theme(legend.position="none")+
+  annotate("text", label="EFN: *\nInt.:  NS", x=45, y=25, lineheight = .75, hjust=0)
 
 save_plot("temp_min_efn.pdf", p13)
 
@@ -465,15 +469,16 @@ p14 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=temp_minquant,
                                             color=fixer),
                            alpha=0.4)+theme_cowplot()+
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"))+
-  ylab("minimum average annual \n temp. (\u00B0C)")+
+  ylab("minimum avg. annual \n temp. (\u00B0C)")+
   xlab("absolute median latitude")+
   geom_line(data=fixer_temp_min_means, aes(x=x, y=predicted,  
-                                             colour=group), linewidth=1.2)+
+                                             colour=group), linewidth=1.4)+
   geom_ribbon(data=fixer_temp_min_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-  fill=group, 
-  alpha=0.4), show.legend=FALSE)+
+  fill=group), 
+  alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
-  theme(legend.position="none")
+  theme(legend.position="none")+
+  annotate("text", label="Fixer: NS\nInt.:    NS", x=45, y=25, lineheight = .75, hjust=0)
 
 
 save_plot("temp_min_fixer.pdf", p14)
@@ -522,15 +527,17 @@ plot(fixer_nitro_min_means)
 p15 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_minquant, 
                                             colour=EFN
                                             ), alpha=0.4)+theme_cowplot()+scale_y_log10()+
-  scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
-  ylab("minimum nitrogen \n (cg/kg)")+
+  #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
+  scale_colour_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
+  ylab("logged minimum soil \n nitrogen (cg/kg)")+
   xlab("absolute median latitude")+
   geom_line(data=EFN_nitro_min_means, aes(x=x, y=predicted, 
-                                         colour=group), linewidth=1.3)+
+                                         colour=group), linewidth=1.4)+
   geom_ribbon(data=EFN_nitro_min_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-  fill=group,
-  alpha=0.4), show.legend=FALSE)+
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1)
+  fill=group),
+  alpha=0.4, show.legend=FALSE)+
+  scale_fill_manual(values=c("#92BBD9FF", "#B50A2AFF"))+
+  annotate("text", label="EFN: NS\nInt.:   NS", x=45, y=400, lineheight = .75, hjust=0)
 
 save_plot("nitro_min_efn.pdf", p15)
 
@@ -540,40 +547,35 @@ p16 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_minquant,
                                             color=fixer),
                            alpha=0.4)+theme_cowplot()+scale_y_log10()+
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
-  ylab("minimum nitrogen \n (cg/kg)")+
+  ylab("logged minimum soil \n nitrogen (cg/kg)")+
   xlab("absolute median latitude")+
   geom_line(data=fixer_nitro_min_means, aes(x=x, y=predicted, 
                                            colour=group), linewidth=1.2)+
   geom_ribbon(data=fixer_nitro_min_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
   fill=group, 
   alpha=0.4), show.legend=FALSE)+
-  scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))
+  scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
+  annotate("text", label="Fixer: ***\nInt.:    ***", x=45, y=400, lineheight = .75, hjust=0)
 
 
 save_plot("nitro_min_fixer.pdf", p16)
 
-
-efn_leg_min<-get_legend(p16)
-fixer_leg_min<-get_legend(p17)
-combine_leg_min<-plot_grid(efn_leg_min, fixer_leg_min, ncol=1, nrow=2)
-
-minimum_plots<-plot_grid(p10+theme(axis.title.x = element_blank()), p11+theme(axis.title.y = element_blank(), axis.title.x = element_blank()), combine_leg,
-                         p13+theme(axis.title.x = element_blank()), p14+theme(axis.title.y = element_blank(), axis.title.x = element_blank()), NA,
-                         p16+ theme(legend.position="none", axis.title.x = element_blank()), 
-                         p17+ theme(legend.position="none", axis.title.y = element_blank(), axis.title.x = element_blank()), NA,
-                         ncol=3, nrow=3)
-
-minimum_plots <- add_sub(minimum_plots, "median latitude", hjust = 1.1, size=12)
-
-plot(minimum_plots)
-
 ###############################################################################
 
-plot_grid(p10+theme(axis.title.x = element_blank()), p13+theme(axis.title.x = element_blank()), 
-          p15+theme(axis.title.x = element_blank()), p1+theme(axis.title.x = element_blank()), 
-          p3+theme(axis.title.x = element_blank()), p5+theme(axis.title.x = element_blank(), legend.position="none"))
+efn_leg<-get_legend(p15)
+plot1<-plot_grid(p1+theme(axis.title.x = element_blank()), p3+theme(axis.title.x = element_blank()), 
+          p5+theme(axis.title.x = element_blank(), legend.position="none"), efn_leg, p10+theme(axis.title.x = element_blank()), 
+          p13+theme(axis.title.x = element_blank()), p15+theme(axis.title.x = element_blank(), legend.position="none"), NA,
+          ncol=4, nrow=2)
+plot1 <- add_sub(plot1, "median latitude", hjust = 1, size=14)
+plot(plot1)
 
 
-plot_grid(p11+theme(axis.title.x = element_blank()), p14+theme(axis.title.x = element_blank()), 
-          p16+theme(axis.title.x = element_blank()), p2+theme(axis.title.x = element_blank()), 
-          p4+theme(axis.title.x = element_blank()), p6+theme(axis.title.x = element_blank(), legend.position="none"))
+fixer_leg<-get_legend(p6)
+plot2<-plot_grid(p2+theme(axis.title.x = element_blank()), p4+theme(axis.title.x = element_blank()), 
+          p6+theme(axis.title.x = element_blank(), legend.position="none"), fixer_leg, p11+theme(axis.title.x = element_blank()), 
+          p14+theme(axis.title.x = element_blank()), p16+theme(axis.title.x = element_blank(), legend.position="none"), NA,
+          ncol=4, nrow=2)
+plot2 <- add_sub(plot2, "median latitude", hjust = 1, size=14)
+
+plot(plot2)
