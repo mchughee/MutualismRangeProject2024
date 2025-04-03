@@ -100,7 +100,7 @@ hist(residuals(precip_range))
 write_rds(precip_range, "precip_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
-precip_range<-read_rds("precip_niche_breadth.rds")
+precip_range<-read_rds("pgls_rds_files/precip_niche_breadth.rds")
 
 # save model output!:')
 precip_df<-data.frame(coef(summary(precip_range))) %>% format(scientific=F)
@@ -128,7 +128,7 @@ p1 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=precip_range,
                           alpha=0.2)+theme_cowplot()+scale_y_log10()+
   scale_colour_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
-  ylab("logged annual \n precip. range (mm)")+
+  ylab("annual \n precip. range (mm)")+
   xlab("absolute median latitude")+
   theme(axis.title.x=element_blank())+
   geom_line(data=EFN_precip_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted, 
@@ -148,8 +148,9 @@ save_plot("precip_breadth_lat_efn.pdf", p1)
 p2 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=precip_range, color=fixer),
                           alpha=0.2)+theme_cowplot()+scale_y_log10()+
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
-  ylab("logged annual \n precipitation range (mm)")+
+  ylab("annual \n precipitation range (mm)")+
   xlab("absolute median latitude")+
+  labs(colour="rhizobia")+
   theme(axis.title.x=element_blank())+
   geom_line(data=fixer_precip_means %>% filter(!(group=="0" & x>45)), aes(x=x, y=predicted,  
                                              colour=group), linewidth=1.4)+
@@ -157,7 +158,7 @@ p2 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=precip_range, color=
   #fill=group), 
   #alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
-  annotate("text", label="Fixer: NS\nInt.:   **", x=50, y=3700, lineheight = .75, hjust=0)
+  annotate("text", label="Rhizobia: NS\n      Int.:   **", x=42, y=3700, lineheight = .75, hjust=0)
   
   
 save_plot("precip_breadth_lat_fixer.pdf", p2)
@@ -183,7 +184,7 @@ plot(temp_range)
 write_rds(temp_range, "temp_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
-temp_range<-read_rds("temp_niche_breadth.rds")
+temp_range<-read_rds("pgls_rds_files/temp_niche_breadth.rds")
 
 # save model output!:')
 temp_df<-data.frame(coef(summary(temp_range))) %>% format(scientific=F)
@@ -233,6 +234,7 @@ p4 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=temp_range, color=fi
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
   ylab("average annual temp. range \n (\u00B0C)")+
   xlab("absolute median latitude")+
+  labs(colour="rhizobia")+
   theme(axis.title.x=element_blank())+
   geom_line(data=fixer_temp_means %>% filter(!(group=="0" & x>45)), aes(x=x, y=predicted,  
                                          colour=group), linewidth=1.4)+
@@ -240,7 +242,7 @@ p4 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=temp_range, color=fi
                                            #fill=group, 
                                            #alpha=0.4), show.legend=FALSE)+
   scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
-  annotate("text", label="Fixer: ***\nInt.: ***", x=50, y=24, lineheight = .75, hjust=0)
+  annotate("text", label="Rhizobia: ***\n         Int.: ***", x=44, y=24, lineheight = .75, hjust=0)
 
 
 save_plot("temp_lat_fixer.pdf", p4)
@@ -265,7 +267,7 @@ qqnorm(temp_range, abline = c(0,1))
 write_rds(nitro_range, "nitro_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
-nitro_range<-read_rds("nitro_niche_breadth.rds")
+nitro_range<-read_rds("pgls_rds_files/nitro_niche_breadth.rds")
 
 # save model output!:')
 nitro_df<-data.frame(coef(summary(nitro_range))) %>% format(scientific=F)
@@ -293,7 +295,7 @@ p5 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_range,
                           alpha=0.2)+theme_cowplot()+scale_y_log10()+
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
   scale_colour_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
-  ylab("logged soil nitrogen \n range (cg/kg)")+
+  ylab("soil nitrogen \n range (cg/kg)")+
   xlab("absolute median latitude")+
   theme(axis.title.x=element_blank())+
   geom_line(data=EFN_nitro_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted, 
@@ -313,8 +315,9 @@ save_plot("nitro_lat_efn.pdf", p5)
 p6 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_range, color=fixer),
                           alpha=0.2)+theme_cowplot()+scale_y_log10()+
   scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
-  ylab("logged soil nitrogen \n range (cg/kg)")+
+  ylab("soil nitrogen \n range (cg/kg)")+
   xlab("absolute median latitude")+
+  labs(colour="rhizobia")+
   theme(axis.title.x=element_blank())+
   geom_line(data=fixer_nitro_means %>% filter(!(group=="0" & x>45)), aes(x=x, y=predicted,  
                                        colour=group), linewidth=1.4)+
@@ -322,7 +325,7 @@ p6 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_range, color=f
    #                                      fill=group), 
     #                                     alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
-  annotate("text", label="Fixer: NS\nInt.:   *", x=50, y=1600, lineheight = .75, hjust=0)
+  annotate("text", label="Rhizobia: NS\n       Int.:   *", x=42, y=1600, lineheight = .75, hjust=0)
 
 
 save_plot("nitro_lat_fixer.pdf", p6)
@@ -337,7 +340,7 @@ p<-cowplot::plot_grid(p1+ theme(legend.position="none"), p2+ theme(legend.positi
                    ncol=3, nrow=3, labels=c("A", "D", "", "B", "E", "", "C", "F", ""),
                    label_x = c(0, 0, 0, 0, -0.035, 0, 0, 0, 0))
 
-p <- add_sub(p, "median latitude", hjust = 1.5, size=12)
+p <- add_sub(p, "absolute median latitude", hjust = 1, size=12)
 
 plot(p)
 
