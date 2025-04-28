@@ -18,7 +18,22 @@ library(ggeffects)
 
 # Read back in PGLS dataframe
 data<-read.csv("pgls_polydropped_final.csv")
-data$mutualism<-ifelse(data$EFN==1 | data$fixer==1, "1", "0")
+
+
+# investigating latitudinal gradient in life-history
+
+data$pannual<-ifelse(data$annual<0.5, "0", "1")
+data$pannual
+data$pannual<-as.factor(data$pannual)
+ggplot(data=data, aes(x=median_lat, fill=pannual))+
+  geom_histogram()
+
+data$pwoody<-ifelse(data$woody<0.5, "0", "1")
+data$pwoody
+data$pwoody<-as.factor(data$pwoody)
+ggplot(data=data, aes(x=median_lat, fill=pwoody))+
+  geom_histogram()
+
 
 
 # Bring in tree-- this tree has the polytomy removed,
@@ -123,10 +138,11 @@ plot(fixer_precip_means)
 ###########################
 # make ggplots
 
-p1 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=precip_range, 
-                                           colour=EFN),
-                          alpha=0.2)+theme_cowplot()+scale_y_log10()+
-  scale_colour_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
+p1 <- ggplot()+
+  geom_point(data=data_1, aes(x=abs_med_lat, y=precip_range, shape=EFN, colour=EFN),alpha=0.2)+
+  theme_cowplot()+scale_y_log10()+
+  scale_shape_manual(values = c(21,19), guide = "none")+
+  scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"), name = "EFN")+
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
   ylab("annual \n precip. range (mm)")+
   xlab("absolute median latitude")+
@@ -136,18 +152,21 @@ p1 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=precip_range,
   #geom_ribbon(data=EFN_precip_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
   #fill=group),
   #alpha=0.4, show.legend=FALSE)+
-  #scale_fill_ghibli_d("YesterdayMedium", direction = -1)
-  scale_fill_manual(values=c("#92BBD9FF", "#B50A2AFF"))+
-  annotate("text", label="EFN: **\nInt.:   NS", x=50, y=3700, lineheight = .75, hjust=0)
+  #scale_fill_("YesterdayMedium", direction = -1)
+  scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
+  annotate("text", label="EFN: **\nInt.:   NS", x=50, y=2000, lineheight = .75, hjust=0)
 
 
 save_plot("precip_breadth_lat_efn.pdf", p1)
 
 
 
-p2 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=precip_range, color=fixer),
-                          alpha=0.2)+theme_cowplot()+scale_y_log10()+
-  scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
+p2 <- ggplot()+
+  geom_point(data=data_1, aes(x=abs_med_lat, y=precip_range, color=fixer, shape=fixer),
+                          alpha=0.05)+
+  theme_cowplot()+scale_y_log10()+
+  scale_shape_manual(values = c(21,19), guide = "none")+
+  scale_colour_manual(values=c("#0E84B4FF", "#26432FFF"), labels=c("no", "yes"))+
   ylab("annual \n precipitation range (mm)")+
   xlab("absolute median latitude")+
   labs(colour="rhizobia")+
@@ -157,8 +176,8 @@ p2 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=precip_range, color=
   #geom_ribbon(data=fixer_precip_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
   #fill=group), 
   #alpha=0.4, show.legend=FALSE)+
-  scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
-  annotate("text", label="Rhizobia: NS\n      Int.:   **", x=42, y=3700, lineheight = .75, hjust=0)
+  scale_fill_manual(values=c("#0E84B4FF", "#26432FFF"))+
+  annotate("text", label="Rhizobia: NS\n      Int.:   **", x=42, y=2000, lineheight = .75, hjust=0)
   
   
 save_plot("precip_breadth_lat_fixer.pdf", p2)
@@ -207,11 +226,12 @@ plot(fixer_temp_means)
 ###########################
 # make ggplots
 
-p3 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=temp_range, 
-                                           colour=EFN),
-                          alpha=0.2)+theme_cowplot()+
+p3 <- ggplot()+
+  geom_point(data=data_1, aes(x=abs_med_lat, y=temp_range, colour=EFN, shape=EFN),alpha=0.2)+
+  theme_cowplot()+
+  scale_shape_manual(values = c(21,19), guide="none")+
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
-  scale_colour_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
+  scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"))+
   ylab("average annual \n temp. range (\u00B0C)")+
   xlab("absolute median latitude")+
   theme(axis.title.x=element_blank())+
@@ -221,17 +241,19 @@ p3 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=temp_range,
                                          #fill=group),
                                          #alpha=0.4, show.legend=FALSE)+
   #scale_fill_ghibli_d("YesterdayMedium", direction = -1)
-  scale_fill_manual(values=c("#92BBD9FF", "#B50A2AFF"))+
-  annotate("text", label="EFN: *\nInt.:   NS", x=50, y=24, lineheight = .75, hjust=0)
+  scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
+  annotate("text", label="EFN: *\nInt.:   NS", x=50, y=15, lineheight = .75, hjust=0)
 
 
 save_plot("temp_lat_efn.pdf", p3)
 
 
 
-p4 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=temp_range, color=fixer),
-                          alpha=0.2)+theme_cowplot()+
-  scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
+p4 <- ggplot()+
+  geom_point(data=data_1, aes(x=abs_med_lat, y=temp_range, color=fixer, shape=fixer),alpha=0.05)+
+  theme_cowplot()+
+  scale_colour_manual(values=c("#0E84B4FF", "#26432FFF"), labels=c("no", "yes"))+
+  scale_shape_manual(values = c(21,19), guide="none")+
   ylab("average annual temp. range \n (\u00B0C)")+
   xlab("absolute median latitude")+
   labs(colour="rhizobia")+
@@ -241,8 +263,8 @@ p4 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=temp_range, color=fi
   #geom_ribbon(data=fixer_temp_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
                                            #fill=group, 
                                            #alpha=0.4), show.legend=FALSE)+
-  scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
-  annotate("text", label="Rhizobia: ***\n         Int.: ***", x=44, y=24, lineheight = .75, hjust=0)
+  scale_fill_manual(values=c("#0E84B4FF", "#26432FFF"))+
+  annotate("text", label="Rhizobia: ***\n         Int.: ***", x=44, y=15, lineheight = .75, hjust=0)
 
 
 save_plot("temp_lat_fixer.pdf", p4)
@@ -290,11 +312,12 @@ plot(fixer_nitro_means)
 ###########################
 # make ggplots
 
-p5 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_range, 
-                                           colour=EFN),
-                          alpha=0.2)+theme_cowplot()+scale_y_log10()+
+p5 <- ggplot()+
+  geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_range, colour=EFN, shape=EFN), alpha=0.2)+
+  theme_cowplot()+scale_y_log10()+
+  scale_shape_manual(values = c(21,19), guide="none")+
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
-  scale_colour_manual(values=c("#92BBD9FF", "#B50A2AFF"), labels=c("no", "yes"))+
+  scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"))+
   ylab("soil nitrogen \n range (cg/kg)")+
   xlab("absolute median latitude")+
   theme(axis.title.x=element_blank())+
@@ -304,17 +327,19 @@ p5 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_range,
                                        #fill=group),
                                        #alpha=0.4, show.legend=FALSE)+
   #scale_fill_ghibli_d("YesterdayMedium", direction = -1)
-  scale_fill_manual(values=c("#92BBD9FF", "#B50A2AFF"))+
-  annotate("text", label="EFN: **\nInt.:   NS", x=50, y=1600, lineheight = .75, hjust=0)
+  scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
+  annotate("text", label="EFN: **\nInt.:   NS", x=50, y=800, lineheight = .75, hjust=0)
 
 
 save_plot("nitro_lat_efn.pdf", p5)
 
 
 
-p6 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_range, color=fixer),
-                          alpha=0.2)+theme_cowplot()+scale_y_log10()+
-  scale_colour_manual(values=c("#92BBD9FF", "#26432FFF"), labels=c("no", "yes"))+
+p6 <- ggplot()+
+  geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_range, color=fixer, shape=fixer),alpha=0.05)+
+  theme_cowplot()+scale_y_log10()+
+  scale_shape_manual(values = c(21,19), guide="none")+
+  scale_colour_manual(values=c("#0E84B4FF", "#26432FFF"), labels=c("no", "yes"))+
   ylab("soil nitrogen \n range (cg/kg)")+
   xlab("absolute median latitude")+
   labs(colour="rhizobia")+
@@ -324,8 +349,8 @@ p6 <- ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_range, color=f
   #geom_ribbon(data=fixer_nitro_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
    #                                      fill=group), 
     #                                     alpha=0.4, show.legend=FALSE)+
-  scale_fill_manual(values=c("#92BBD9FF", "#26432FFF"))+
-  annotate("text", label="Rhizobia: NS\n       Int.:   *", x=42, y=1600, lineheight = .75, hjust=0)
+  scale_fill_manual(values=c("#0E84B4FF", "#26432FFF"))+
+  annotate("text", label="Rhizobia: NS\n       Int.:   *", x=42, y=800, lineheight = .75, hjust=0)
 
 
 save_plot("nitro_lat_fixer.pdf", p6)
@@ -340,8 +365,26 @@ p<-cowplot::plot_grid(p1+ theme(legend.position="none"), p2+ theme(legend.positi
                    ncol=3, nrow=3, labels=c("A", "D", "", "B", "E", "", "C", "F", ""),
                    label_x = c(0, 0, 0, 0, -0.035, 0, 0, 0, 0))
 
-p <- add_sub(p, "absolute median latitude", hjust = 1, size=12)
+p <- add_sub(p, "absolute median latitude", hjust = 1.5, size=12)
 
 plot(p)
 
-save_plot("niche_breadth_final_fig.jpeg", p, base_height=8, base_width=9)
+save_plot("niche_breadth_thesis_fig.jpeg", p, base_height=10, base_width=10)
+
+### making presentation plots
+
+plot1<-cowplot::plot_grid(p1+ theme(legend.position="none"), p3+ theme(legend.position="none"), p5+ theme(legend.position="none"), efn_fixer,
+                          ncol=4, nrow=1)
+plot1<-add_sub(plot1, "absolute median latitude", hjust = 0.5, size=12)
+plot(plot1)
+
+save_plot("niche_breadth_efn_fig.jpeg", plot1, base_height=5, base_width=12)
+
+
+plot2<-cowplot::plot_grid(p2+ theme(legend.position="none"), p4+ theme(legend.position="none"),
+                          p6+ theme(legend.position="none"), leg_fixer, ncol=4, nrow=1)
+
+plot2<-add_sub(plot2, "absolute median latitude", hjust = 1, size=12)
+
+save_plot("niche_breadth_fixer_fig.jpeg", plot2, base_height=5, base_width=13)
+
