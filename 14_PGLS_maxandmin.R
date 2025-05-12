@@ -116,7 +116,8 @@ plot(precip_maxquant)
 hist(residuals(precip_maxquant))
 qqnorm(precip_maxquant, abline = c(0,1))
 
-# save rds file
+# save rds file so we can read it back in later and not have to wait 
+# for everything to rerun
 
 write_rds(precip_maxquant, "precip_maxquant.rds")
 precip_maxquant<-read_rds("pgls_rds_files/precip_maxquant.rds")

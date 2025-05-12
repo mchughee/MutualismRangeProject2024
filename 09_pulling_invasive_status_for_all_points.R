@@ -7,6 +7,8 @@ library(sf)
 
 # read in occurrence data
 points <- read_csv("thindat_climadd_soilgridsadd.csv")
+# The warning message is R being confused about the input format of a column
+# that I don't care about
 
 n_distinct(points$species)
 
@@ -48,10 +50,9 @@ for(i in (unique(points_sf1$species))){
   status<-rbind(status, this.species)
   print(i)}
 
-# okay, now save classified points! haha!
+# okay, now save classified points!
 
-# But first, let's drop some of these ridiculous extra columns...god gave us
-# dplyr for a reason!
+# But first, let's drop some of these ridiculous extra columns...
 
 status1<-status %>% select(-c(mediaType, lastInterpreted, establishmentMeans,
                               typeStatus, rightsHolder, recordNumber, depth,

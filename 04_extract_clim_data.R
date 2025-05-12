@@ -3,9 +3,14 @@
 # read in packages
 library(raster)
 library(sf)
+library(dplyr)
 
 # Read in thinned data
-thin<-read.csv("thinned_data.csv")
+# May 2025: when I'm not running this on the remote server, read.csv 
+# throws an error-- it can't handle such a big dataset, I don't think
+# So switching to read_csv
+thin<-read_csv("thinned_data.csv")
+str(thin)
 
 # Convert to sf object
 thin <- st_as_sf(x = thin, coords = c("X", "Y"))

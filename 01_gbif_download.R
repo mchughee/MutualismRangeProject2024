@@ -20,18 +20,15 @@ gbif_taxon_keys <-
   species_names %>% 
   # MB: Pass names of species to gbif to get ID numbers (keys) associated with them
   get_gbifid_(method="backbone") %>% 
-  # MB: This returns a named list of data frames, one data frame per species with
+  # This returns a named list of data frames, one data frame per species with
   #a number of rows equal to the number of possible matches
   imap(~ .x %>% mutate(original_sciname = .y)) %>%
-  # MB: This step adds a new column to each dataframe (.x) in the list that contains
+  # This step adds a new column to each dataframe (.x) in the list that contains
   # the original scientific name queried (the index/name of the list item, .y). THis column is called original_sciname
   bind_rows()%>%
   filter(matchtype=="EXACT" & status=="ACCEPTED") %>% 
-  # MB: get rid of fuzzy matches (these have different spellings and are mostly 
+  # get rid of fuzzy matches (these have different spellings and are mostly 
   #the wrong species, e.g., Crudia amazonica vs. Clusia amazonica)
-  # MB: Important: do keys with the status "SYNONYM" give unique and legitimate 
-  # occurrence points? Or will occurrences under synonymous names be returned by
-  # the accepted name? We should look this up or test it out. 
   filter(kingdom == "Plantae") %>%
   select(usagekey, original_sciname) %>%
   tibble()
@@ -46,7 +43,7 @@ for (i in 1:length(gbif_taxon_keys$usagekey)) {
 
 gbif_taxon_keys_filtered <- gbif_taxon_keys %>% filter(occ_count>=50)
 
-# ask gbif to pretty please prepare some downloads
+###### ask gbif to prepare some downloads
 
 # grab usagekeys from gbif_taxon_keys and make it into a vector
 
@@ -61,8 +58,12 @@ occ_download(
 )
 
 # Now, we can actually download the data from gbif
+# You need to wait a little while for gbif to actually process the download--
+# R may finish running the previous function, but if you log into your gbif
+# account it will still be running
 
 occ_download_get(key="0008106-240229165702484", overwrite = FALSE)
+# Again, you need to wait for the download
 
 
 # unzip files

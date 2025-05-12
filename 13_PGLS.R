@@ -136,7 +136,7 @@ plot(fixer_precip_means)
 
 
 ###########################
-# make ggplots
+# make ggplots for EFN and rhizobia separately
 
 p1 <- ggplot()+
   geom_point(data=data_1, aes(x=abs_med_lat, y=precip_range, shape=EFN, colour=EFN),alpha=0.2)+

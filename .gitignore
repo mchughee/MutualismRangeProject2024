@@ -7,7 +7,6 @@
 world/*
 zip_out/*
 0008106-240229165702484.csv
-legume_range_traits.csv
 legume_data/occurrence_data/
 wc2.1_30s_bio
 shapefiles.csv
@@ -201,13 +200,10 @@ precip_tot_output_table.csv
 temp_nat_output_table.csv
 temp_tot_output_table.csv
 (2).Rhistory1
-niche_breadth_final_fig.jpeg
-niche_efn_final_fig.jpeg
-niche_fixer_final_fig.jpeg
-(2).Rhistory1
-niche_breadth_efn_fig.jpeg
-niche_breadth_fixer_fig.jpeg
-niche_breadth_pres_fig.jpeg
-niche_breadth_thesis_fig.jpeg
-niche_efn_pres_fig.jpeg
-niche_fixer_pres_fig.jpeg
+To_consider.txt
+desktop.ini
+lupinus_occs.pdf
+nitro_rast.pdf
+precip_rast.pdf
+temp_rast.pdf
+wc2.1_30s_bio (1)

@@ -29,8 +29,7 @@ results<-NULL
 
     results1<-results %>% dplyr::select(-c(X))
     sf::st_write(results1, "thinned_data.csv", layer_options = "GEOMETRY=AS_XY")
-# Why does st_write not include geometry points?? This is literally the only reason to write a
-# dataframe as an sf object!!!!!!!!!!!!!!!!!!
+
 
 # Check to ensure that data is actually in the right format:')
 thinned_data<-read.csv("thinned_data.csv")

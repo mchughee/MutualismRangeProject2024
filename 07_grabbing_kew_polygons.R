@@ -45,7 +45,7 @@ names<-names %>% filter(names$species_names %in% my_sp$species)
 # 15 species do not have polygons!
 
 # Okay, let's try to get these associated plant distributions up and running, first 
-# by filtering to just the species that are in my dataset
+# by filtering to just the species that are in my dataset (and now, the plant names dataset)
 plant_dist1<-plant_dist %>% filter(plant_name_id %in% names$plant_name_id)
 
 # pull species names from "names" dataset to make plant distributions easier to work with

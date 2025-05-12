@@ -1,4 +1,4 @@
-# Finally running coordinate cleaner lol
+# Running coordinate cleaner
 # 15 April 2024
 
 library(CoordinateCleaner)
@@ -73,7 +73,7 @@ dat_cl_a$species<-as.factor(dat_cl_a$species)
 quality_a<-filter(dat_cl_a, species=="Aganope gabonica"| species=="Alexa imperatricis"|species=="Amorpha nana"|species=="Arachis diogoi"|species=="Acmispon americanus"|species=="Aeschynomene indica"|species=="Alysicarpus ovalifolius")
 
 
-# plot data
+# plot data to check that things are working
 ggplot() +
   geom_polygon(data = world, aes(x=long, y=lat, group=group), colour="darkgrey",fill="grey", alpha=1)+
   geom_point(data=quality_a, aes(x=decimalLongitude, y=decimalLatitude, colour=factor(species)), pch=20, size=2)
