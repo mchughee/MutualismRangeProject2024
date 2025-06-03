@@ -5,7 +5,7 @@ library(cowplot)
 
 
 # Read in my data
-points<-read_csv("invasiveclass_thindat_climadd_soilgridsadd.csv")
+points<-read_csv("invasiveclass_thinnedoccs_soil_clim_biome.csv")
 n_distinct(points$species)
 
 
@@ -14,6 +14,10 @@ points_1<-points %>% drop_na(precip) %>% drop_na(temp) %>%  drop_na(nitrogen)
 n_distinct(points_1$species)
 points_1<-points_1 %>% drop_na(intrdcd)
 n_distinct(points_1$species)
+
+
+names(which.max(table(points_1$BIOME)))
+
 
 # Group by species and get summarizing!
 summary_df<-points_1 %>% 
@@ -35,11 +39,14 @@ summary_df<-points_1 %>%
           min_lat=min(Y),
           mean_lat=mean(Y),
           median_lat=median(Y),
+          median_long=median(X),
           quant95=quantile(Y, 0.95),
-          quant005=quantile(Y, 0.05)
+          quant005=quantile(Y, 0.05),
+          biome=names(which.max(table(BIOME)))
+          
   )
 
-duplicated(summary_df$species)
+print(duplicated(summary_df$species))
 
 
 summary_df$precip_range<-summary_df$precip_maxquant-summary_df$precip_minquant
@@ -48,7 +55,7 @@ summary_df$nitro_range<-summary_df$nitro_maxquant-summary_df$nitro_minquant
 
 # Now read in traits
 
-traits<-read.csv("legume_range_traits.csv")
+traits<-read.csv("data_files/legume_range_traits.csv")
 traits$species<-traits$Phy
 
 # Let us smoosh the traits together with the summary_df.
@@ -63,7 +70,7 @@ dropped_sp<-filter(master_legume, n<25)
 
 master_thin<-master_legume %>% filter(n>=25)
 
-write.csv(master_thin, "pgls_final_data.csv")
+write.csv(master_thin, "data_files/pgls_summary_data_long_added_biome_added.csv")
 
 
 

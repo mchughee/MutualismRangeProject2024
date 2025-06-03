@@ -6,7 +6,7 @@ library(tidytree)
 library(ggtree)
 
 # Bring in tree
-mytree<-read.tree("phylogeny_2771_buildnodes1.tre")
+mytree<-read.tree("phylogeny/phylogeny_2771_buildnodes1.tre")
 
 p <- ggtree(mytree, alpha=0.1, layout="circular")+geom_nodelab(aes(label = node))
 p <- p %>% ggtree::collapse(node=2775)
@@ -44,7 +44,7 @@ plot(dropped)
 write.tree(dropped, "polytomy_removed.tre")
 
 # remove polytomy species from pgls final dataset
-pgls<-read.csv("pgls_final_data.csv")
+pgls<-read.csv("data_files/pgls_summary_data_long_added_biome_added.csv")
 
 setdiff(pgls$species, dropped$tip.label)
 
@@ -54,6 +54,6 @@ pgls_new<-filter(pgls, pgls$species %in% dropped$tip.label)
 
 # write it as a csv for future use!
 
-write.csv(pgls_new, "pgls_polydropped_final.csv")
+write.csv(pgls_new, "data_files/pgls_polydropped_final_biome.csv")
 
 setdiff(pgls$species, mytree$tip.label)

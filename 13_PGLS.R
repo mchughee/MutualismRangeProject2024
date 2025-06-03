@@ -10,14 +10,9 @@ library(cowplot)
 library(ggeffects)
 
 
-# Removing these weird species with 0-little niche breadth at all, and writing 
-# it into a new file that I can read in at any time (very exciting stuff):
-#data_2<-data_1 %>% filter(n>=25)
-#write.csv(data_2, "pgls_final_data.csv")
-# we will read this in next
 
 # Read back in PGLS dataframe
-data<-read.csv("pgls_polydropped_final.csv")
+data<-read.csv("data_files/pgls_polydropped_final_biome.csv")
 
 
 # investigating latitudinal gradient in life-history
@@ -99,7 +94,7 @@ min(data_1[data_1$fixer=="0",]$abs_med_lat)
 # I took n out to try without it!!!! But please know that it should be put back
 # in!
 precip_range <- gls(log(precip_range) ~ EFN*abs_med_lat + fixer*abs_med_lat+woody
-                    + uses_num_uses + annual,
+                    + uses_num_uses + annual + biome,
                     data=data_1, 
                     correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -112,7 +107,7 @@ hist(residuals(precip_range))
 
 ### Save as RDS file
 
-write_rds(precip_range, "precip_niche_breadth.rds")
+write_rds(precip_range, "biome_pgls_output/precip_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
 precip_range<-read_rds("pgls_rds_files/precip_niche_breadth.rds")
@@ -120,7 +115,7 @@ precip_range<-read_rds("pgls_rds_files/precip_niche_breadth.rds")
 # save model output!:')
 precip_df<-data.frame(coef(summary(precip_range))) %>% format(scientific=F)
 precip_df$p.value<-as.numeric(precip_df$p.value) %>% round(4)
-write.csv(precip_df, "precip_breadth_output_table.csv")
+write.csv(precip_df, "biome_pgls_output/precip_breadth_output_table.csv")
 
 
 ##################################
@@ -141,7 +136,7 @@ plot(fixer_precip_means)
 p1 <- ggplot()+
   geom_point(data=data_1, aes(x=abs_med_lat, y=precip_range, shape=EFN, colour=EFN),alpha=0.2)+
   theme_cowplot()+scale_y_log10()+
-  scale_shape_manual(values = c(21,19), guide = "none")+
+  scale_shape_manual(values = c(21, 19), guide = "none")+
   scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"), name = "EFN")+
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
   ylab("annual \n precip. range (mm)")+
