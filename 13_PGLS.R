@@ -67,8 +67,8 @@ hist(log(data_1$nitro_range))
 min(data_1$nitro_range)
 
 
-
-# make sure R is reading our factors as factors!!!
+# VERY, VERRRRYYYYYY IMPORTANT! DO NOT RUN WITHOUT:
+# making sure R is reading our factors as factors!!!
 data_1$EFN<-as.factor(data_1$EFN)
 data_1$Domatia<-as.factor(data_1$Domatia)
 data_1$fixer<-as.factor(data_1$fixer)
@@ -152,7 +152,7 @@ p1 <- ggplot()+
   annotate("text", label="EFN: **\nInt.:   NS", x=50, y=2000, lineheight = .75, hjust=0)
 
 
-save_plot("precip_breadth_lat_efn.pdf", p1)
+save_plot("biome_pgls_output/precip_breadth_lat_efn.pdf", p1)
 
 
 
@@ -175,14 +175,14 @@ p2 <- ggplot()+
   annotate("text", label="Rhizobia: NS\n      Int.:   **", x=42, y=2000, lineheight = .75, hjust=0)
   
   
-save_plot("precip_breadth_lat_fixer.pdf", p2)
+save_plot("biome_pgls_output/precip_breadth_lat_fixer.pdf", p2)
 
 ################################################################################
 # pgls for temp range
 
 temp_range <- gls(temp_range ~ EFN*abs_med_lat + fixer*abs_med_lat
                   + woody + uses_num_uses
-                  + annual,
+                  + annual+biome,
                   data=data_1, 
                   correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -195,15 +195,15 @@ plot(temp_range)
 
 ### Save as RDS file
 
-write_rds(temp_range, "temp_niche_breadth.rds")
+write_rds(temp_range, "biome_pgls_output/temp_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
-temp_range<-read_rds("pgls_rds_files/temp_niche_breadth.rds")
+temp_range<-read_rds("biome_pgls_output/temp_niche_breadth.rds")
 
 # save model output!:')
 temp_df<-data.frame(coef(summary(temp_range))) %>% format(scientific=F)
 temp_df$p.value<-as.numeric(temp_df$p.value) %>% round(4)
-write.csv(temp_df, "temp_breadth_output_table.csv")
+write.csv(temp_df, "biome_pgls_output/temp_breadth_output_table.csv")
 
 
 ##################################
@@ -240,7 +240,7 @@ p3 <- ggplot()+
   annotate("text", label="EFN: *\nInt.:   NS", x=50, y=15, lineheight = .75, hjust=0)
 
 
-save_plot("temp_lat_efn.pdf", p3)
+save_plot("biome_pgls_output/temp_lat_efn.pdf", p3)
 
 
 
@@ -262,14 +262,14 @@ p4 <- ggplot()+
   annotate("text", label="Rhizobia: ***\n         Int.: ***", x=44, y=15, lineheight = .75, hjust=0)
 
 
-save_plot("temp_lat_fixer.pdf", p4)
+save_plot("biome_pgls_output/temp_lat_fixer.pdf", p4)
 
 
 ##########################################################################
 #### pgls for nitro range
 
 nitro_range <- gls(log(nitro_range) ~ EFN*abs_med_lat + fixer*abs_med_lat
-              + woody + uses_num_uses + annual,
+              + woody + uses_num_uses + annual + biome,
               data=data_1, 
               correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -281,15 +281,15 @@ qqnorm(temp_range, abline = c(0,1))
 
 ### Save as RDS file
 
-write_rds(nitro_range, "nitro_niche_breadth.rds")
+write_rds(nitro_range, "biome_pgls_output/nitro_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
-nitro_range<-read_rds("pgls_rds_files/nitro_niche_breadth.rds")
+nitro_range<-read_rds("biome_pgls_output/nitro_niche_breadth.rds")
 
 # save model output!:')
 nitro_df<-data.frame(coef(summary(nitro_range))) %>% format(scientific=F)
 nitro_df$p.value<-as.numeric(nitro_df$p.value) %>% round(4)
-write.csv(nitro_df, "nitro_breadth_output_table.csv")
+write.csv(nitro_df, "biome_pgls_output/nitro_breadth_output_table.csv")
 
 
 ##################################
@@ -326,7 +326,7 @@ p5 <- ggplot()+
   annotate("text", label="EFN: **\nInt.:   NS", x=50, y=800, lineheight = .75, hjust=0)
 
 
-save_plot("nitro_lat_efn.pdf", p5)
+save_plot("biome_pgls_output/nitro_lat_efn.pdf", p5)
 
 
 
@@ -348,7 +348,7 @@ p6 <- ggplot()+
   annotate("text", label="Rhizobia: NS\n       Int.:   *", x=42, y=800, lineheight = .75, hjust=0)
 
 
-save_plot("nitro_lat_fixer.pdf", p6)
+save_plot("biome_pgls_output/nitro_lat_fixer.pdf", p6)
 
 leg_fixer<-get_legend(p2)
 efn_fixer<-get_legend(p1)
@@ -364,7 +364,7 @@ p <- add_sub(p, "absolute median latitude", hjust = 1.5, size=12)
 
 plot(p)
 
-save_plot("niche_breadth_thesis_fig.jpeg", p, base_height=10, base_width=10)
+save_plot("biome_pgls_output/niche_breadth_thesis_fig.jpeg", p, base_height=10, base_width=10)
 
 ### making presentation plots
 

@@ -215,3 +215,4 @@ pgls_summary_data.csv
 invasiveclass_thinnedoccs_soil_clim_biome.csv
 grabbing_wwf_biome.R
 data_files
+biome_pgls_output
