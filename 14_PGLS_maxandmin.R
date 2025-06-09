@@ -11,7 +11,7 @@ library(ggeffects)
 library(cowplot)
 
 # Read back in PGLS dataframe
-data<-read.csv("pgls_polydropped_final.csv")
+data<-read.csv("data_files/pgls_polydropped_final_biome.csv")
 
 # Bring in tree
 mytree<-read.tree("polytomy_removed.tre")
@@ -106,7 +106,7 @@ hist(data_1$precip_maxquant)
 hist(log(data_1$precip_maxquant))
 
 precip_maxquant <- gls(log(precip_maxquant) ~ EFN*abs_med_lat+
-                         fixer*abs_med_lat+woody+uses_num_uses+annual,
+                         fixer*abs_med_lat+woody+uses_num_uses+annual+biome,
                        data=data_1, 
                        correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -119,13 +119,13 @@ qqnorm(precip_maxquant, abline = c(0,1))
 # save rds file so we can read it back in later and not have to wait 
 # for everything to rerun
 
-write_rds(precip_maxquant, "precip_maxquant.rds")
+write_rds(precip_maxquant, "biome_pgls_output/precip_maxquant.rds")
 precip_maxquant<-read_rds("pgls_rds_files/precip_maxquant.rds")
 summary(precip_maxquant)
 
 precip_max<-data.frame(coef(summary(precip_maxquant))) %>% format(scientific=F)
 precip_max$p.value<-as.numeric(precip_max$p.value) %>% round(4)
-write.csv(precip_max, "precip_max_output_table.csv")
+write.csv(precip_max, "biome_pgls_output/precip_max_output_table.csv")
 
 ### Extract predicted values
 EFN_precip_max_means<-ggpredict(precip_maxquant, terms=c("abs_med_lat [all]", "EFN [all]"), type="fixed")
@@ -152,9 +152,9 @@ p1 <- ggplot()+
   #scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
   scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
   theme(legend.position="none")+
-  annotate("text", label="EFN: *\nInt.:  NS", x=45, y=3000, lineheight = .75, hjust=0)
+  annotate("text", label="EFN: **\nInt.:  *", x=45, y=3000, lineheight = .75, hjust=0)
 
-save_plot("precip_max_efn.pdf", p1)
+save_plot("biome_pgls_output/precip_max_efn.pdf", p1)
 
 
 
@@ -173,10 +173,10 @@ p2 <- ggplot()+
   #alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#0E84B4FF", "#26432FFF"))+
   theme(legend.position="none")+
-  annotate("text", label="Rhizobia: **\nInt.:          ***", x=34, y=3000, lineheight = .75, hjust=0)
+  annotate("text", label="Rhizobia: NS\nInt.:          ***", x=34, y=3000, lineheight = .75, hjust=0)
 
 
-save_plot("precip_max_fixer.pdf", p2)
+save_plot("biome_pgls_output/precip_max_fixer.pdf", p2)
 
 
 
@@ -187,7 +187,7 @@ hist(log(data_1$temp_maxquant))
 # pov when you do the transformation and it makes the data look WORSE
 
 temp_maxquant <- gls(temp_maxquant ~ EFN*abs_med_lat+
-                       fixer*abs_med_lat+woody+uses_num_uses+annual,
+                       fixer*abs_med_lat+woody+uses_num_uses+annual+biome,
                      data=data_1, 
                      correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -199,13 +199,13 @@ plot(temp_maxquant)
 
 # save rds file
 
-write_rds(temp_maxquant, "temp_maxquant.rds")
+write_rds(temp_maxquant, "biome_pgls_output/temp_maxquant.rds")
 temp_maxquant<-read_rds("pgls_rds_files/temp_maxquant.rds")
 summary(temp_maxquant)
 
 temp_max<-data.frame(coef(summary(temp_maxquant))) %>% format(scientific=F)
 temp_max$p.value<-as.numeric(temp_max$p.value) %>% round(4)
-write.csv(temp_max, "temp_max_output_table.csv")
+write.csv(temp_max, "biome_pgls_output/temp_max_output_table.csv")
 
 ### Extract predicted values
 EFN_temp_max_means<-ggpredict(temp_maxquant, terms=c("abs_med_lat [all]", "EFN [all]"), type="fixed")
@@ -234,7 +234,7 @@ p3 <- ggplot()+
   theme(legend.position="none")+
   annotate("text", label="EFN: NS\nInt.:   NS", x=45, y=25, lineheight = .75, hjust=0)
 
-save_plot("temp_max_efn.pdf", p3)
+save_plot("biome_pgls_output/temp_max_efn.pdf", p3)
 
 
 
@@ -256,14 +256,14 @@ p4 <- ggplot()+
   annotate("text", label="Rhizobia: ***\nInt.:          ***", x=38, y=25, lineheight = .75, hjust=0)
 
 
-save_plot("temp_max_fixer.pdf", p4)
+save_plot("biome_pgls_output/temp_max_fixer.pdf", p4)
 ##########################################
 # pgls for nitro maxquant
 hist(log(data_1$nitro_maxquant))
 hist(data_1$nitro_maxquant)
 
 nitro_maxquant <- gls(log(nitro_maxquant) ~ EFN*abs_med_lat+
-                        fixer*abs_med_lat+woody+uses_num_uses+annual,
+                        fixer*abs_med_lat+woody+uses_num_uses+annual+biome,
                       
                       data=data_1, 
                       
@@ -277,13 +277,13 @@ qqnorm(nitro_maxquant, abline = c(0,1))
 
 
 # Write RDS file
-write_rds(nitro_maxquant, "nitro_maxquant.rds")
+write_rds(nitro_maxquant, "biome_pgls_output/nitro_maxquant.rds")
 nitro_maxquant<-read_rds("pgls_rds_files/nitro_maxquant.rds")
 
 # write into file
 nitro_max<-data.frame(coef(summary(nitro_maxquant))) %>% format(scientific=F)
 nitro_max$p.value<-as.numeric(nitro_max$p.value) %>% round(4)
-write.csv(nitro_max, "nitro_max_output_table.csv")
+write.csv(nitro_max, "biome_pgls_output/nitro_max_output_table.csv")
 
 ### PULL MODEL OUTPUT
 EFN_nitro_max_means<-ggpredict(nitro_maxquant, terms=c("abs_med_lat [all]", "EFN [all]"), type="fixed")
@@ -309,10 +309,10 @@ p5 <- ggplot()+
   #alpha=0.4), show.legend=FALSE)+
   #scale_fill_ghibli_d("YesterdayMedium", direction = -1)
   scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
-  annotate("text", label="EFN: **\nInt.:  NS", x=45, y=500, lineheight = .75, hjust=0)
+  annotate("text", label="EFN: ***\nInt.:  NS", x=45, y=500, lineheight = .75, hjust=0)
   
 
-save_plot("nitro_max_efn.pdf", p5)
+save_plot("biome_pgls_output/nitro_max_efn.pdf", p5)
 
 
 
@@ -330,11 +330,11 @@ p6 <- ggplot()+
   #fill=group), 
   #alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#0E84B4FF", "#26432FFF"))+
-  annotate("text", label="Rhizobia: **\nInt.:          ***", x=34, y=1000, lineheight = .75, hjust=0)
+  annotate("text", label="Rhizobia: NS\nInt.:          NS", x=34, y=1000, lineheight = .75, hjust=0)
   
 
 
-save_plot("nitro_max_fixer.pdf", p6)
+save_plot("biome_pgls_output/nitro_max_fixer.pdf", p6)
 
 
 ################################################################################
@@ -347,7 +347,7 @@ hist(log(data_1$precip_minquant))
 hist(data_1$precip_minquant)
 
 precip_minquant <- gls(log(precip_minquant) ~ EFN*abs_med_lat+
-                         fixer*abs_med_lat+woody+uses_num_uses+annual,
+                         fixer*abs_med_lat+woody+uses_num_uses+annual+biome,
                        data=data_1, 
                        correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -359,13 +359,13 @@ qqnorm(precip_minquant, abline = c(0,1))
 
 # write RDS
 
-write_rds(precip_minquant, "precip_minquant.rds")
+write_rds(precip_minquant, "biome_pgls_output/precip_minquant.rds")
 precip_minquant<-read_rds("pgls_rds_files/precip_minquant.rds")
 
 # output table
 precip_min<-data.frame(coef(summary(precip_minquant))) %>% format(scientific=F)
 precip_min$p.value<-as.numeric(precip_min$p.value) %>% round(4)
-write.csv(precip_min, "precip_min_output_table.csv")
+write.csv(precip_min, "biome_pgls_output/precip_min_output_table.csv")
 
 # grab model output
 EFN_precip_min_means<-ggpredict(precip_minquant, 
@@ -398,7 +398,7 @@ p10 <- ggplot()+
   theme(legend.position="none")+
   annotate("text", label="EFN: NS\nInt.:   NS", x=45, y=1100, lineheight = .75, hjust=0)
 
-save_plot("precip_min_efn.pdf", p10)
+save_plot("biome_pgls_output/precip_min_efn.pdf", p10)
 
 
 
@@ -420,14 +420,14 @@ p11 <- ggplot()+
   annotate("text", label="Rhizobia: ***\nInt.:          ***", x=34, y=1200, lineheight = .75, hjust=0)
 
 
-save_plot("precip_min_fixer.pdf", p11)
+save_plot("biome_pgls_output/precip_min_fixer.pdf", p11)
 
 
 ###############################################
 # pgls for temp minquant
 
 temp_minquant <- gls(temp_minquant ~ EFN*abs_med_lat+
-                       fixer*abs_med_lat+woody+uses_num_uses+annual,
+                       fixer*abs_med_lat+woody+uses_num_uses+annual+biome,
                      data=data_1, 
                      correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -439,13 +439,13 @@ plot(temp_minquant)
 
 # write RDS
 
-write_rds(temp_minquant, "temp_minquant.rds")
+write_rds(temp_minquant, "biome_pgls_output/temp_minquant.rds")
 temp_minquant<-read_rds("pgls_rds_files/temp_minquant.rds")
 
 # output table
 temp_min<-data.frame(coef(summary(temp_minquant))) %>% format(scientific=F)
 temp_min$p.value<-as.numeric(temp_min$p.value) %>% round(4)
-write.csv(temp_min, "temp_min_output_table.csv")
+write.csv(temp_min, "biome_pgls_output/temp_min_output_table.csv")
 
 # pull model output
 EFN_temp_min_means<-ggpredict(temp_minquant, 
@@ -476,7 +476,7 @@ p13 <- ggplot()+
   theme(legend.position="none")+
   annotate("text", label="EFN: *\nInt.:  NS", x=45, y=25, lineheight = .75, hjust=0)
 
-save_plot("temp_min_efn.pdf", p13)
+save_plot("biome_pgls_output/temp_min_efn.pdf", p13)
 
 
 
@@ -498,7 +498,7 @@ p14 <- ggplot()+
   annotate("text", label="Rhizobia: NS\nInt.:          NS", x=34, y=25, lineheight = .75, hjust=0)
 
 
-save_plot("temp_min_fixer.pdf", p14)
+save_plot("biome_pgls_output/temp_min_fixer.pdf", p14)
 
 
 ####################################################
@@ -508,7 +508,7 @@ hist(log(data_1$nitro_minquant))
 hist(sqrt(data_1$nitro_minquant))
 
 nitro_minquant <- gls(log(nitro_minquant) ~ EFN*abs_med_lat +
-                        fixer*abs_med_lat+woody+uses_num_uses+annual,
+                        fixer*abs_med_lat+woody+uses_num_uses+annual+biome,
                       
                       data=data_1, 
                       
@@ -522,13 +522,14 @@ qqnorm(nitro_minquant, abline = c(0,1))
 
 # write RDS
 
-write_rds(nitro_minquant, "nitro_minquant.rds")
+write_rds(nitro_minquant, "biome_pgls_output/nitro_minquant.rds")
+
 nitro_minquant<-read_rds("pgls_rds_files/nitro_minquant.rds")
 
 # output table
 nitro_min<-data.frame(coef(summary(nitro_minquant))) %>% format(scientific=F)
 nitro_min$p.value<-as.numeric(nitro_min$p.value) %>% round(4)
-write.csv(nitro_min, "nitro_min_output_table.csv")
+write.csv(nitro_min, "biome_pgls_output/nitro_min_output_table.csv")
 
 # Pull model output
 EFN_nitro_min_means<-ggpredict(nitro_minquant, 
@@ -557,7 +558,7 @@ p15 <- ggplot()+
   scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
   annotate("text", label="EFN: NS\nInt.:   NS", x=45, y=100, lineheight = .75, hjust=0)
 
-save_plot("nitro_min_efn.pdf", p15)
+save_plot("biome_pgls_output/nitro_min_efn.pdf", p15)
 
 
 
@@ -575,7 +576,7 @@ p16 <- ggplot()+
   #fill=group, 
   #alpha=0.4), show.legend=FALSE)+
   scale_fill_manual(values=c("#0E84B4FF", "#26432FFF"))+
-  annotate("text", label="Rhizobia: ***\nInt.:          ***", x=36, y=300, lineheight = .75, hjust=0)
+  annotate("text", label="Rhizobia: **\nInt.:          ***", x=36, y=300, lineheight = .75, hjust=0)
 
 
 save_plot("nitro_min_fixer.pdf", p16)
@@ -589,7 +590,7 @@ plot1<-plot_grid(p1+theme(axis.title.x = element_blank()), p3+theme(axis.title.x
           ncol=4, nrow=2, labels=c("A", "B", "C", "", "D", "E", "F"))
 plot1 <- add_sub(plot1, "absolute median latitude", hjust = 0.9, size=14)
 plot(plot1)
-save_plot("niche_efn_pres_fig.jpeg", plot1, base_height=8, base_width=11)
+save_plot("biome_pgls_output/niche_efn_pres_fig.jpeg", plot1, base_height=8, base_width=11)
 
 
 fixer_leg<-get_legend(p6)
@@ -600,4 +601,4 @@ plot2<-plot_grid(p2+theme(axis.title.x = element_blank()), p4+theme(axis.title.x
 plot2 <- add_sub(plot2, "absolute median latitude", hjust = 0.9, size=14)
 plot(plot2)
 
-save_plot("niche_fixer_pres_fig.jpeg", plot2, base_height=8, base_width=11)
+save_plot("biome_pgls_output/niche_fixer_pres_fig.jpeg", plot2, base_height=8, base_width=11)
