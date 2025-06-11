@@ -12,6 +12,8 @@ library(nlme)
 mydat<-read.csv("data_files/pgls_polydropped_final_biome.csv")
 
 divdat<-read.csv("data_files/Legume_ploidy_dataset.csv")
+divdat$numGenera<-as.numeric(divdat$numGenera)
+summary(divdat$numGenera)
 
 # Which diversity/specialization metric has the highest coverage?
 colSums(!is.na(divdat))
@@ -41,6 +43,23 @@ tree_pruned <- drop.tip(mytree, diff)
 # make rows in data match rows in tree
 myfil1 <- myfil[match(tree_pruned$tip.label, myfil$species),]
 class(myfil1$numGenera)
+max(myfil1$numGenera)
+min(myfil1$numGenera)
+
+ggplot(myfil1, aes(x=numGenera, y=precip_range))+
+  geom_point()+
+  geom_smooth(method="lm")+
+  theme_classic()
+
+ggplot(myfil1, aes(x=numGenera, y=temp_range))+
+  geom_point()+
+  geom_smooth(method="lm")+
+  theme_classic()
+
+ggplot(myfil1, aes(x=numGenera, y=nitro_range))+
+  geom_point()+
+  geom_smooth(method="lm")+
+  theme_classic()
 
 # run actual models
 ## precip first
@@ -76,21 +95,21 @@ write.csv(precip_df, "biome_pgls_output/numgen_precip_breadth_output_table.csv")
 
 ### Pull predicted means for EFN and fixer
 
-precip_means<-ggpredict(precip_range, terms=c("abs_med_lat [all]"), type="fixed")
+precip_means<-ggpredict(precip_range, terms=c("numGenera [all]"), type="fixed")
 plot(precip_means)
 
 
 ###########################
 # make ggplots for EFN and rhizobia separately
 p1 <- ggplot()+
-  geom_point(data=myfil1, aes(x=abs_med_lat, y=precip_range, colour=as.factor(numGenera)),alpha=0.7)+
+  geom_point(data=myfil1, aes(x=numGenera, y=precip_range, colour=as.factor(numGenera)),alpha=0.7)+
   theme_cowplot()+scale_y_log10()+
   #scale_shape_manual(values = c(21, 19), guide = "none")+
   #scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"), name = "EFN")+
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
   ylab("annual \n precip. range (mm)")+
-  xlab("absolute median latitude")+
-  theme(axis.title.x=element_blank())+
+  xlab("number of genera")+
+  #theme(axis.title.x=element_blank())+
   geom_line(data=precip_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4)
   #geom_ribbon(data=EFN_precip_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
   #fill=group),
@@ -135,20 +154,20 @@ write.csv(temp_df, "biome_pgls_output/numgen_temp_breadth_output_table.csv")
 ##################################
 ### Pull predicted means for EFN and fixer
 
-temp_means<-ggpredict(temp_range, terms=c("abs_med_lat [all]"), type="fixed")
+temp_means<-ggpredict(temp_range, terms=c("numGenera [all]"), type="fixed")
 plot(temp_means)
 
 
 ###########################
 # make ggplots for EFN and rhizobia separately
 p2 <- ggplot()+
-  geom_point(data=myfil1, aes(x=abs_med_lat, y=temp_range, colour=as.factor(numGenera)),alpha=0.7)+
+  geom_point(data=myfil1, aes(x=numGenera, y=temp_range, colour=as.factor(numGenera)),alpha=0.7)+
   theme_cowplot()+scale_y_log10()+
   #scale_shape_manual(values = c(21, 19), guide = "none")+
   #scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"), name = "EFN")+
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
   ylab("annual \n temp. range (mm)")+
-  xlab("absolute median latitude")+
+  xlab("numGenera")+
   theme(axis.title.x=element_blank())+
   geom_line(data=temp_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4)
 #geom_ribbon(data=EFN_precip_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
@@ -195,20 +214,20 @@ write.csv(nitro_df, "biome_pgls_output/numgen_nitro_breadth_output_table.csv")
 ##################################
 ### Pull predicted means for EFN and fixer
 
-nitro_means<-ggpredict(nitro_range, terms=c("abs_med_lat [all]"), type="fixed")
+nitro_means<-ggpredict(nitro_range, terms=c("numGenera [all]"), type="fixed")
 plot(nitro_means)
 
 
 ###########################
 # make ggplots for EFN and rhizobia separately
 p3 <- ggplot()+
-  geom_point(data=myfil1, aes(x=abs_med_lat, y=nitro_range, colour=as.factor(numGenera)),alpha=0.7)+
+  geom_point(data=myfil1, aes(x=numGenera, y=nitro_range, colour=as.factor(numGenera)),alpha=0.7)+
   theme_cowplot()+scale_y_log10()+
   #scale_shape_manual(values = c(21, 19), guide = "none")+
   #scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"), name = "EFN")+
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
   ylab("nitro. range (mm)")+
-  xlab("absolute median latitude")+
+  xlab("numGenera")+
   theme(axis.title.x=element_blank())+
   geom_line(data=nitro_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4)
 #geom_ribbon(data=EFN_precip_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
