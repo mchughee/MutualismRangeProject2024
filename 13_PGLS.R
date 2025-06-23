@@ -72,6 +72,7 @@ min(data_1$nitro_range)
 data_1$EFN<-as.factor(data_1$EFN)
 data_1$Domatia<-as.factor(data_1$Domatia)
 data_1$fixer<-as.factor(data_1$fixer)
+data_1$biome<-as.factor(data_1$biome)
 
 sum(data_1$mutualism=="0")
 sum(data_1$mutualism=="1")
@@ -110,7 +111,7 @@ hist(residuals(precip_range))
 write_rds(precip_range, "biome_pgls_output/precip_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
-precip_range<-read_rds("pgls_rds_files/precip_niche_breadth.rds")
+precip_range<-read_rds("biome_pgls_output/precip_niche_breadth.rds")
 
 # save model output!:')
 precip_df<-data.frame(coef(summary(precip_range))) %>% format(scientific=F)
@@ -172,7 +173,7 @@ p2 <- ggplot()+
   #fill=group), 
   #alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#0E84B4FF", "#26432FFF"))+
-  annotate("text", label="Rhizobia: NS\n      Int.:   **", x=42, y=2000, lineheight = .75, hjust=0)
+  annotate("text", label="Rhizobia: NS\n      Int.:    NS", x=42, y=2000, lineheight = .75, hjust=0)
   
   
 save_plot("biome_pgls_output/precip_breadth_lat_fixer.pdf", p2)
@@ -323,7 +324,7 @@ p5 <- ggplot()+
                                        #alpha=0.4, show.legend=FALSE)+
   #scale_fill_ghibli_d("YesterdayMedium", direction = -1)
   scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
-  annotate("text", label="EFN: **\nInt.:   NS", x=50, y=800, lineheight = .75, hjust=0)
+  annotate("text", label="EFN: ***\nInt.:   NS", x=50, y=800, lineheight = .75, hjust=0)
 
 
 save_plot("biome_pgls_output/nitro_lat_efn.pdf", p5)
@@ -360,7 +361,7 @@ p<-cowplot::plot_grid(p1+ theme(legend.position="none"), p2+ theme(legend.positi
                    ncol=3, nrow=3, labels=c("A", "D", "", "B", "E", "", "C", "F", ""),
                    label_x = c(0, 0, 0, 0, -0.035, 0, 0, 0, 0))
 
-p <- add_sub(p, "absolute median latitude", hjust = 1.5, size=12)
+p <- add_sub(p, "absolute median latitude", hjust = 1, size=12)
 
 plot(p)
 

@@ -40,6 +40,7 @@ data_1$abs_med_lat<-abs(data_1$median_lat)
 data_1$EFN<-as.factor(data_1$EFN)
 data_1$Domatia<-as.factor(data_1$Domatia)
 data_1$fixer<-as.factor(data_1$fixer)
+data_1$biome<-as.factor(data_1$biome)
 
 # Add in hemisphere data
 data_1$hemisphere<-ifelse(data_1$median_lat>0, "0", "1")
@@ -49,54 +50,6 @@ sum(data_1$hemisphere=="1")
 
 data_1$hemisphere<-as.factor(data_1$hemisphere)
 
-##################################################################################
-# fit splines to maxquant data
-efn_max_1<-ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=log(precip_maxquant), colour=EFN))+
-  geom_smooth(data=data_1, aes(x=abs_med_lat, y=log(precip_maxquant), colour=EFN), method="loess")
-
-efn_max_2<-ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=temp_maxquant, colour=EFN))+
-  geom_smooth(data=data_1, aes(x=abs_med_lat, y=temp_maxquant, colour=EFN), method="loess")
-
-efn_max_3<-ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=log(nitro_maxquant), colour=EFN))+
-  geom_smooth(data=data_1, aes(x=abs_med_lat, y=log(nitro_maxquant), colour=EFN), method="loess")
-
-# for fixers
-fix_max_1<-ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=precip_maxquant, colour=fixer))+
-  geom_smooth(data=data_1, aes(x=abs_med_lat, y=precip_maxquant, colour=fixer), method="loess")
-
-fix_max_2<-ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=temp_maxquant, colour=fixer))+
-  geom_smooth(data=data_1, aes(x=abs_med_lat, y=temp_maxquant, colour=fixer), method="loess")
-
-fix_max_3<-ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_maxquant, colour=fixer))+
-  geom_smooth(data=data_1, aes(x=abs_med_lat, y=nitro_maxquant, colour=fixer), method="loess")
-
-# cowplot them together
-cowplot::plot_grid(fix_max_1, fix_max_2, fix_max_3, nrow=1, ncol=3)
-cowplot::plot_grid(efn_max_1, efn_max_2, efn_max_3, nrow=1, ncol=3)
-
-# fit splines to minquant data
-efn_min_1<-ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=log(precip_minquant), colour=EFN))+
-  geom_smooth(data=data_1, aes(x=abs_med_lat, y=log(precip_minquant), colour=EFN), method="loess")
-
-efn_min_2<-ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=temp_minquant, colour=EFN))+
-  geom_smooth(data=data_1, aes(x=abs_med_lat, y=temp_minquant, colour=EFN), method="loess")
-
-efn_min_3<-ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=log(nitro_minquant), colour=EFN))+
-  geom_smooth(data=data_1, aes(x=abs_med_lat, y=log(nitro_minquant), colour=EFN), method="loess")
-
-# for fixers
-fix_min_1<-ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=precip_minquant, colour=fixer))+
-  geom_smooth(data=data_1, aes(x=abs_med_lat, y=precip_minquant, colour=fixer), method="loess")
-
-fix_min_2<-ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=temp_minquant, colour=fixer))+
-  geom_smooth(data=data_1, aes(x=abs_med_lat, y=temp_minquant, colour=fixer), method="loess")
-
-fix_min_3<-ggplot()+geom_point(data=data_1, aes(x=abs_med_lat, y=nitro_minquant, colour=fixer))+
-  geom_smooth(data=data_1, aes(x=abs_med_lat, y=nitro_minquant, colour=fixer), method="loess")
-
-
-plot_grid(fix_min_1, fix_min_2, fix_min_3, ncol=3, nrow=1)
-plot_grid(efn_min_1, efn_min_2, efn_min_3, ncol=3, nrow=1)
 
 ###############################################################################
 ### Running PGLS on maxquant data
@@ -120,7 +73,7 @@ qqnorm(precip_maxquant, abline = c(0,1))
 # for everything to rerun
 
 write_rds(precip_maxquant, "biome_pgls_output/precip_maxquant.rds")
-precip_maxquant<-read_rds("pgls_rds_files/precip_maxquant.rds")
+precip_maxquant<-read_rds("biome_pgls_output/precip_maxquant.rds")
 summary(precip_maxquant)
 
 precip_max<-data.frame(coef(summary(precip_maxquant))) %>% format(scientific=F)
@@ -152,7 +105,7 @@ p1 <- ggplot()+
   #scale_fill_ghibli_d("YesterdayMedium", direction = -1)+
   scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
   theme(legend.position="none")+
-  annotate("text", label="EFN: **\nInt.:  *", x=45, y=3000, lineheight = .75, hjust=0)
+  annotate("text", label="EFN: **\nInt.:  NS", x=45, y=3000, lineheight = .75, hjust=0)
 
 save_plot("biome_pgls_output/precip_max_efn.pdf", p1)
 
@@ -173,7 +126,7 @@ p2 <- ggplot()+
   #alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#0E84B4FF", "#26432FFF"))+
   theme(legend.position="none")+
-  annotate("text", label="Rhizobia: NS\nInt.:          ***", x=34, y=3000, lineheight = .75, hjust=0)
+  annotate("text", label="Rhizobia: NS\nInt.:          *", x=30, y=3000, lineheight = .75, hjust=0)
 
 
 save_plot("biome_pgls_output/precip_max_fixer.pdf", p2)
@@ -200,7 +153,7 @@ plot(temp_maxquant)
 # save rds file
 
 write_rds(temp_maxquant, "biome_pgls_output/temp_maxquant.rds")
-temp_maxquant<-read_rds("pgls_rds_files/temp_maxquant.rds")
+temp_maxquant<-read_rds("biome_pgls_output/temp_maxquant.rds")
 summary(temp_maxquant)
 
 temp_max<-data.frame(coef(summary(temp_maxquant))) %>% format(scientific=F)
@@ -253,7 +206,7 @@ p4 <- ggplot()+
                                                #alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#0E84B4FF", "#26432FFF"))+
   theme(legend.position="none")+
-  annotate("text", label="Rhizobia: ***\nInt.:          ***", x=38, y=25, lineheight = .75, hjust=0)
+  annotate("text", label="Rhizobia: **\nInt.:          NS", x=34, y=25, lineheight = .75, hjust=0)
 
 
 save_plot("biome_pgls_output/temp_max_fixer.pdf", p4)
@@ -278,7 +231,7 @@ qqnorm(nitro_maxquant, abline = c(0,1))
 
 # Write RDS file
 write_rds(nitro_maxquant, "biome_pgls_output/nitro_maxquant.rds")
-nitro_maxquant<-read_rds("pgls_rds_files/nitro_maxquant.rds")
+nitro_maxquant<-read_rds("biome_pgls_output/nitro_maxquant.rds")
 
 # write into file
 nitro_max<-data.frame(coef(summary(nitro_maxquant))) %>% format(scientific=F)
@@ -309,7 +262,7 @@ p5 <- ggplot()+
   #alpha=0.4), show.legend=FALSE)+
   #scale_fill_ghibli_d("YesterdayMedium", direction = -1)
   scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
-  annotate("text", label="EFN: ***\nInt.:  NS", x=45, y=500, lineheight = .75, hjust=0)
+  annotate("text", label="EFN: ***\nInt.:  NS", x=45, y=1000, lineheight = .75, hjust=0)
   
 
 save_plot("biome_pgls_output/nitro_max_efn.pdf", p5)
@@ -330,7 +283,7 @@ p6 <- ggplot()+
   #fill=group), 
   #alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#0E84B4FF", "#26432FFF"))+
-  annotate("text", label="Rhizobia: NS\nInt.:          NS", x=34, y=1000, lineheight = .75, hjust=0)
+  annotate("text", label="Rhizobia: NS\nInt.:           NS", x=30, y=1000, lineheight = .75, hjust=0)
   
 
 
@@ -360,7 +313,7 @@ qqnorm(precip_minquant, abline = c(0,1))
 # write RDS
 
 write_rds(precip_minquant, "biome_pgls_output/precip_minquant.rds")
-precip_minquant<-read_rds("pgls_rds_files/precip_minquant.rds")
+precip_minquant<-read_rds("biome_pgls_output/precip_minquant.rds")
 
 # output table
 precip_min<-data.frame(coef(summary(precip_minquant))) %>% format(scientific=F)
@@ -417,7 +370,7 @@ p11 <- ggplot()+
   #alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#0E84B4FF", "#26432FFF"))+
   theme(legend.position="none")+
-  annotate("text", label="Rhizobia: ***\nInt.:          ***", x=34, y=1200, lineheight = .75, hjust=0)
+  annotate("text", label="Rhizobia: **\nInt.:          ***", x=34, y=1200, lineheight = .75, hjust=0)
 
 
 save_plot("biome_pgls_output/precip_min_fixer.pdf", p11)
@@ -440,7 +393,7 @@ plot(temp_minquant)
 # write RDS
 
 write_rds(temp_minquant, "biome_pgls_output/temp_minquant.rds")
-temp_minquant<-read_rds("pgls_rds_files/temp_minquant.rds")
+temp_minquant<-read_rds("biome_pgls_output/temp_minquant.rds")
 
 # output table
 temp_min<-data.frame(coef(summary(temp_minquant))) %>% format(scientific=F)
@@ -524,7 +477,7 @@ qqnorm(nitro_minquant, abline = c(0,1))
 
 write_rds(nitro_minquant, "biome_pgls_output/nitro_minquant.rds")
 
-nitro_minquant<-read_rds("pgls_rds_files/nitro_minquant.rds")
+nitro_minquant<-read_rds("biome_pgls_output/nitro_minquant.rds")
 
 # output table
 nitro_min<-data.frame(coef(summary(nitro_minquant))) %>% format(scientific=F)
@@ -556,7 +509,7 @@ p15 <- ggplot()+
   #fill=group),
   #alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
-  annotate("text", label="EFN: NS\nInt.:   NS", x=45, y=100, lineheight = .75, hjust=0)
+  annotate("text", label="EFN: NS\nInt.:   NS", x=45, y=300, lineheight = .75, hjust=0)
 
 save_plot("biome_pgls_output/nitro_min_efn.pdf", p15)
 
@@ -576,7 +529,7 @@ p16 <- ggplot()+
   #fill=group, 
   #alpha=0.4), show.legend=FALSE)+
   scale_fill_manual(values=c("#0E84B4FF", "#26432FFF"))+
-  annotate("text", label="Rhizobia: **\nInt.:          ***", x=36, y=300, lineheight = .75, hjust=0)
+  annotate("text", label="Rhizobia: NS\nInt.:          NS", x=32, y=300, lineheight = .75, hjust=0)
 
 
 save_plot("nitro_min_fixer.pdf", p16)
