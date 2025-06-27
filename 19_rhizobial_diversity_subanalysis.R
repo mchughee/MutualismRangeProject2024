@@ -6,6 +6,8 @@ library(tidyverse)
 library(ape)
 library(phytools)
 library(nlme)
+library(ggeffects)
+library(cowplot)
 
 # read in csv file with my species-level environmental data
 
@@ -61,6 +63,9 @@ ggplot(myfil1, aes(x=numGenera, y=nitro_range))+
   geom_smooth(method="lm")+
   theme_classic()
 
+# make sure biome is a FACTOR
+myfil1$biome<-as.factor(myfil1$biome)
+
 # run actual models
 ## precip first
 
@@ -102,21 +107,15 @@ plot(precip_means)
 ###########################
 # make ggplots for EFN and rhizobia separately
 p1 <- ggplot()+
-  geom_point(data=myfil1, aes(x=numGenera, y=precip_range, colour=as.factor(numGenera)),alpha=0.7)+
+  geom_point(data=myfil1, aes(x=numGenera, y=precip_range), alpha=0.7)+
   theme_cowplot()+scale_y_log10()+
   #scale_shape_manual(values = c(21, 19), guide = "none")+
-  #scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"), name = "EFN")+
+  #scale_colour_manual(values=c("#0E84B4FF"))+
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
   ylab("annual \n precip. range (mm)")+
   xlab("number of genera")+
   #theme(axis.title.x=element_blank())+
   geom_line(data=precip_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4)
-  #geom_ribbon(data=EFN_precip_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-  #fill=group),
-  #alpha=0.4, show.legend=FALSE)+
-  #scale_fill_("YesterdayMedium", direction = -1)
-  #scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
-  #annotate("text", label="EFN: **\nInt.:   NS", x=50, y=2000, lineheight = .75, hjust=0)
 
 
 save_plot("biome_pgls_output/numgen_precip_breadth.pdf", p1)
@@ -161,7 +160,7 @@ plot(temp_means)
 ###########################
 # make ggplots for EFN and rhizobia separately
 p2 <- ggplot()+
-  geom_point(data=myfil1, aes(x=numGenera, y=temp_range, colour=as.factor(numGenera)),alpha=0.7)+
+  geom_point(data=myfil1, aes(x=numGenera, y=temp_range), alpha=0.7)+
   theme_cowplot()+scale_y_log10()+
   #scale_shape_manual(values = c(21, 19), guide = "none")+
   #scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"), name = "EFN")+
@@ -170,12 +169,6 @@ p2 <- ggplot()+
   xlab("numGenera")+
   theme(axis.title.x=element_blank())+
   geom_line(data=temp_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4)
-#geom_ribbon(data=EFN_precip_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-#fill=group),
-#alpha=0.4, show.legend=FALSE)+
-#scale_fill_("YesterdayMedium", direction = -1)
-#scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
-#annotate("text", label="EFN: **\nInt.:   NS", x=50, y=2000, lineheight = .75, hjust=0)
 
 
 save_plot("biome_pgls_output/numgen_temp_breadth.pdf", p2)
@@ -221,7 +214,7 @@ plot(nitro_means)
 ###########################
 # make ggplots for EFN and rhizobia separately
 p3 <- ggplot()+
-  geom_point(data=myfil1, aes(x=numGenera, y=nitro_range, colour=as.factor(numGenera)),alpha=0.7)+
+  geom_point(data=myfil1, aes(x=numGenera, y=nitro_range),alpha=0.7)+
   theme_cowplot()+scale_y_log10()+
   #scale_shape_manual(values = c(21, 19), guide = "none")+
   #scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"), name = "EFN")+
@@ -230,31 +223,20 @@ p3 <- ggplot()+
   xlab("numGenera")+
   theme(axis.title.x=element_blank())+
   geom_line(data=nitro_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4)
-#geom_ribbon(data=EFN_precip_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-#fill=group),
-#alpha=0.4, show.legend=FALSE)+
-#scale_fill_("YesterdayMedium", direction = -1)
-#scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
-#annotate("text", label="EFN: **\nInt.:   NS", x=50, y=2000, lineheight = .75, hjust=0)
 
 
 save_plot("biome_pgls_output/numgen_nitro_breadth.pdf", p3)
 
 
+p<-cowplot::plot_grid(p1+ theme(axis.title.x=element_blank()), 
+                      p2+ theme(axis.title.x=element_blank()), 
+                      p3+ theme(axis.title.x=element_blank()), 
+                      ncol=3, nrow=1, labels=c("A", "B", "C"),
+                      label_x = c(0, 0, 0))
 
-leg_fixer<-get_legend(p2)
-efn_fixer<-get_legend(p1)
-comp_leg<-plot_grid(leg_fixer, efn_fixer, ncol=1, nrow=2)
-
-p<-cowplot::plot_grid(p1+ theme(legend.position="none"), p2+ theme(legend.position="none", axis.title.y=element_blank()), comp_leg,
-                      p3+ theme(legend.position="none"), p4+ theme(legend.position="none", axis.title.y=element_blank()), NA,
-                      p5+ theme(legend.position="none"), p6+ theme(legend.position="none", axis.title.y=element_blank()), NA,
-                      ncol=3, nrow=3, labels=c("A", "D", "", "B", "E", "", "C", "F", ""),
-                      label_x = c(0, 0, 0, 0, -0.035, 0, 0, 0, 0))
-
-p <- add_sub(p, "absolute median latitude", hjust = 1.5, size=12)
+p <- add_sub(p, "Number of rhizobia genera", hjust = 0.5, size=12)
 
 plot(p)
 
-save_plot("biome_pgls_output/niche_breadth_thesis_fig.jpeg", p, base_height=10, base_width=10)
+save_plot("biome_pgls_output/numgen_analysis_comp_fig.jpeg", p, base_height=10, base_width=10)
 

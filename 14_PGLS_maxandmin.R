@@ -77,7 +77,10 @@ precip_maxquant<-read_rds("biome_pgls_output/precip_maxquant.rds")
 summary(precip_maxquant)
 
 precip_max<-data.frame(coef(summary(precip_maxquant))) %>% format(scientific=F)
-precip_max$p.value<-as.numeric(precip_max$p.value) %>% round(4)
+precip_max$Value<-as.numeric(precip_max$Value) %>% round(3)
+precip_max$Std.Error<-as.numeric(precip_max$Std.Error) %>% round(3)
+precip_max$t.value<-as.numeric(precip_max$t.value) %>% round(3)
+precip_max$p.value<-as.numeric(precip_max$p.value) %>% round(3)
 write.csv(precip_max, "biome_pgls_output/precip_max_output_table.csv")
 
 ### Extract predicted values
@@ -156,8 +159,12 @@ write_rds(temp_maxquant, "biome_pgls_output/temp_maxquant.rds")
 temp_maxquant<-read_rds("biome_pgls_output/temp_maxquant.rds")
 summary(temp_maxquant)
 
+
 temp_max<-data.frame(coef(summary(temp_maxquant))) %>% format(scientific=F)
-temp_max$p.value<-as.numeric(temp_max$p.value) %>% round(4)
+temp_max$Value<-as.numeric(temp_max$Value) %>% round(3)
+temp_max$Std.Error<-as.numeric(temp_max$Std.Error) %>% round(3)
+temp_max$t.value<-as.numeric(temp_max$t.value) %>% round(3)
+temp_max$p.value<-as.numeric(temp_max$p.value) %>% round(3)
 write.csv(temp_max, "biome_pgls_output/temp_max_output_table.csv")
 
 ### Extract predicted values
@@ -235,7 +242,10 @@ nitro_maxquant<-read_rds("biome_pgls_output/nitro_maxquant.rds")
 
 # write into file
 nitro_max<-data.frame(coef(summary(nitro_maxquant))) %>% format(scientific=F)
-nitro_max$p.value<-as.numeric(nitro_max$p.value) %>% round(4)
+nitro_max$Value<-as.numeric(nitro_max$Value) %>% round(3)
+nitro_max$Std.Error<-as.numeric(nitro_max$Std.Error) %>% round(3)
+nitro_max$t.value<-as.numeric(nitro_max$t.value) %>% round(3)
+nitro_max$p.value<-as.numeric(nitro_max$p.value) %>% round(3)
 write.csv(nitro_max, "biome_pgls_output/nitro_max_output_table.csv")
 
 ### PULL MODEL OUTPUT
@@ -317,7 +327,10 @@ precip_minquant<-read_rds("biome_pgls_output/precip_minquant.rds")
 
 # output table
 precip_min<-data.frame(coef(summary(precip_minquant))) %>% format(scientific=F)
-precip_min$p.value<-as.numeric(precip_min$p.value) %>% round(4)
+precip_min$Value<-as.numeric(precip_min$Value) %>% round(3)
+precip_min$Std.Error<-as.numeric(precip_min$Std.Error) %>% round(3)
+precip_min$t.value<-as.numeric(precip_min$t.value) %>% round(3)
+precip_min$p.value<-as.numeric(precip_min$p.value) %>% round(3)
 write.csv(precip_min, "biome_pgls_output/precip_min_output_table.csv")
 
 # grab model output
@@ -395,10 +408,13 @@ plot(temp_minquant)
 write_rds(temp_minquant, "biome_pgls_output/temp_minquant.rds")
 temp_minquant<-read_rds("biome_pgls_output/temp_minquant.rds")
 
-# output table
 temp_min<-data.frame(coef(summary(temp_minquant))) %>% format(scientific=F)
-temp_min$p.value<-as.numeric(temp_min$p.value) %>% round(4)
+temp_min$Value<-as.numeric(temp_min$Value) %>% round(3)
+temp_min$Std.Error<-as.numeric(temp_min$Std.Error) %>% round(3)
+temp_min$t.value<-as.numeric(temp_min$t.value) %>% round(3)
+temp_min$p.value<-as.numeric(temp_min$p.value) %>% round(3)
 write.csv(temp_min, "biome_pgls_output/temp_min_output_table.csv")
+
 
 # pull model output
 EFN_temp_min_means<-ggpredict(temp_minquant, 
@@ -481,7 +497,10 @@ nitro_minquant<-read_rds("biome_pgls_output/nitro_minquant.rds")
 
 # output table
 nitro_min<-data.frame(coef(summary(nitro_minquant))) %>% format(scientific=F)
-nitro_min$p.value<-as.numeric(nitro_min$p.value) %>% round(4)
+nitro_min$p.value<-as.numeric(nitro_min$p.value) %>% round(3)
+nitro_min$Value<-as.numeric(nitro_min$Value) %>% round(3)
+nitro_min$Std.Error<-as.numeric(nitro_min$Std.Error) %>% round(3)
+nitro_min$t.value<-as.numeric(nitro_min$t.value) %>% round(3)
 write.csv(nitro_min, "biome_pgls_output/nitro_min_output_table.csv")
 
 # Pull model output

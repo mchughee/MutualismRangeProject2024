@@ -127,6 +127,25 @@ p1 <- ggplot()+
   scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))
   #annotate("text", label="EFN: **\nInt.:   NS", x=50, y=2000, lineheight = .75, hjust=0)
 
+p1 <- ggplot()+
+  geom_point(data=data_1, aes(x=uses_num_uses, y=precip_range, shape=EFN, colour=EFN),alpha=0.5)+
+  #geom_boxplot(data=data_1, aes(x=uses_num_uses, y=precip_range, group=EFN, colour=EFN),alpha=0.5)+
+  theme_cowplot()+scale_y_log10()+
+  scale_shape_manual(values = c(21, 19), guide = "none")+
+  scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"), name = "EFN")+
+  #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
+  ylab("annual \n precip. range (mm)")+
+  xlab("number of human uses")+
+  theme(axis.title.x=element_blank())+
+  geom_line(data=EFN_precip_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted, 
+                                                                        colour=group), linewidth=1.4)+
+  #geom_ribbon(data=EFN_precip_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
+  #fill=group),
+  #alpha=0.4, show.legend=FALSE)+
+  #scale_fill_("YesterdayMedium", direction = -1)
+  scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))
+#annotate("text", label="EFN: **\nInt.:   NS", x=50, y=2000, lineheight = .75, hjust=0)
+
 
 save_plot("human_uses/precip_breadth_lat_efn.pdf", p1)
 

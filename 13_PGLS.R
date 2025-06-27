@@ -114,9 +114,12 @@ write_rds(precip_range, "biome_pgls_output/precip_niche_breadth.rds")
 precip_range<-read_rds("biome_pgls_output/precip_niche_breadth.rds")
 
 # save model output!:')
-precip_df<-data.frame(coef(summary(precip_range))) %>% format(scientific=F)
-precip_df$p.value<-as.numeric(precip_df$p.value) %>% round(4)
-write.csv(precip_df, "biome_pgls_output/precip_breadth_output_table.csv")
+precip_breadth<-data.frame(coef(summary(precip_range))) %>% format(scientific=F)
+precip_breadth$Value<-as.numeric(precip_breadth$Value) %>% round(3)
+precip_breadth$Std.Error<-as.numeric(precip_breadth$Std.Error) %>% round(3)
+precip_breadth$t.value<-as.numeric(precip_breadth$t.value) %>% round(3)
+precip_breadth$p.value<-as.numeric(precip_breadth$p.value) %>% round(3)
+write.csv(precip_breadth, "biome_pgls_output/precip_breadth_output_table.csv")
 
 
 ##################################
@@ -202,9 +205,13 @@ write_rds(temp_range, "biome_pgls_output/temp_niche_breadth.rds")
 temp_range<-read_rds("biome_pgls_output/temp_niche_breadth.rds")
 
 # save model output!:')
-temp_df<-data.frame(coef(summary(temp_range))) %>% format(scientific=F)
-temp_df$p.value<-as.numeric(temp_df$p.value) %>% round(4)
-write.csv(temp_df, "biome_pgls_output/temp_breadth_output_table.csv")
+temp_breadth<-data.frame(coef(summary(temp_range))) %>% format(scientific=F)
+temp_breadth$Value<-as.numeric(temp_breadth$Value) %>% round(3)
+temp_breadth$Std.Error<-as.numeric(temp_breadth$Std.Error) %>% round(3)
+temp_breadth$t.value<-as.numeric(temp_breadth$t.value) %>% round(3)
+temp_breadth$p.value<-as.numeric(temp_breadth$p.value) %>% round(3)
+write.csv(temp_breadth, "biome_pgls_output/temp_breadth_output_table.csv")
+
 
 
 ##################################
@@ -288,9 +295,12 @@ write_rds(nitro_range, "biome_pgls_output/nitro_niche_breadth.rds")
 nitro_range<-read_rds("biome_pgls_output/nitro_niche_breadth.rds")
 
 # save model output!:')
-nitro_df<-data.frame(coef(summary(nitro_range))) %>% format(scientific=F)
-nitro_df$p.value<-as.numeric(nitro_df$p.value) %>% round(4)
-write.csv(nitro_df, "biome_pgls_output/nitro_breadth_output_table.csv")
+nitro_breadth<-data.frame(coef(summary(nitro_range))) %>% format(scientific=F)
+nitro_breadth$Value<-as.numeric(nitro_breadth$Value) %>% round(3)
+nitro_breadth$Std.Error<-as.numeric(nitro_breadth$Std.Error) %>% round(3)
+nitro_breadth$t.value<-as.numeric(nitro_breadth$t.value) %>% round(3)
+nitro_breadth$p.value<-as.numeric(nitro_breadth$p.value) %>% round(3)
+write.csv(nitro_breadth, "biome_pgls_output/nitro_breadth_output_table.csv")
 
 
 ##################################
