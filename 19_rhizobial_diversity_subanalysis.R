@@ -8,6 +8,8 @@ library(phytools)
 library(nlme)
 library(ggeffects)
 library(cowplot)
+library(ghibli)
+
 
 # read in csv file with my species-level environmental data
 
@@ -63,7 +65,7 @@ ggplot(myfil1, aes(x=numGenera, y=nitro_range))+
   geom_smooth(method="lm")+
   theme_classic()
 
-# make sure biome is a FACTOR
+# make sure biome is a FACTOR...THIS IS VITAL
 myfil1$biome<-as.factor(myfil1$biome)
 
 # run actual models
@@ -90,11 +92,14 @@ write_rds(precip_range, "biome_pgls_output/numgen_precip_niche_breadth.rds")
 # Read in RDS file (if coming back to code)
 precip_range<-read_rds("biome_pgls_output/numgen_precip_niche_breadth.rds")
 
-# save model output!:')
-precip_df<-data.frame(coef(summary(precip_range))) %>% format(scientific=F)
-precip_df$p.value<-as.numeric(precip_df$p.value) %>% round(4)
-write.csv(precip_df, "biome_pgls_output/numgen_precip_breadth_output_table.csv")
 
+# save model output!:')
+precip_breadth<-data.frame(coef(summary(precip_range))) %>% format(scientific=F)
+precip_breadth$Value<-as.numeric(precip_breadth$Value) %>% round(3)
+precip_breadth$Std.Error<-as.numeric(precip_breadth$Std.Error) %>% round(3)
+precip_breadth$t.value<-as.numeric(precip_breadth$t.value) %>% round(3)
+precip_breadth$p.value<-as.numeric(precip_breadth$p.value) %>% round(3)
+write.csv(precip_breadth, "biome_pgls_output/numgen_precip_breadth_output_table.csv")
 
 ##################################
 
@@ -107,7 +112,7 @@ plot(precip_means)
 ###########################
 # make ggplots for EFN and rhizobia separately
 p1 <- ggplot()+
-  geom_point(data=myfil1, aes(x=numGenera, y=precip_range), alpha=0.7)+
+  geom_point(data=myfil1, aes(x=numGenera, y=precip_range), alpha=0.7, colour="#446590FF")+
   theme_cowplot()+scale_y_log10()+
   #scale_shape_manual(values = c(21, 19), guide = "none")+
   #scale_colour_manual(values=c("#0E84B4FF"))+
@@ -115,7 +120,7 @@ p1 <- ggplot()+
   ylab("annual \n precip. range (mm)")+
   xlab("number of genera")+
   #theme(axis.title.x=element_blank())+
-  geom_line(data=precip_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4)
+  geom_line(data=precip_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4, colour="#446590FF")
 
 
 save_plot("biome_pgls_output/numgen_precip_breadth.pdf", p1)
@@ -145,9 +150,13 @@ write_rds(temp_range, "biome_pgls_output/numgen_temp_niche_breadth.rds")
 temp_range<-read_rds("biome_pgls_output/numgen_temp_niche_breadth.rds")
 
 # save model output!:')
-temp_df<-data.frame(coef(summary(temp_range))) %>% format(scientific=F)
-temp_df$p.value<-as.numeric(temp_df$p.value) %>% round(4)
-write.csv(temp_df, "biome_pgls_output/numgen_temp_breadth_output_table.csv")
+
+temp_breadth<-data.frame(coef(summary(temp_range))) %>% format(scientific=F)
+temp_breadth$Value<-as.numeric(temp_breadth$Value) %>% round(3)
+temp_breadth$Std.Error<-as.numeric(temp_breadth$Std.Error) %>% round(3)
+temp_breadth$t.value<-as.numeric(temp_breadth$t.value) %>% round(3)
+temp_breadth$p.value<-as.numeric(temp_breadth$p.value) %>% round(3)
+write.csv(temp_breadth, "biome_pgls_output/numgen_temp_breadth_output_table.csv")
 
 
 ##################################
@@ -160,7 +169,7 @@ plot(temp_means)
 ###########################
 # make ggplots for EFN and rhizobia separately
 p2 <- ggplot()+
-  geom_point(data=myfil1, aes(x=numGenera, y=temp_range), alpha=0.7)+
+  geom_point(data=myfil1, aes(x=numGenera, y=temp_range), alpha=0.7, colour="#446590FF")+
   theme_cowplot()+scale_y_log10()+
   #scale_shape_manual(values = c(21, 19), guide = "none")+
   #scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"), name = "EFN")+
@@ -168,7 +177,7 @@ p2 <- ggplot()+
   ylab("annual \n temp. range (mm)")+
   xlab("numGenera")+
   theme(axis.title.x=element_blank())+
-  geom_line(data=temp_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4)
+  geom_line(data=temp_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4, colour="#446590FF")
 
 
 save_plot("biome_pgls_output/numgen_temp_breadth.pdf", p2)
@@ -197,10 +206,13 @@ write_rds(nitro_range, "biome_pgls_output/numgen_nitro_niche_breadth.rds")
 nitro_range<-read_rds("biome_pgls_output/numgen_nitro_niche_breadth.rds")
 
 # save model output!:')
-nitro_df<-data.frame(coef(summary(nitro_range))) %>% format(scientific=F)
-nitro_df$p.value<-as.numeric(nitro_df$p.value) %>% round(4)
-write.csv(nitro_df, "biome_pgls_output/numgen_nitro_breadth_output_table.csv")
 
+nitro_breadth<-data.frame(coef(summary(nitro_range))) %>% format(scientific=F)
+nitro_breadth$Value<-as.numeric(nitro_breadth$Value) %>% round(3)
+nitro_breadth$Std.Error<-as.numeric(nitro_breadth$Std.Error) %>% round(3)
+nitro_breadth$t.value<-as.numeric(nitro_breadth$t.value) %>% round(3)
+nitro_breadth$p.value<-as.numeric(nitro_breadth$p.value) %>% round(3)
+write.csv(nitro_breadth, "biome_pgls_output/numgen_nitro_breadth_output_table.csv")
 
 ##################################
 
@@ -214,7 +226,7 @@ plot(nitro_means)
 ###########################
 # make ggplots for EFN and rhizobia separately
 p3 <- ggplot()+
-  geom_point(data=myfil1, aes(x=numGenera, y=nitro_range),alpha=0.7)+
+  geom_point(data=myfil1, aes(x=numGenera, y=nitro_range),alpha=0.7, colour="#446590FF")+
   theme_cowplot()+scale_y_log10()+
   #scale_shape_manual(values = c(21, 19), guide = "none")+
   #scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"), name = "EFN")+
@@ -222,7 +234,7 @@ p3 <- ggplot()+
   ylab("nitro. range (mm)")+
   xlab("numGenera")+
   theme(axis.title.x=element_blank())+
-  geom_line(data=nitro_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4)
+  geom_line(data=nitro_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4, colour="#446590FF")
 
 
 save_plot("biome_pgls_output/numgen_nitro_breadth.pdf", p3)
@@ -238,5 +250,5 @@ p <- add_sub(p, "Number of rhizobia genera", hjust = 0.5, size=12)
 
 plot(p)
 
-save_plot("biome_pgls_output/numgen_analysis_comp_fig.jpeg", p, base_height=10, base_width=10)
+save_plot("biome_pgls_output/numgen_analysis_comp_fig.jpeg", p, base_height=7, base_width=10)
 

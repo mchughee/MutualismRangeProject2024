@@ -14,6 +14,12 @@ library(ggeffects)
 # Read back in PGLS dataframe
 data<-read.csv("data_files/pgls_polydropped_final_biome.csv")
 
+summary(data$biome)
+
+data$biome<-as.factor(data$biome)
+
+
+
 
 # investigating latitudinal gradient in life-history
 

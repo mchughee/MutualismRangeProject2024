@@ -34,7 +34,6 @@ st_crs(dat_sf)
 sf_use_s2(FALSE)
 join<-st_join(dat_sf, shapes, join=st_intersects, left=TRUE, largest=FALSE)
 
-intersect<-st_intersect(dat_sf, shapes, )
 
 # Common-sense check: does the distribution of species across biomes know what
 # we know to be true, i.e. most falling in biom 7 (tropical/subtropical
