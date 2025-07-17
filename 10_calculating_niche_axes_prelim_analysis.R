@@ -18,6 +18,16 @@ n_distinct(points_1$species)
 
 names(which.max(table(points_1$BIOME)))
 
+summary_biome<-points_1 %>% 
+  group_by(species) %>% 
+  reframe(biome=names(table(BIOME)))
+
+summary_biome<-points_1 %>% 
+  group_by(species) %>% 
+  reframe(biome=names(which.max(table(BIOME))),
+        n_max=n(which.max(table(BIOME))))
+
+
 
 # Group by species and get summarizing!
 summary_df<-points_1 %>% 
@@ -69,6 +79,65 @@ master_legume<-left_join(summary_df, traits, join_by(species==Phy), multiple="an
 dropped_sp<-filter(master_legume, n<25)
 
 master_thin<-master_legume %>% filter(n>=25)
+
+master_thin$biome<-as.factor(master_thin$biome)
+hist(master_thin$biome)
+
+class(master_thin$EFN)
+master_thin$EFN<-as.factor(master_thin$EFN)
+
+EFN_list<-master_thin %>% 
+  subset(EFN=="1")
+
+summary(EFN_list$biome)
+
+master_thin %>% 
+  subset(EFN=="1") %>% 
+  ggplot(aes(x = biome))+
+  geom_histogram(stat="count", fill="#446590FF")+
+  scale_x_discrete(breaks = seq(0, 13, 1))+
+  theme_classic()+
+  ylab("EFN count")+
+  scale_x_discrete(labels=c('Tropical/subtrop. moist broadleaf frst',
+                            #'Tropical/subtrop. dry broadleaf frst', 
+                            #'Tropical/suptrop. coniferous frst', 
+                            'Temp. broadleaf + mixed frst',
+                            'Temp. Coniferous frst',
+                            'Boreal forest',
+                            'Tropical/subtrop. grsslnd',
+                            'Temp. grasslands',
+                            'Flooded grasslands',
+                            #'Montane grasslands/shrubs',
+                            'Tundra',
+                            'Mediterranean'
+                            #'Deserts/xeric shrub'
+                            ))+
+  theme(axis.text.x = element_text(angle = 90))
+
+master_thin %>% 
+  subset(fixer=="1") %>% 
+  ggplot(aes(x = biome))+
+  geom_histogram(stat="count", fill="#3E6248FF")+
+  #scale_x_discrete(breaks = seq(0, 13, 1))+
+  theme_classic()+
+  ylab("fixer count")+
+  scale_x_discrete(labels=c('Tropical/subtrop. moist broadleaf forests',
+                            'Tropical/subtrop. dry broadleaf forests', 
+                            'Tropical/suptrop. coniferous forests', 
+                            'Temp. broadleaf and mixed forests',
+                            'Temp. Coniferous Forest',
+                            'Boreal forest',
+                            'Tropical/subtrop. grasslands',
+                            'Temp. grasslands',
+                            'Flooded grasslands',
+                            'Montane grasslands/shrubs',
+                            'Tundra',
+                            'Mediterranean',
+                            'Deserts/xeric shrub'))+
+  theme(axis.text.x = element_text(angle = 90))
+
+
+
 
 write.csv(master_thin, "data_files/pgls_summary_data_long_added_biome_added.csv")
 
