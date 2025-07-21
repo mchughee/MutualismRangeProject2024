@@ -15,17 +15,22 @@ n_distinct(points_1$species)
 points_1<-points_1 %>% drop_na(intrdcd)
 n_distinct(points_1$species)
 
+class(points_1$BIOME)
+points_1$BIOME<-as.factor(points_1$BIOME)
+points_1$species<-as.factor(points_1$species)
 
 names(which.max(table(points_1$BIOME)))
 
 summary_biome<-points_1 %>% 
-  group_by(species) %>% 
-  reframe(biome=names(table(BIOME)))
+  group_by(species, BIOME) %>% 
+  tally() %>% 
+  reframe(max_n=slice_max(BIOME))
 
-summary_biome<-points_1 %>% 
+class(summary_biome$n)
+
+summary_total<-points_1 %>% 
   group_by(species) %>% 
-  reframe(biome=names(which.max(table(BIOME))),
-        n_max=n(which.max(table(BIOME))))
+  reframe(max_biome=which(max(n)), )
 
 
 
