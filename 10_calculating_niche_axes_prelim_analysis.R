@@ -15,23 +15,10 @@ n_distinct(points_1$species)
 points_1<-points_1 %>% drop_na(intrdcd)
 n_distinct(points_1$species)
 
+# make sure biome is a factor
 class(points_1$BIOME)
 points_1$BIOME<-as.factor(points_1$BIOME)
 points_1$species<-as.factor(points_1$species)
-
-names(which.max(table(points_1$BIOME)))
-
-summary_biome<-points_1 %>% 
-  group_by(species, BIOME) %>% 
-  tally() %>% 
-  reframe(max_n=slice_max(BIOME))
-
-class(summary_biome$n)
-
-summary_total<-points_1 %>% 
-  group_by(species) %>% 
-  reframe(max_biome=which(max(n)), )
-
 
 
 # Group by species and get summarizing!
@@ -61,6 +48,8 @@ summary_df<-points_1 %>%
           
   )
 
+
+
 print(duplicated(summary_df$species))
 
 
@@ -86,15 +75,20 @@ dropped_sp<-filter(master_legume, n<25)
 master_thin<-master_legume %>% filter(n>=25)
 
 master_thin$biome<-as.factor(master_thin$biome)
-hist(master_thin$biome)
 
-class(master_thin$EFN)
-master_thin$EFN<-as.factor(master_thin$EFN)
+# Bringing in polytomy
+library(ape)
+library(ggtree)
+tree<-read.tree("phylogeny/polytomy_removed.tre")
 
-EFN_list<-master_thin %>% 
-  subset(EFN=="1")
 
-summary(EFN_list$biome)
+setdiff(master_thin$species, tree$tip.label)
+master_thin<-filter(master_thin, master_thin$species %in% tree$tip.label)
+
+# figures showing distribution of species across their main biome
+
+EFN<-filter(master_thin, EFN=="1")
+summary(EFN$biome)
 
 master_thin %>% 
   subset(EFN=="1") %>% 
@@ -104,18 +98,18 @@ master_thin %>%
   theme_classic()+
   ylab("EFN count")+
   scale_x_discrete(labels=c('Tropical/subtrop. moist broadleaf frst',
-                            #'Tropical/subtrop. dry broadleaf frst', 
-                            #'Tropical/suptrop. coniferous frst', 
+                            'Tropical/subtrop. dry broadleaf frst', 
+                            'Tropical/suptrop. coniferous frst', 
                             'Temp. broadleaf + mixed frst',
                             'Temp. Coniferous frst',
-                            'Boreal forest',
+                            #'Boreal forest',
                             'Tropical/subtrop. grsslnd',
                             'Temp. grasslands',
-                            'Flooded grasslands',
+                            #'Flooded grasslands',
                             #'Montane grasslands/shrubs',
-                            'Tundra',
-                            'Mediterranean'
-                            #'Deserts/xeric shrub'
+                            #'Tundra',
+                            'Mediterranean',
+                            'Deserts/xeric shrub'
                             ))+
   theme(axis.text.x = element_text(angle = 90))
 
@@ -147,6 +141,24 @@ master_thin %>%
 write.csv(master_thin, "data_files/pgls_summary_data_long_added_biome_added.csv")
 
 
+
+summary_biome<-points_1 %>% 
+  group_by(species, BIOME) %>% 
+  count() %>% 
+  group_by(species) %>% 
+  summarise(max_biome_n=max(n), total_biome_n=sum(n), 
+            percent=max_biome_n/total_biome_n*100)
+
+thinned_biome_sum<-filter(summary_biome, summary_biome$species %in% master_thin$species)
+
+class(summary_biome$percent)
+
+ggplot(summary_biome, aes(x=percent))+
+  geom_histogram(fill="#3E6248FF")+
+  theme_classic()
+
+summary(summary_biome$percent)
+filter(summary_biome, percent>90)
 
 
 
