@@ -62,3 +62,5 @@ join1<-join %>% select(-c(G200_REGIO, G200_NUM, G200_STAT, ECO_NUM,
 sf::st_write(join1, "invasiveclass_thinnedoccs_soil_clim_biome.csv", layer_options = "GEOMETRY=AS_XY")
 
 duplicated(str(join1))
+
+
