@@ -67,7 +67,6 @@ ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(nitrogen))+
 dev.copy2pdf(file="nitro_histo.pdf", width = 7, height = 5)
 
 
-#### Generate squares of climate heatmaps
 # Bring in world map data
 world = map_data('world')
 

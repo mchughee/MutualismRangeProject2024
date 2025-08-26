@@ -10,30 +10,8 @@ library(cowplot)
 library(ggeffects)
 
 
-
 # Read back in PGLS dataframe
-data<-read.csv("data_files/pgls_polydropped_final_biome.csv")
-
-summary(data$biome)
-
-data$biome<-as.factor(data$biome)
-
-
-
-
-# investigating latitudinal gradient in life-history
-
-data$pannual<-ifelse(data$annual<0.5, "0", "1")
-data$pannual
-data$pannual<-as.factor(data$pannual)
-ggplot(data=data, aes(x=median_lat, fill=pannual))+
-  geom_histogram()
-
-data$pwoody<-ifelse(data$woody<0.5, "0", "1")
-data$pwoody
-data$pwoody<-as.factor(data$pwoody)
-ggplot(data=data, aes(x=median_lat, fill=pwoody))+
-  geom_histogram()
+data<-read.csv("pgls_polydropped_final.csv")
 
 
 
@@ -73,12 +51,11 @@ hist(log(data_1$nitro_range))
 min(data_1$nitro_range)
 
 
-# VERY, VERRRRYYYYYY IMPORTANT! DO NOT RUN WITHOUT:
-# making sure R is reading our factors as factors!!!
+
+# make sure R is reading our factors as factors!!!
 data_1$EFN<-as.factor(data_1$EFN)
 data_1$Domatia<-as.factor(data_1$Domatia)
 data_1$fixer<-as.factor(data_1$fixer)
-data_1$biome<-as.factor(data_1$biome)
 
 sum(data_1$mutualism=="0")
 sum(data_1$mutualism=="1")
@@ -101,7 +78,7 @@ min(data_1[data_1$fixer=="0",]$abs_med_lat)
 # I took n out to try without it!!!! But please know that it should be put back
 # in!
 precip_range <- gls(log(precip_range) ~ EFN*abs_med_lat + fixer*abs_med_lat+woody
-                    + uses_num_uses + annual + biome,
+                    + uses_num_uses + annual,
                     data=data_1, 
                     correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -114,18 +91,15 @@ hist(residuals(precip_range))
 
 ### Save as RDS file
 
-write_rds(precip_range, "biome_pgls_output/precip_niche_breadth.rds")
+write_rds(precip_range, "precip_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
-precip_range<-read_rds("biome_pgls_output/precip_niche_breadth.rds")
+precip_range<-read_rds("pgls_rds_files/precip_niche_breadth.rds")
 
 # save model output!:')
-precip_breadth<-data.frame(coef(summary(precip_range))) %>% format(scientific=F)
-precip_breadth$Value<-as.numeric(precip_breadth$Value) %>% round(3)
-precip_breadth$Std.Error<-as.numeric(precip_breadth$Std.Error) %>% round(3)
-precip_breadth$t.value<-as.numeric(precip_breadth$t.value) %>% round(3)
-precip_breadth$p.value<-as.numeric(precip_breadth$p.value) %>% round(3)
-write.csv(precip_breadth, "biome_pgls_output/precip_breadth_output_table.csv")
+precip_df<-data.frame(coef(summary(precip_range))) %>% format(scientific=F)
+precip_df$p.value<-as.numeric(precip_df$p.value) %>% round(4)
+write.csv(precip_df, "precip_breadth_output_table.csv")
 
 
 ##################################
@@ -146,14 +120,14 @@ plot(fixer_precip_means)
 p1 <- ggplot()+
   geom_point(data=data_1, aes(x=abs_med_lat, y=precip_range, shape=EFN, colour=EFN),alpha=0.2)+
   theme_cowplot()+scale_y_log10()+
-  scale_shape_manual(values = c(21, 19), guide = "none")+
+  scale_shape_manual(values = c(21,19), guide = "none")+
   scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"), name = "EFN")+
   #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
   ylab("annual \n precip. range (mm)")+
   xlab("absolute median latitude")+
   theme(axis.title.x=element_blank())+
   geom_line(data=EFN_precip_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted, 
-                                           colour=group), linewidth=1.4)+
+                                                                        colour=group), linewidth=1.4)+
   #geom_ribbon(data=EFN_precip_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
   #fill=group),
   #alpha=0.4, show.legend=FALSE)+
@@ -162,13 +136,13 @@ p1 <- ggplot()+
   annotate("text", label="EFN: **\nInt.:   NS", x=50, y=2000, lineheight = .75, hjust=0)
 
 
-save_plot("biome_pgls_output/precip_breadth_lat_efn.pdf", p1)
+save_plot("precip_breadth_lat_efn.pdf", p1)
 
 
 
 p2 <- ggplot()+
   geom_point(data=data_1, aes(x=abs_med_lat, y=precip_range, color=fixer, shape=fixer),
-                          alpha=0.05)+
+             alpha=0.05)+
   theme_cowplot()+scale_y_log10()+
   scale_shape_manual(values = c(21,19), guide = "none")+
   scale_colour_manual(values=c("#0E84B4FF", "#26432FFF"), labels=c("no", "yes"))+
@@ -177,22 +151,22 @@ p2 <- ggplot()+
   labs(colour="rhizobia")+
   theme(axis.title.x=element_blank())+
   geom_line(data=fixer_precip_means %>% filter(!(group=="0" & x>45)), aes(x=x, y=predicted,  
-                                             colour=group), linewidth=1.4)+
+                                                                          colour=group), linewidth=1.4)+
   #geom_ribbon(data=fixer_precip_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
   #fill=group), 
   #alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#0E84B4FF", "#26432FFF"))+
-  annotate("text", label="Rhizobia: NS\n      Int.:    NS", x=42, y=2000, lineheight = .75, hjust=0)
-  
-  
-save_plot("biome_pgls_output/precip_breadth_lat_fixer.pdf", p2)
+  annotate("text", label="Rhizobia: NS\n      Int.:   **", x=42, y=2000, lineheight = .75, hjust=0)
+
+
+save_plot("precip_breadth_lat_fixer.pdf", p2)
 
 ################################################################################
 # pgls for temp range
 
 temp_range <- gls(temp_range ~ EFN*abs_med_lat + fixer*abs_med_lat
                   + woody + uses_num_uses
-                  + annual+biome,
+                  + annual,
                   data=data_1, 
                   correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -205,19 +179,15 @@ plot(temp_range)
 
 ### Save as RDS file
 
-write_rds(temp_range, "biome_pgls_output/temp_niche_breadth.rds")
+write_rds(temp_range, "temp_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
-temp_range<-read_rds("biome_pgls_output/temp_niche_breadth.rds")
+temp_range<-read_rds("pgls_rds_files/temp_niche_breadth.rds")
 
 # save model output!:')
-temp_breadth<-data.frame(coef(summary(temp_range))) %>% format(scientific=F)
-temp_breadth$Value<-as.numeric(temp_breadth$Value) %>% round(3)
-temp_breadth$Std.Error<-as.numeric(temp_breadth$Std.Error) %>% round(3)
-temp_breadth$t.value<-as.numeric(temp_breadth$t.value) %>% round(3)
-temp_breadth$p.value<-as.numeric(temp_breadth$p.value) %>% round(3)
-write.csv(temp_breadth, "biome_pgls_output/temp_breadth_output_table.csv")
-
+temp_df<-data.frame(coef(summary(temp_range))) %>% format(scientific=F)
+temp_df$p.value<-as.numeric(temp_df$p.value) %>% round(4)
+write.csv(temp_df, "temp_breadth_output_table.csv")
 
 
 ##################################
@@ -245,16 +215,16 @@ p3 <- ggplot()+
   xlab("absolute median latitude")+
   theme(axis.title.x=element_blank())+
   geom_line(data=EFN_temp_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted, 
-                                       colour=group), linewidth=1.2)+
+                                                                      colour=group), linewidth=1.2)+
   #geom_ribbon(data=EFN_temp_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-                                         #fill=group),
-                                         #alpha=0.4, show.legend=FALSE)+
+  #fill=group),
+  #alpha=0.4, show.legend=FALSE)+
   #scale_fill_ghibli_d("YesterdayMedium", direction = -1)
   scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
   annotate("text", label="EFN: *\nInt.:   NS", x=50, y=15, lineheight = .75, hjust=0)
 
 
-save_plot("biome_pgls_output/temp_lat_efn.pdf", p3)
+save_plot("temp_lat_efn.pdf", p3)
 
 
 
@@ -268,24 +238,24 @@ p4 <- ggplot()+
   labs(colour="rhizobia")+
   theme(axis.title.x=element_blank())+
   geom_line(data=fixer_temp_means %>% filter(!(group=="0" & x>45)), aes(x=x, y=predicted,  
-                                         colour=group), linewidth=1.4)+
+                                                                        colour=group), linewidth=1.4)+
   #geom_ribbon(data=fixer_temp_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-                                           #fill=group, 
-                                           #alpha=0.4), show.legend=FALSE)+
+  #fill=group, 
+  #alpha=0.4), show.legend=FALSE)+
   scale_fill_manual(values=c("#0E84B4FF", "#26432FFF"))+
   annotate("text", label="Rhizobia: ***\n         Int.: ***", x=44, y=15, lineheight = .75, hjust=0)
 
 
-save_plot("biome_pgls_output/temp_lat_fixer.pdf", p4)
+save_plot("temp_lat_fixer.pdf", p4)
 
 
 ##########################################################################
 #### pgls for nitro range
 
 nitro_range <- gls(log(nitro_range) ~ EFN*abs_med_lat + fixer*abs_med_lat
-              + woody + uses_num_uses + annual + biome,
-              data=data_1, 
-              correlation=corPagel(1, tree_pruned, form=~species), method="ML")
+                   + woody + uses_num_uses + annual,
+                   data=data_1, 
+                   correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
 summary(nitro_range)
 
@@ -295,18 +265,15 @@ qqnorm(temp_range, abline = c(0,1))
 
 ### Save as RDS file
 
-write_rds(nitro_range, "biome_pgls_output/nitro_niche_breadth.rds")
+write_rds(nitro_range, "nitro_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
-nitro_range<-read_rds("biome_pgls_output/nitro_niche_breadth.rds")
+nitro_range<-read_rds("pgls_rds_files/nitro_niche_breadth.rds")
 
 # save model output!:')
-nitro_breadth<-data.frame(coef(summary(nitro_range))) %>% format(scientific=F)
-nitro_breadth$Value<-as.numeric(nitro_breadth$Value) %>% round(3)
-nitro_breadth$Std.Error<-as.numeric(nitro_breadth$Std.Error) %>% round(3)
-nitro_breadth$t.value<-as.numeric(nitro_breadth$t.value) %>% round(3)
-nitro_breadth$p.value<-as.numeric(nitro_breadth$p.value) %>% round(3)
-write.csv(nitro_breadth, "biome_pgls_output/nitro_breadth_output_table.csv")
+nitro_df<-data.frame(coef(summary(nitro_range))) %>% format(scientific=F)
+nitro_df$p.value<-as.numeric(nitro_df$p.value) %>% round(4)
+write.csv(nitro_df, "nitro_breadth_output_table.csv")
 
 
 ##################################
@@ -334,16 +301,16 @@ p5 <- ggplot()+
   xlab("absolute median latitude")+
   theme(axis.title.x=element_blank())+
   geom_line(data=EFN_nitro_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted, 
-                                     colour=group), linewidth=1.4)+
+                                                                       colour=group), linewidth=1.4)+
   #geom_ribbon(data=EFN_nitro_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-                                       #fill=group),
-                                       #alpha=0.4, show.legend=FALSE)+
+  #fill=group),
+  #alpha=0.4, show.legend=FALSE)+
   #scale_fill_ghibli_d("YesterdayMedium", direction = -1)
   scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
-  annotate("text", label="EFN: ***\nInt.:   NS", x=50, y=800, lineheight = .75, hjust=0)
+  annotate("text", label="EFN: **\nInt.:   NS", x=50, y=800, lineheight = .75, hjust=0)
 
 
-save_plot("biome_pgls_output/nitro_lat_efn.pdf", p5)
+save_plot("nitro_lat_efn.pdf", p5)
 
 
 
@@ -357,31 +324,31 @@ p6 <- ggplot()+
   labs(colour="rhizobia")+
   theme(axis.title.x=element_blank())+
   geom_line(data=fixer_nitro_means %>% filter(!(group=="0" & x>45)), aes(x=x, y=predicted,  
-                                       colour=group), linewidth=1.4)+
+                                                                         colour=group), linewidth=1.4)+
   #geom_ribbon(data=fixer_nitro_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-   #                                      fill=group), 
-    #                                     alpha=0.4, show.legend=FALSE)+
+  #                                      fill=group), 
+  #                                     alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#0E84B4FF", "#26432FFF"))+
   annotate("text", label="Rhizobia: NS\n       Int.:   *", x=42, y=800, lineheight = .75, hjust=0)
 
 
-save_plot("biome_pgls_output/nitro_lat_fixer.pdf", p6)
+save_plot("nitro_lat_fixer.pdf", p6)
 
 leg_fixer<-get_legend(p2)
 efn_fixer<-get_legend(p1)
 comp_leg<-plot_grid(leg_fixer, efn_fixer, ncol=1, nrow=2)
 
 p<-cowplot::plot_grid(p1+ theme(legend.position="none"), p2+ theme(legend.position="none", axis.title.y=element_blank()), comp_leg,
-                   p3+ theme(legend.position="none"), p4+ theme(legend.position="none", axis.title.y=element_blank()), NA,
-                   p5+ theme(legend.position="none"), p6+ theme(legend.position="none", axis.title.y=element_blank()), NA,
-                   ncol=3, nrow=3, labels=c("A", "D", "", "B", "E", "", "C", "F", ""),
-                   label_x = c(0, 0, 0, 0, -0.035, 0, 0, 0, 0))
+                      p3+ theme(legend.position="none"), p4+ theme(legend.position="none", axis.title.y=element_blank()), NA,
+                      p5+ theme(legend.position="none"), p6+ theme(legend.position="none", axis.title.y=element_blank()), NA,
+                      ncol=3, nrow=3, labels=c("A", "D", "", "B", "E", "", "C", "F", ""),
+                      label_x = c(0, 0, 0, 0, -0.035, 0, 0, 0, 0))
 
-p <- add_sub(p, "absolute median latitude", hjust = 1, size=12)
+p <- add_sub(p, "absolute median latitude", hjust = 1.5, size=12)
 
 plot(p)
 
-save_plot("biome_pgls_output/niche_breadth_thesis_fig.jpeg", p, base_height=10, base_width=10)
+save_plot("niche_breadth_thesis_fig.jpeg", p, base_height=10, base_width=10)
 
 ### making presentation plots
 
@@ -399,4 +366,3 @@ plot2<-cowplot::plot_grid(p2+ theme(legend.position="none"), p4+ theme(legend.po
 plot2<-add_sub(plot2, "absolute median latitude", hjust = 1, size=12)
 
 save_plot("niche_breadth_fixer_fig.jpeg", plot2, base_height=5, base_width=13)
-
