@@ -6,6 +6,8 @@ library(tidyverse)
 library(ape)
 library(ggtree)
 library(ghibli)
+library(ape)
+library(ggtree)
 
 # read in file
 master_thin<-read.csv("data_files/pgls_summary_data_long_added_biome_added.csv")
@@ -14,8 +16,6 @@ master_thin<-read.csv("data_files/pgls_summary_data_long_added_biome_added.csv")
 # Making figures to explore the effects of biome
 # Bringing in phylogeny to thin to just the species in our final dataset
 # (remember, we took some species not in the phylogeny out of our analysis)
-library(ape)
-library(ggtree)
 tree<-read.tree("phylogeny/polytomy_removed.tre")
 
 
@@ -86,5 +86,3 @@ mean(master_thin[master_thin$fixer=="1",]$num_biome)
 t.test(num_biome ~ EFN, data = master_thin, var.equal = TRUE)
 t.test(num_biome ~ fixer, data = master_thin, var.equal = TRUE)
 
-
-##########################################################################

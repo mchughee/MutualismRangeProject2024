@@ -11,7 +11,7 @@ library(ggeffects)
 
 
 # Read back in PGLS dataframe
-data<-read.csv("pgls_polydropped_final.csv")
+data<-read.csv("data_files/pgls_polydropped_final_biome.csv")
 
 
 
@@ -72,6 +72,8 @@ max(data_1[data_1$EFN=="1",]$abs_med_lat)
 max(data_1[data_1$fixer=="0",]$abs_med_lat)
 min(data_1[data_1$fixer=="0",]$abs_med_lat)
 
+##############################################################################
+# PGLS models for actual investigations of niche breadth
 ######################################
 ## precip first
 
@@ -349,7 +351,7 @@ p <- add_sub(p, "absolute median latitude", hjust = 1.5, size=12)
 plot(p)
 
 save_plot("niche_breadth_thesis_fig.jpeg", p, base_height=10, base_width=10)
-
+###############################################################################
 ### making presentation plots
 
 plot1<-cowplot::plot_grid(p1+ theme(legend.position="none"), p3+ theme(legend.position="none"), p5+ theme(legend.position="none"), efn_fixer,
@@ -366,3 +368,81 @@ plot2<-cowplot::plot_grid(p2+ theme(legend.position="none"), p4+ theme(legend.po
 plot2<-add_sub(plot2, "absolute median latitude", hjust = 1, size=12)
 
 save_plot("niche_breadth_fixer_fig.jpeg", plot2, base_height=5, base_width=13)
+
+###############################################################################
+# PGLS with biome as response variable
+
+biome_number <- gls(num_biome ~ EFN*abs_med_lat + fixer*abs_med_lat
+                  + woody + uses_num_uses
+                  + annual,
+                  data=data_1, 
+                  correlation=corPagel(1, tree_pruned, form=~species), method="ML")
+
+
+summary(biome_number)
+
+plot(biome_number)
+hist(residuals(biome_number))
+qqnorm(biome_number, abline = c(0,1))
+
+
+# save model output!:')
+biome_number_df<-data.frame(coef(summary(biome_number))) %>% format(scientific=F)
+biome_number_df$p.value<-as.numeric(biome_number_df$p.value) %>% round(4)
+write.csv(biome_number_df, "biome_number_output_table.csv")
+
+
+##################################
+
+### Pull predicted means for EFN and fixer
+
+EFN_biome_means<-ggpredict(biome_number, terms=c("abs_med_lat [all]", "EFN [all]"), type="fixed")
+plot(EFN_biome_means)
+
+
+fixer_biome_means<-ggpredict(biome_number, terms=c("abs_med_lat [all]", "fixer [all]"), type="fixed")
+plot(fixer_biome_means)
+
+
+efn_biome_plot <- ggplot()+
+  geom_point(data=data_1, aes(x=abs_med_lat, y=num_biome, colour=EFN, shape=EFN), alpha=0.2)+
+  theme_cowplot()+scale_y_log10()+
+  scale_shape_manual(values = c(21,19), guide="none")+
+  #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
+  scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"))+
+  ylab("number of biomes")+
+  xlab("absolute median latitude")+
+  theme(axis.title.x=element_blank())+
+  geom_line(data=EFN_biome_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted, 
+                                                                       colour=group), linewidth=1.4)+
+  #geom_ribbon(data=EFN_nitro_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
+  #fill=group),
+  #alpha=0.4, show.legend=FALSE)+
+  #scale_fill_ghibli_d("YesterdayMedium", direction = -1)
+  scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
+  annotate("text", label="EFN: **\nInt.:   NS", x=50, y=800, lineheight = .75, hjust=0)
+
+
+save_plot("nitro_lat_efn.pdf", p5)
+
+
+
+p6 <- ggplot()+
+  geom_point(data=data_1, aes(x=abs_med_lat, y=num_biome, color=fixer, shape=fixer),alpha=0.05)+
+  theme_cowplot()+scale_y_log10()+
+  scale_shape_manual(values = c(21,19), guide="none")+
+  scale_colour_manual(values=c("#0E84B4FF", "#26432FFF"), labels=c("no", "yes"))+
+  ylab("biome number")+
+  xlab("absolute median latitude")+
+  labs(colour="rhizobia")+
+  theme(axis.title.x=element_blank())+
+  geom_line(data=fixer_biome_means %>% filter(!(group=="0" & x>45)), aes(x=x, y=predicted,  
+                                                                         colour=group), linewidth=1.4)+
+  #geom_ribbon(data=fixer_nitro_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
+  #                                      fill=group), 
+  #                                     alpha=0.4, show.legend=FALSE)+
+  scale_fill_manual(values=c("#0E84B4FF", "#26432FFF"))+
+  annotate("text", label="Rhizobia: NS\n       Int.:   *", x=42, y=800, lineheight = .75, hjust=0)
+
+
+save_plot("nitro_lat_fixer.pdf", p6)

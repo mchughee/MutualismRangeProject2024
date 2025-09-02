@@ -11,7 +11,7 @@ library(phytools)
 #setwd("C:/Users/erinm/Downloads")
 
 # read in dataset
-dat<-read_csv("invasiveclass_thindat_climadd_soilgridsadd.csv")
+dat<-read_csv("invasiveclass_thinnedoccs_soil_clim_biome.csv")
 #dat$species<-gsub("_", " ", dat$species)
 
 dat$species<-as.factor(dat$species)
@@ -34,3 +34,6 @@ tree <- phylo.maker(sp.list = sp_list,
 plot(tree$scenario.1)
 
 write.tree(tree$scenario.1, "phylogeny_2771_buildnodes1.tre")
+
+
+

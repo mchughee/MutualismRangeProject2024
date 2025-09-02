@@ -110,6 +110,7 @@ master_thin<-master_legume %>% filter(n>=25)
 
 master_thin$biome<-as.factor(master_thin$biome)
 
+
 # write our new dataframe into a csv
 write.csv(master_thin, "data_files/pgls_summary_data_long_added_biome_added.csv")
 
