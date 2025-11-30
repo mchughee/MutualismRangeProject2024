@@ -8,6 +8,7 @@ library(ggtree)
 library(ghibli)
 library(ape)
 library(ggtree)
+library(cowplot)
 
 # read in file
 master_thin<-read.csv("data_files/pgls_summary_data_long_added_biome_added.csv")
@@ -64,7 +65,7 @@ histo<-master_thin %>%
   theme_classic()+
   xlab("Median latitude")+
   ylab("Count")+
-  scale_fill_manual(values=c("#92BBD9FF", "#B50A2AFF", "#26432FFF", "#E7A79BFF"))
+  scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF", "#26432FFF", "#E7A79BFF"))
 
 
 ###################################
