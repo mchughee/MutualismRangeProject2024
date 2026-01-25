@@ -4,18 +4,20 @@
 library(raster)
 library(sf)
 library(dplyr)
+library(tidyverse)
 
 # Read in thinned data
-# May 2025: when I'm not running this on the remote server, read.csv 
-# throws an error-- it can't handle such a big dataset, I don't think
-# So switching to read_csv
-thin<-read_csv("thinned_data.csv")
+# Here, read_csv is better at handling the large amount of data, but it struggles
+# with a column (TypeStatus) that we don't use...moving on as we don't use this in the analysis
+
+thin<-read_csv("data_files/thinned_data.csv")
 str(thin)
 
+
 # Convert to sf object
-thin <- st_as_sf(x = thin, coords = c("X", "Y"))
+thin <- st_as_sf(x = thin, coords = c("X", "Y")) %>% 
 # Tell R to read coordinates as WGS84
-st_set_crs(thin, 4326)->thin
+st_set_crs(., 4326)
 
 # Read in raster climate data
 

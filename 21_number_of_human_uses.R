@@ -1,4 +1,4 @@
-### Plotting model results as function of human uses
+
 
 library(ape)
 library(phytools)

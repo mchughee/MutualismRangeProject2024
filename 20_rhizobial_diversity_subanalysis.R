@@ -74,7 +74,7 @@ myfil1$biome<-as.factor(myfil1$biome)
 # I took n out to try without it!!!! But please know that it should be put back
 # in!
 precip_range <- gls(log(precip_range) ~ EFN*abs_med_lat + woody
-                    + uses_num_uses + annual + biome + numGenera,
+                    + uses_num_uses + annual + numGenera,
                     data=myfil1, 
                     correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -87,10 +87,10 @@ hist(residuals(precip_range))
 
 ### Save as RDS file
 
-write_rds(precip_range, "biome_pgls_output/numgen_precip_niche_breadth.rds")
+write_rds(precip_range, "pgls_rds_files/numgen_precip_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
-precip_range<-read_rds("biome_pgls_output/numgen_precip_niche_breadth.rds")
+precip_range<-read_rds("pgls_rds_files/numgen_precip_niche_breadth.rds")
 
 
 # save model output!:')
@@ -99,7 +99,7 @@ precip_breadth$Value<-as.numeric(precip_breadth$Value) %>% round(3)
 precip_breadth$Std.Error<-as.numeric(precip_breadth$Std.Error) %>% round(3)
 precip_breadth$t.value<-as.numeric(precip_breadth$t.value) %>% round(3)
 precip_breadth$p.value<-as.numeric(precip_breadth$p.value) %>% round(3)
-write.csv(precip_breadth, "biome_pgls_output/numgen_precip_breadth_output_table.csv")
+write.csv(precip_breadth, "pgls_output_tables/numgen_precip_breadth_output_table.csv")
 
 ##################################
 
@@ -123,7 +123,7 @@ p1 <- ggplot()+
   geom_line(data=precip_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4, colour="#446590FF")
 
 
-save_plot("biome_pgls_output/numgen_precip_breadth.pdf", p1)
+save_plot("pgls_figures/numgen_precip_breadth.pdf", p1)
 
 
 ################################################################################
@@ -131,7 +131,7 @@ save_plot("biome_pgls_output/numgen_precip_breadth.pdf", p1)
 
 temp_range <- gls(temp_range ~ EFN*abs_med_lat
                   + woody + uses_num_uses
-                  + annual+biome+numGenera,
+                  + annual+numGenera,
                   data=myfil1, 
                   correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -144,10 +144,10 @@ plot(temp_range)
 
 ### Save as RDS file
 
-write_rds(temp_range, "biome_pgls_output/numgen_temp_niche_breadth.rds")
+write_rds(temp_range, "pgls_rds_files/numgen_temp_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
-temp_range<-read_rds("biome_pgls_output/numgen_temp_niche_breadth.rds")
+temp_range<-read_rds("pgls_rds_files/numgen_temp_niche_breadth.rds")
 
 # save model output!:')
 
@@ -156,7 +156,7 @@ temp_breadth$Value<-as.numeric(temp_breadth$Value) %>% round(3)
 temp_breadth$Std.Error<-as.numeric(temp_breadth$Std.Error) %>% round(3)
 temp_breadth$t.value<-as.numeric(temp_breadth$t.value) %>% round(3)
 temp_breadth$p.value<-as.numeric(temp_breadth$p.value) %>% round(3)
-write.csv(temp_breadth, "biome_pgls_output/numgen_temp_breadth_output_table.csv")
+write.csv(temp_breadth, "pgls_output_tables/numgen_temp_breadth_output_table.csv")
 
 
 ##################################
@@ -180,7 +180,7 @@ p2 <- ggplot()+
   geom_line(data=temp_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4, colour="#446590FF")
 
 
-save_plot("biome_pgls_output/numgen_temp_breadth.pdf", p2)
+save_plot("pgls_figures/numgen_temp_breadth.pdf", p2)
 
 
 
@@ -188,7 +188,7 @@ save_plot("biome_pgls_output/numgen_temp_breadth.pdf", p2)
 #### pgls for nitro range
 
 nitro_range <- gls(log(nitro_range) ~ EFN*abs_med_lat
-                   + woody + uses_num_uses + annual + biome +numGenera,
+                   + woody + uses_num_uses + annual +numGenera,
                    data=myfil1, 
                    correlation=corPagel(1, tree_pruned, form=~species), method="ML")
 
@@ -200,10 +200,10 @@ qqnorm(temp_range, abline = c(0,1))
 
 ### Save as RDS file
 
-write_rds(nitro_range, "biome_pgls_output/numgen_nitro_niche_breadth.rds")
+write_rds(nitro_range, "pgls_rds_files/numgen_nitro_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
-nitro_range<-read_rds("biome_pgls_output/numgen_nitro_niche_breadth.rds")
+nitro_range<-read_rds("pgls_rds_files/numgen_nitro_niche_breadth.rds")
 
 # save model output!:')
 
@@ -212,7 +212,7 @@ nitro_breadth$Value<-as.numeric(nitro_breadth$Value) %>% round(3)
 nitro_breadth$Std.Error<-as.numeric(nitro_breadth$Std.Error) %>% round(3)
 nitro_breadth$t.value<-as.numeric(nitro_breadth$t.value) %>% round(3)
 nitro_breadth$p.value<-as.numeric(nitro_breadth$p.value) %>% round(3)
-write.csv(nitro_breadth, "biome_pgls_output/numgen_nitro_breadth_output_table.csv")
+write.csv(nitro_breadth, "pgls_output_tables/numgen_nitro_breadth_output_table.csv")
 
 ##################################
 
@@ -237,7 +237,7 @@ p3 <- ggplot()+
   geom_line(data=nitro_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4, colour="#446590FF")
 
 
-save_plot("biome_pgls_output/numgen_nitro_breadth.pdf", p3)
+save_plot("pgls_figures/numgen_nitro_breadth.pdf", p3)
 
 
 p<-cowplot::plot_grid(p1+ theme(axis.title.x=element_blank()), 
@@ -250,5 +250,5 @@ p <- add_sub(p, "Number of rhizobia genera", hjust = 0.5, size=12)
 
 plot(p)
 
-save_plot("biome_pgls_output/numgen_analysis_comp_fig.jpeg", p, base_height=7, base_width=10)
+save_plot("pgls_figures/numgen_analysis_comp_fig.jpeg", p, base_height=7, base_width=10)
 

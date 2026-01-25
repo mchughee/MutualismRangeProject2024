@@ -57,28 +57,11 @@ data_1$EFN<-as.factor(data_1$EFN)
 data_1$Domatia<-as.factor(data_1$Domatia)
 data_1$fixer<-as.factor(data_1$fixer)
 
-sum(data_1$mutualism=="0")
-sum(data_1$mutualism=="1")
-
-sum(data_1$EFN=="0")
-sum(data_1$EFN=="1")
-
-sum(data_1$fixer=="0")
-sum(data_1$fixer=="1")
-
-# Find farther extent of EFN
-
-max(data_1[data_1$EFN=="1",]$abs_med_lat)
-max(data_1[data_1$fixer=="0",]$abs_med_lat)
-min(data_1[data_1$fixer=="0",]$abs_med_lat)
-
 ##############################################################################
 # PGLS models for actual investigations of niche breadth
 ######################################
 ## precip first
 
-# I took n out to try without it!!!! But please know that it should be put back
-# in!
 precip_range <- gls(log(precip_range) ~ EFN*abs_med_lat + fixer*abs_med_lat+woody
                     + uses_num_uses + annual,
                     data=data_1, 
@@ -98,7 +81,7 @@ write_rds(precip_range, "precip_niche_breadth.rds")
 # Read in RDS file (if coming back to code)
 precip_range<-read_rds("pgls_rds_files/precip_niche_breadth.rds")
 
-# save model output!:')
+# save model output!
 precip_df<-data.frame(coef(summary(precip_range))) %>% format(scientific=F)
 precip_df$p.value<-as.numeric(precip_df$p.value) %>% round(4)
 write.csv(precip_df, "precip_breadth_output_table.csv")
@@ -186,7 +169,7 @@ write_rds(temp_range, "temp_niche_breadth.rds")
 # Read in RDS file (if coming back to code)
 temp_range<-read_rds("pgls_rds_files/temp_niche_breadth.rds")
 
-# save model output!:')
+# save model output!
 temp_df<-data.frame(coef(summary(temp_range))) %>% format(scientific=F)
 temp_df$p.value<-as.numeric(temp_df$p.value) %>% round(4)
 write.csv(temp_df, "temp_breadth_output_table.csv")
