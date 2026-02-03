@@ -76,15 +76,15 @@ finaldf$percent_cover<-(finaldf$num_in_polygon/finaldf$num_total)*100
 hist(finaldf$percent_cover)
 
 # grab species with >100 percent cover, suggesting some overlapping polygons
-giant_headache<-subset(finaldf, percent_cover>100)
-giant_headache<-giant_headache %>% select(-geometry)
-write.csv(giant_headache, "list_powo_pols_greaterthan100.csv")
+greater100<-subset(finaldf, percent_cover>100)
+greater100_nogeom<-greater100 %>% select(-geometry)
+write.csv(greater100_nogeom, "list_powo_pols_greaterthan100.csv")
 
 # grab species with <50% cover, because that indicates the polygons are not fitting
 # very well
-lesser_headache<-subset(finaldf, percent_cover<50)
-lesser_headache<-lesser_headache %>% select(-geometry)
-write.csv(lesser_headache, "list_powo_pols_lessthan100.csv")
+less50<-subset(finaldf, percent_cover<50)
+less50_nogeom<-less50 %>% select(-geometry)
+write.csv(less50_nogeom, "list_powo_pols_lessthan100.csv")
 
 # we'll use these lists to drop these pesky species from the dataset
 
@@ -92,21 +92,15 @@ write.csv(lesser_headache, "list_powo_pols_lessthan100.csv")
 # affecting the points
 world = map_data('world')
 
-giant_headache<-st_as_sf(giant_headache, sf_column_name="geometry")
+greater100<-st_as_sf(greater100, sf_column_name="geometry")
 
-rm(i)
-i="Abrus_fruticulosus"
-for (i in unique(giant_headache$species)){
-  species_j = i
-  ggplot() +
-    geom_polygon(data = world, aes(x = long, y = lat, group = group), colour="darkgrey", fill = NA, alpha = 0.2) +
-    geom_sf(data = poly_sf[poly_sf$species_name==i,], aes(fill = poly_sf[poly_sf$species_name==i,]$introduced), alpha = 0.2) +
-    geom_sf(data = giant_headache[giant_headache$species==i,]$geometry, aes(geometry = geometry), size = 0.5)+
-    theme(legend.title=element_blank())
-  ggsave(filename = str_c("mapping_kew_polys/", species_j, ".pdf"), width = 14, height = 6)}
-
+# set intrdcd to be a factor
 poly_sf$intrdcd<-as.factor(poly_sf$intrdcd)
+points_filtered$intrdcd<-as.factor(points_sf$intrdcd)
 
+# generate maps to take a look at fit of points vs distribution polys
+# this doubles as a check to make sure our spatial intersection in the last script
+# worked
 sf_use_s2(FALSE)
 for (i in unique(points_filtered$species)){
   species_j = i
@@ -117,5 +111,5 @@ for (i in unique(points_filtered$species)){
     theme(legend.title=element_blank())
   ggsave(filename = str_c("planar_kew_polys/", species_j, ".pdf"), width = 14, height = 6)}
 
-#aes(color = points_filtered[points_filtered$species==i,]$introduced),
+
 

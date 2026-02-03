@@ -30,13 +30,13 @@ names = read_delim("wcvp_names_and_distribution_special_issue_28_feb_2022/wcvp_n
   filter(family == "Fabaceae", taxon_rank=="Species", taxon_status=="Accepted")
 
 # Read in a dataset with my species!
-my_sp<-read.csv("summary_df_august2024.csv")
+my_sp<-read.csv("data_files/summary_df_august2024.csv")
 
 # Make plant names in powo "names" file the same format as I have, with the _ between sp and genus
 
-names$species_names<-ifelse(names$species=="NA", "NA", paste(names$genus,names$species))
+names$species_names<-ifelse(names$species=="NA", "NA", paste(names$genus,names$species, sep="_"))
 
-names$species_names<-gsub(" ", "_", names$species_names)
+#names$species_names<-gsub(" ", "_", names$species_names)
 
 # filter to only the species I have in my dataset
 names<-names %>% filter(names$species_names %in% my_sp$species)
@@ -78,7 +78,7 @@ ggplot() +
 ggplot() +
   geom_polygon(data = world, aes(x = long, y = lat, group = group), colour="darkgrey", fill = NA, alpha = 0.2) +
   geom_sf(data = plant_dist1[plant_dist1$species_name=="Lupinus_nootkatensis",], aes(geometry=geometry, fill = introduced), alpha = 0.2)
-# Okay wowwww, way to invalidate Iceland's problems with Lupinus! But still, this is better than ILDIS
+# Okay no introduced range in Iceland, but that invasion was pretty recent!
 
 # Let's try another species...Lotus pedunculatus
 ggplot() +
@@ -91,7 +91,7 @@ ggplot() +
 ggplot() +
   geom_polygon(data = world, aes(x = long, y = lat, group = group), colour="darkgrey", fill = NA, alpha = 0.2) +
   geom_sf(data = plant_dist1[plant_dist1$species_name=="Trifolium_medium",], aes(geometry=geometry, fill = introduced), alpha = 0.2)
-# Wow, we're cooking with fire now! Compared to the old polygons, this map is more accurate
+
 
 # Finally, Ononis spinosa
 ggplot() +

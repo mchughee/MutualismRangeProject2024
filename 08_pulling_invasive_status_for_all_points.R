@@ -60,5 +60,21 @@ status1<-status %>% select(-c(mediaType, lastInterpreted, establishmentMeans,
 
 
 sf::st_write(status1, "invasiveclass_thindat_climadd_soilgridsadd.csv", layer_options = "GEOMETRY=AS_XY")
+################################################################################
+####### check that points fall into polygons
+poly_sf = st_read("powo_polygons/powo_polygons_sorted.shp")
 
+# set intrdcd to be a factor
+poly_sf$intrdcd<-as.factor(poly_sf$intrdcd)
+status1$intrdcd<-as.factor(status1$intrdcd)
 
+#check to make sure our spatial intersection in the last script worked
+sf_use_s2(FALSE)
+for (i in unique(points_filtered$species)){
+  species_j = i
+  ggplot() +
+    geom_polygon(data = world, aes(x = long, y = lat, group = group), colour="darkgrey", fill = NA, alpha = 0.2) +
+    geom_sf(data = poly_sf[poly_sf$spcs_nm==i,], aes(fill = poly_sf[poly_sf$spcs_nm==i,]$intrdcd), alpha = 0.2) +
+    geom_sf(data = status1[status1$species==i,], aes(color = status1[status1$species==i,]$intrdcd), size = 0.5)+
+    theme(legend.title=element_blank())
+  ggsave(filename = str_c("planar_kew_polys/", species_j, ".pdf"), width = 14, height = 6)}
