@@ -36,20 +36,25 @@ join<-st_join(dat_sf, shapes, join=st_intersects, left=TRUE, largest=FALSE)
 
 
 # Common-sense check: does the distribution of species across biomes know what
-# we know to be true, i.e. most falling in biom 7 (tropical/subtropical
-# grasslands/shrublands)
+# we know to be true, i.e. most falling in temperate/tropical/mediterranean areas
 
 hist(join$BIOME)
 join$BIOME<-as.factor(join$BIOME)
 levels(join$BIOME)
 
-## WHY ARE THESE OCCURRENCES FALLING INTO LAKES STILL?
-## HIGHLY UPSETTING
+## we have just a few occurrences falling into "rock and ice" and "lake"
+# prevents us from seeing real trends in histo
 
-problems<-subset(join, BIOME=="98" | BIOME=="99")
-# Okay, I think this problem will be resolved when we choose
+subset(join, BIOME=="98" | BIOME=="99")
+# new histo to inspect
+filtered<-join %>% filter(BIOME!="98" & BIOME!="99")
+hist(as.numeric(filtered$BIOME))
+# Okay, this problem will be resolved when we choose
 # the biome that the most occurrences of each species falls in
-# If not...time to go to war
+
+# let's inspect a few species to see what the results of the join are
+lupine<-filter(join, species=="Lupinus_nootkatensis")
+milkvetch<-filter(join, species=="Astragalus_echinatus")
 
 
 # Remove extraneous columns from the biome dataframe
@@ -58,7 +63,7 @@ join1<-join %>% select(-c(G200_REGIO, G200_NUM, G200_STAT, ECO_NUM,
                           ECO_ID, ECO_SYM, eco_code, PER_area, PER_area_1,
                           PER_area_2, AREA))
 
-
+# write into a csv file
 sf::st_write(join1, "invasiveclass_thinnedoccs_soil_clim_biome.csv", layer_options = "GEOMETRY=AS_XY")
 
 duplicated(str(join1))
