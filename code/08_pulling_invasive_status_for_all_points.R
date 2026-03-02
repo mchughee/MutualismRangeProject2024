@@ -6,7 +6,7 @@ library(tidyverse)
 library(sf)
 
 # read in occurrence data
-points <- read_csv("data/thinnedoccs_soil_clim_biome.csv")
+points <- read_csv("data/thindat_climadd_soilgridsadd.csv")
 # The warning message is R being confused about the input format of a column
 # that I don't care about
 
