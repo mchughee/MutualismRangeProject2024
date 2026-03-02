@@ -3,6 +3,7 @@
 .RData
 .Ruserdata
 .RdataTmp
+*.DS_Store
 *.zip
 world/*
 zip_out/*
@@ -23,11 +24,9 @@ legume_pol_shape
 overlayingrasterandpointdata.R
 running_coordinatecleaner.R
 legume_polygons.csv
-<<<<<<< HEAD
 and_now_something_completely_different.R
 aiyeeee.R
 test_data_new_june2024_coords.csv
-=======
 allocc_clean.csv
 dat_clean_b.csv
 dat_clean_a.csv
@@ -39,14 +38,10 @@ dat_clean_wxyz.csv
 finaldf_st_intersect.csv
 lessthan50percentcov.csv
 polygon_occ_coverage.csv
-<<<<<<< HEAD
->>>>>>> 5a680cbdae2b340eee15aef0e2824c4643717cc2
-=======
 climdat_june_2024.csv
 test_data_new_june2024_coords.csv
 wc2.1_30s_bio_1.tif
 wc2.1_30s_bio_12.tif
->>>>>>> 1481910 (symbiont push)
 merged_trait_climate_data.csv
 aca_1k.csv_thin1.csv
 dat_test_clean.csv
