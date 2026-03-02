@@ -2,13 +2,13 @@
 
 # Read in the packages we need
 library(rgbif)
+library(tidyverse)
+library(here)
 
 # taxize was removed from CRAN and the problem is still getting resolved
 # Until then, we're using this method of installing taxize
 install.packages("taxize", repos = c("https://ropensci.r-universe.dev", "https://cloud.r-project.org"))
 library(taxize)
-library(tidyverse)
-library(here)
 
 # Read in the data file that contains the names of the species we want occurrences for
 legume <- read.csv("legume_range_traits.csv")
@@ -57,14 +57,8 @@ occ_download(
 occ_download_get(key="0008106-240229165702484", overwrite = FALSE)
 # Again, wait for the download
 
-# find the files that you want-- there should be just one big zipped file
-list_of_files <- list.files(pattern="*.zip")
-
-# copy the file to a new folder
-file.copy(list_of_files, "Files/legume_data/occurrence_data/")
-
 # unzip the file!
-unzip("Files/legume_data/occurrence_data/0008106-240229165702484.zip")
+unzip("0008106-240229165702484.zip")
 
 # Done! We now have a giant database with all the occurrences we need, and
 # it's unzipped and ready to work with
