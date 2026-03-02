@@ -6,7 +6,7 @@ library(tidyverse)
 library(sf)
 
 # read in occurrence data
-points <- read_csv("thinnedoccs_soil_clim_biome.csv")
+points <- read_csv("data/thinnedoccs_soil_clim_biome.csv")
 # The warning message is R being confused about the input format of a column
 # that I don't care about
 
@@ -26,8 +26,8 @@ points_sf <- st_as_sf(x = points,
 poly_sf = st_read("powo_polygons/powo_polygons_sorted.shp")
 
 # Read in the lists of species with <50 or >100 percent coverage
-less50<-read.csv("data_files/list_powo_pols_lessthan50.csv")
-greater100<-read.csv("data_files/list_powo_pols_greaterthan100.csv")
+less50<-read.csv("powo_polygons/list_powo_pols_lessthan50.csv")
+greater100<-read.csv("powo_polygons/list_powo_pols_greaterthan100.csv")
 
 # Now, let's drop species from our dataset that either 
 # a) don't have polygons
@@ -59,7 +59,7 @@ status1<-status %>% select(-c(mediaType, lastInterpreted, establishmentMeans,
                               depthAccuracy, individualCount, infraspecificEpithet))
 
 
-sf::st_write(status1, "invasiveclass_thindat_climadd_soilgridsadd.csv", layer_options = "GEOMETRY=AS_XY")
+sf::st_write(status1, "data/invasiveclass_thindat_climadd_soilgridsadd.csv", layer_options = "GEOMETRY=AS_XY")
 ################################################################################
 ####### check that points fall into polygons
 poly_sf = st_read("powo_polygons/powo_polygons_sorted.shp")

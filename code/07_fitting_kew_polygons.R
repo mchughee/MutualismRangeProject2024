@@ -7,7 +7,7 @@ library(geojsonsf)
 
 
 # Read in occurrence data
-points <- read.csv("thindat_climadd_soilgridsadd.csv")
+points <- read.csv("data/thindat_climadd_soilgridsadd.csv")
 
 # Put points into sf (a la Megan B)
 points_sf <- st_as_sf(x = points,
@@ -78,13 +78,13 @@ hist(finaldf$percent_cover)
 # grab species with >100 percent cover, suggesting some overlapping polygons
 greater100<-subset(finaldf, percent_cover>100)
 greater100_nogeom<-greater100 %>% select(-geometry)
-write.csv(greater100_nogeom, "list_powo_pols_greaterthan100.csv")
+write.csv(greater100_nogeom, "powo_polygons/list_powo_pols_greaterthan100.csv")
 
 # grab species with <50% cover, because that indicates the polygons are not fitting
 # very well
 less50<-subset(finaldf, percent_cover<50)
 less50_nogeom<-less50 %>% select(-geometry)
-write.csv(less50_nogeom, "list_powo_pols_lessthan100.csv")
+write.csv(less50_nogeom, "powo_polygons/list_powo_pols_lessthan100.csv")
 
 # we'll use these lists to drop these pesky species from the dataset
 

@@ -5,11 +5,10 @@ library(terra)
 library(sf)
 library(tidyverse)
 library(geodata)
-library(here)
 
 # read in thinned occurrence data
 
-dat<-read_csv("data_files/thinned_data_climate.csv")
+dat<-read_csv("data/thinned_data_climate.csv")
 
 # tell sf where the long and lat are 
 dat <- st_as_sf(x = dat, coords = c("X", "Y"))
@@ -32,4 +31,4 @@ st_crs(nitrogen)
 dat$nitrogen <-raster::extract(nitrogen, dat)
 
 # write new data file
-sf::st_write(dat, "thindat_climadd_soilgridsadd.csv", layer_options = "GEOMETRY=AS_XY")
+sf::st_write(dat, "data/thindat_climadd_soilgridsadd.csv", layer_options = "GEOMETRY=AS_XY")

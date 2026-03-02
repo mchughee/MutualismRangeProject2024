@@ -4,7 +4,6 @@
 library(tidyverse)
 library(geojsonsf)
 library(sf)
-#install.packages("shapefiles")
 library(shapefiles)
 
 # read in taxon and filter to fabaceae
@@ -30,7 +29,7 @@ names = read_delim("wcvp_names_and_distribution_special_issue_28_feb_2022/wcvp_n
   filter(family == "Fabaceae", taxon_rank=="Species", taxon_status=="Accepted")
 
 # Read in a dataset with my species!
-my_sp<-read.csv("data_files/summary_df_august2024.csv")
+my_sp<-read.csv("data/summary_df_august2024.csv")
 
 # Make plant names in powo "names" file the same format as I have, with the _ between sp and genus
 
@@ -102,11 +101,9 @@ ggplot() +
 
 powo_polygons<-st_as_sf(plant_dist1, sf_column_name="geometry")
 
-#sf::st_write(powo_polygons,"powo_polygons_sorted.shp")
-
 p<-st_collection_extract(powo_polygons, "POLYGON")
 
-sf::st_write(p,"powo_polygons_sorted.shp")
+sf::st_write(p,"powo_polygons/powo_polygons_sorted.shp")
 # These are under powo_polygons (I think I renamed to make it more straightfoward to find these...
 # had the opposite effect, I fear!)
 
