@@ -11,7 +11,7 @@ install.packages("taxize", repos = c("https://ropensci.r-universe.dev", "https:/
 library(taxize)
 
 # Read in the data file that contains the names of the species we want occurrences for
-legume <- read.csv("legume_range_traits.csv")
+legume <- read.csv("data/legume_range_traits.csv")
 
 gbif_taxon_keys <- 
   legume$Phy %>% 

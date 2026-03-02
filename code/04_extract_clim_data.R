@@ -10,9 +10,8 @@ library(tidyverse)
 # Here, read_csv is better at handling the large amount of data, but it struggles
 # with a column (TypeStatus) that we don't use...moving on as we don't use this in the analysis
 
-thin<-read_csv("data_files/thinned_data.csv")
+thin<-read_csv("data/thinned_data.csv")
 str(thin)
-
 
 # Convert to sf object
 thin <- st_as_sf(x = thin, coords = c("X", "Y")) %>% 
@@ -30,7 +29,5 @@ thin$temp <-raster::extract(temp, thin)
 thin$precip <-raster::extract(precip, thin)
 
 # write into st object
-sf::st_write(thin, "thinned_data_climate.csv", layer_options = "GEOMETRY=AS_XY")
-
-
+sf::st_write(thin, "data/thinned_data_climate.csv", layer_options = "GEOMETRY=AS_XY")
 
