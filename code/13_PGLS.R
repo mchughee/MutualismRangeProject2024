@@ -3,22 +3,22 @@ library(ape)
 library(phytools)
 library(nlme)
 library(tidyverse)
-library(ghibli)
 library(ggplot2)
 library(cowplot)
-#install.packages("ggeffects")
 library(ggeffects)
 
 
+
+
+
+
 # Read back in PGLS dataframe
-data<-read.csv("data_files/pgls_polydropped_final_biome.csv")
-
-
+data <- read.csv("pgls_polydropped_final_biome.csv")
 
 # Bring in tree-- this tree has the polytomy removed,
 # so we also need to trim down the dataset to only include
 # species in the tree!
-mytree<-read.tree("polytomy_removed.tre")
+mytree <- read.tree("phylogeny/polytomy_removed.tre")
 
 diff <- setdiff(mytree$tip.label, data$species)
 tree_pruned <- drop.tip(mytree, diff)
@@ -76,7 +76,7 @@ hist(residuals(precip_range))
 
 ### Save as RDS file
 
-write_rds(precip_range, "precip_niche_breadth.rds")
+# write_rds(precip_range, "pgls_rds_files/precip_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
 precip_range<-read_rds("pgls_rds_files/precip_niche_breadth.rds")
@@ -107,16 +107,14 @@ p1 <- ggplot()+
   theme_cowplot()+scale_y_log10()+
   scale_shape_manual(values = c(21,19), guide = "none")+
   scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"), name = "EFN")+
-  #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
   ylab("annual \n precip. range (mm)")+
   xlab("absolute median latitude")+
   theme(axis.title.x=element_blank())+
   geom_line(data=EFN_precip_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted, 
                                                                         colour=group), linewidth=1.4)+
-  #geom_ribbon(data=EFN_precip_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
-  #fill=group),
-  #alpha=0.4, show.legend=FALSE)+
-  #scale_fill_("YesterdayMedium", direction = -1)
+  # geom_ribbon(data=EFN_precip_means, aes(x=x, ymin=conf.low, ymax=conf.high,
+  # fill=group),
+  # alpha=0.4, show.legend=FALSE)+
   scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
   annotate("text", label="EFN: **\nInt.:   NS", x=50, y=2000, lineheight = .75, hjust=0)
 
@@ -164,7 +162,7 @@ plot(temp_range)
 
 ### Save as RDS file
 
-write_rds(temp_range, "temp_niche_breadth.rds")
+# write_rds(temp_range, "pgls_rds_files/temp_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
 temp_range<-read_rds("pgls_rds_files/temp_niche_breadth.rds")
@@ -204,7 +202,6 @@ p3 <- ggplot()+
   #geom_ribbon(data=EFN_temp_means, aes(x=x, ymin=conf.low, ymax=conf.high, 
   #fill=group),
   #alpha=0.4, show.legend=FALSE)+
-  #scale_fill_ghibli_d("YesterdayMedium", direction = -1)
   scale_fill_manual(values=c("#0E84B4FF", "#B50A2AFF"))+
   annotate("text", label="EFN: *\nInt.:   NS", x=50, y=15, lineheight = .75, hjust=0)
 
@@ -250,7 +247,7 @@ qqnorm(temp_range, abline = c(0,1))
 
 ### Save as RDS file
 
-write_rds(nitro_range, "nitro_niche_breadth.rds")
+# write_rds(nitro_range, "pgls_rds_files/nitro_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
 nitro_range<-read_rds("pgls_rds_files/nitro_niche_breadth.rds")
@@ -326,7 +323,7 @@ comp_leg<-plot_grid(leg_fixer, efn_fixer, ncol=1, nrow=2)
 p<-cowplot::plot_grid(p1+ theme(legend.position="none"), p2+ theme(legend.position="none", axis.title.y=element_blank()), comp_leg,
                       p3+ theme(legend.position="none"), p4+ theme(legend.position="none", axis.title.y=element_blank()), NA,
                       p5+ theme(legend.position="none"), p6+ theme(legend.position="none", axis.title.y=element_blank()), NA,
-                      ncol=3, nrow=3, labels=c("A", "D", "", "B", "E", "", "C", "F", ""),
+                      ncol=3, nrow=3, labels=c("A", "D", "", "B", "E", "", "C", "F", ""), axis = "l", align = "v",
                       label_x = c(0, 0, 0, 0, -0.035, 0, 0, 0, 0))
 
 p <- add_sub(p, "absolute median latitude", hjust = 1.5, size=12)
@@ -334,6 +331,7 @@ p <- add_sub(p, "absolute median latitude", hjust = 1.5, size=12)
 plot(p)
 
 save_plot("niche_breadth_thesis_fig.jpeg", p, base_height=10, base_width=10)
+
 ###############################################################################
 ### making presentation plots
 
@@ -351,6 +349,7 @@ plot2<-cowplot::plot_grid(p2+ theme(legend.position="none"), p4+ theme(legend.po
 plot2<-add_sub(plot2, "absolute median latitude", hjust = 1, size=12)
 
 save_plot("niche_breadth_fixer_fig.jpeg", plot2, base_height=5, base_width=13)
+
 
 ###############################################################################
 # PGLS with biome as response variable

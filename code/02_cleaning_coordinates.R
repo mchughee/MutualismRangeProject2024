@@ -170,13 +170,13 @@ dat_cl_wxyz <- part_wxyz[flags_wxyz$.summary,]
 
 
 # writing clean data into csvs so that I don't lose anything if R crashes!
-write.csv(dat_cl_a, "dat_clean_a.csv")
-write.csv(dat_cl_b, "dat_clean_b.csv")
-write.csv(dat_cl_cdef, "dat_clean_cdef.csv")
-write.csv(dat_cl_ghijk, "dat_clean_ghijk.csv")
-write.csv(dat_cl_lmnop, "dat_clean_lmnop.csv")
-write.csv(dat_cl_qrstuv, "dat_clean_qrstuv.csv")
-write.csv(dat_cl_wxyz, "dat_clean_wxyz.csv")
+# write_csv(dat_cl_a, "dat_clean_a.csv")
+# write_csv(dat_cl_b, "dat_clean_b.csv")
+# write_csv(dat_cl_cdef, "dat_clean_cdef.csv")
+# write_csv(dat_cl_ghijk, "dat_clean_ghijk.csv")
+# write_csv(dat_cl_lmnop, "dat_clean_lmnop.csv")
+# write_csv(dat_cl_qrstuv, "dat_clean_qrstuv.csv")
+# write_csv(dat_cl_wxyz, "dat_clean_wxyz.csv")
 
 # binding some of the datasets together because R crashed when I tried to rbind
 # all the smaller separate frames
@@ -188,9 +188,4 @@ alldat_clean<-rbind(binded_ab, binded_c_thru_k, dat_cl_lmnop,
                     dat_cl_qrstuv, dat_cl_wxyz)
 
 # write into a csv
-write.csv(alldat_clean, "allocc_clean.csv")
-
-# create new test dataset
-
-data_subset<-filter(alldat_clean, species=="Abrus fruticulosus"|species=="Acacia acinacea"|species=="Abrus precatorious")
-
+write_csv(alldat_clean, "data/allocc_clean.csv")
