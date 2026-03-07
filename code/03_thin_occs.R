@@ -6,7 +6,7 @@ library(sf)
 library(dplyr)
 
 # Using the twenty species dataframe for right now, but replace with full data when the time comes
-occ <- read.csv("data_large/allocc_clean.csv")
+occ <- read_csv("data_large/allocc_clean.csv")
 
 occ$species <- gsub(" ", "_", occ$species)
 
@@ -32,7 +32,21 @@ for (i in 1:length(species_list)) {
   my_sf <- sf::st_as_sf(this.species)
   results <- rbind(results, my_sf)
   print(i)
+  print(species_list[i])
 }
+
+# Check that numbers make sense
+prethinning = occ %>% 
+  group_by(species) %>% 
+  summarize(n_before = n())
+
+postthinning = results %>% 
+  group_by(species) %>% 
+  summarize(n_after = n())
+
+check = left_join(prethinning, postthinning)
+plot(check$n_before, check$n_after)
+abline(0, 1, add = TRUE)
 
 sf::st_write(results, "data_large/allocc_thinned.csv", layer_options = "GEOMETRY=AS_XY")
 
