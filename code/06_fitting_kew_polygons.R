@@ -61,6 +61,36 @@ hist(final_df$percent_in_polys)
 # grab species with >100 percent cover, suggesting some overlapping polygons
 greater100 <- final_df %>% filter(percent_in_polys > 100)
 
+
+# Look at why these species have >100%
+look = all$Anthyllis_montana %>% 
+  t() %>% 
+  tibble() %>% 
+  mutate(total = rowSums(.))
+
+look1 = rowSums(look)
+
+which(look1 > 1)
+
+look2 = poly_sf %>% filter(spcs_nm == "Anthyllis_montana")
+plot(look2)
+
+look3 = points_sf %>% 
+  filter(species == "Anthyllis_montana") %>%
+  bind_cols(., look) %>% 
+  st_as_sf(coords = c("X", "Y")) %>% 
+  
+
+world = map_data("world")
+
+ggplot() +
+  geom_polygon(data = world, aes(x = long, y = lat, group = group), colour="darkgrey", fill = NA, alpha = 0.2) +
+  geom_sf(data = poly_sf[poly_sf$spcs_nm=="Anthyllis_montana",], aes(fill = poly_sf[poly_sf$spcs_nm=="Anthyllis_montana",]$intrdcd), alpha = 0.2) +
+  geom_sf(data = filter(look3, total == 2), aes(color = as.factor(total)), size = 0.5) +
+  theme(legend.title=element_blank())
+
+# I think there is just some overlap in polygon boundaries
+
 # grab species with <50% cover, because that indicates the polygons are not fitting very well
 less50 <- final_df %>% filter(percent_in_polys < 50)
 
