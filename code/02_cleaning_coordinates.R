@@ -171,7 +171,7 @@ binded_c_thru_k <- rbind(dat_cl_cdef, dat_cl_ghijk)
 # Bind everything into one master
 alldat_clean <- rbind(binded_ab, binded_c_thru_k, dat_cl_lmnop,
                     dat_cl_qrstuv, dat_cl_wxyz) %>% 
-  select(-countryCode, genus)
+  select(-countryCode, -genus)
 
 # Write into a csv
 write_csv(alldat_clean, "data_large/allocc_clean.csv")

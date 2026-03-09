@@ -60,7 +60,7 @@ hist(final_df$percent_in_polys)
 
 # grab species with >100 percent cover, suggesting some overlapping polygons
 greater100 <- final_df %>% filter(percent_in_polys > 100)
-
+write_csv(greater100, "powo_polygons/list_powo_pols_greaterthan100.csv")
 
 # Look at why these species have >100%
 look = all$Anthyllis_montana %>% 
@@ -93,6 +93,7 @@ ggplot() +
 
 # grab species with <50% cover, because that indicates the polygons are not fitting very well
 less50 <- final_df %>% filter(percent_in_polys < 50)
+write_csv(less50, "powo_polygons/list_powo_pols_lessthan50.csv")
 
 
 # Now, let's drop species from our dataset that either 

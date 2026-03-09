@@ -9,6 +9,9 @@ library(ggplot2)
 points <- read_csv("data_large/allocc_with_native_status.csv")
 n_distinct(points$species)
 
+
+x = (points %>% filter(species=="Andira_coriacea"))
+
 per_sp_count = points %>% 
   group_by(species) %>% 
   summarize(n = n())
@@ -18,12 +21,13 @@ per_sp_count = points %>%
 points_1 <- points %>% 
   drop_na(intrdcd)
 n_distinct(points_1$species)
+# Not sure if this filter was applied to final dataset
 
 points_2 <- points_1 %>% 
   drop_na(precip) %>% 
   drop_na(temp) %>% 
   drop_na(nitrogen)
-n_distinct(points_1$species)
+n_distinct(points_2$species)
 
 # Check what percent of observations are retained on a species-by-species basis
 per_sp_count_1 = points_1 %>% 
@@ -83,6 +87,8 @@ points_2 %>% group_by(species) %>%
 summary_df <- points_2 %>% 
   group_by(species) %>% 
   mutate(biome = if_else(biome %in% c("98", "99"), NA, biome)) %>% 
+  # I modified the line above, can change back to filtering these out if preferred.
+#   Need to mention in methods though if filtering out.
   droplevels() %>% 
   reframe(n = n(),
           precip_maxquant = quantile(precip, 0.95), 
@@ -119,7 +125,7 @@ summary_df$nitro_range <- summary_df$nitro_maxquant-summary_df$nitro_minquant
 
 traits <- read.csv("data/legume_range_traits.csv") %>% 
   rename(species = Phy) %>% 
-  select(species, fixer, woody, annual, uses_num_uses, domY, efnY)
+  select(species, genus, fixer, woody, annual, uses_num_uses, domY, efnY)
 
 # Let us smoosh the traits together with the summary_df.
 
@@ -131,7 +137,7 @@ summary(master_legume)
 dropped_sp <- filter(master_legume, n<25)
 
 master_thin <- master_legume %>% 
-  filter(n>=25)
+  filter(n >= 25)
 
 master_thin$biome <- as.factor(master_thin$biome)
 

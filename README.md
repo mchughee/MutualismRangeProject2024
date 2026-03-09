@@ -1,12 +1,16 @@
 # MutualismRangeProject2024
+
 Code and files for "Mutualisms alter the realized niches of legumes at a global scale". Not all data files are uploaded, as preliminary data is too big for Git. Feel free to shoot me an email at erinmchugh94@gmail.com if you would like access to these larger files (ex., original GBIF download). 
 
-Directory *code* houses all scripts to recreate these analyses. 
-Scripts 1-4 work with occurrence level data, which is large, and generate a large output file of cleaned occurrences with environmental data
-Scripts 5-6 use Plants of the World Online polygons, classified as native or introduced, to classify each occurrence point as in the native range, the introduced range, or unclassified (NA)
+Directory *code* houses all scripts to recreate these analyses.
+
+Scripts 1-4 work with occurrence level data, which is large, and generate a large output file of cleaned occurrences with environmental data.
+
+Scripts 5-6 use Plants of the World Online polygons, classified as native or introduced, to classify each occurrence point as in the native range, the introduced range, or unclassified (NA).
 
 
 Directory *data_large* has data at the occurrence level (e.g., many rows per species). This directory should be populated with the following which can be freely downloaded and/or generated with scripts 1-6:
+
 - original GBIF download "0008106-240229165702484.csv" (can be downloaded using key in script 1)
 - bioclim 1 and 12 30s rasters (can be downloaded here https://www.worldclim.org/data/worldclim21.html)
 - wwf biome data (can be downloaded here https://files.worldwildlife.org/wwfcmsprod/files/Publication/file/6kcchn7e3u_official_teow.zip)

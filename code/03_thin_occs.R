@@ -29,6 +29,7 @@ results <- NULL
 
 for (i in 1:length(species_list)) {
   this.species <- spatSample(occs_ls[occs_ls$species == species_list[i],], size = 1, strata = temp)
+#   Need to add method = regular to above to make sampling repeatable I think
   my_sf <- sf::st_as_sf(this.species)
   results <- rbind(results, my_sf)
   print(i)
