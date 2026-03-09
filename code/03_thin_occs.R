@@ -51,10 +51,14 @@ abline(0, 1, add = TRUE)
 
 sf::st_write(results, "data_large/allocc_thinned.csv", layer_options = "GEOMETRY=AS_XY")
 
+
 species_list = results %>% 
+  select(-geometry) %>% 
   group_by(species) %>% 
   summarize(n = n())
 
-write_csv(species_list, "data/species_list_post_thinning.csv")
+write_csv(species_list, "species_lists/species_list_post_thinning.csv")
+
+
 
 # Nice and easy! Now we have a thinned dataframe

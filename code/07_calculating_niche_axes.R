@@ -86,8 +86,9 @@ points_2 %>% group_by(species) %>%
 # Group by species and get summarizing
 summary_df <- points_2 %>% 
   group_by(species) %>% 
-  mutate(biome = if_else(biome %in% c("98", "99"), NA, biome)) %>% 
-  # I modified the line above, can change back to filtering these out if preferred.
+  # mutate(biome = if_else(biome %in% c("98", "99"), NA, biome)) %>% 
+  filter(!(biome %in% c("98", "99"))) %>% 
+#   I think maybe just changing these to NA is preferable.
 #   Need to mention in methods though if filtering out.
   droplevels() %>% 
   reframe(n = n(),
@@ -125,7 +126,7 @@ summary_df$nitro_range <- summary_df$nitro_maxquant-summary_df$nitro_minquant
 
 traits <- read.csv("data/legume_range_traits.csv") %>% 
   rename(species = Phy) %>% 
-  select(species, genus, fixer, woody, annual, uses_num_uses, domY, efnY)
+  select(species, genus, fixer, woody, annual, uses_num_uses, Domatia, EFN)
 
 # Let us smoosh the traits together with the summary_df.
 
@@ -142,6 +143,6 @@ master_thin <- master_legume %>%
 master_thin$biome <- as.factor(master_thin$biome)
 
 # write our new dataframe into a csv
-write.csv(master_thin, "data/pgls_species_data.csv")
+write_csv(master_thin, "data/pgls_species_data.csv")
 
 

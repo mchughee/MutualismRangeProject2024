@@ -39,12 +39,12 @@ tree <- phylo.maker(sp.list = sp_list,
 
 plot(tree$scenario.1)
 
-write.tree(tree$scenario.1, "phylogeny/phylogeny_2667_buildnodes1.tre")
+write.tree(tree$scenario.1, "phylogeny/phylogeny_buildnodes1.tre")
 
 
 # Trim phylogeny
 
-mytree <- read.tree("phylogeny/phylogeny_2667_buildnodes1.tre")
+mytree <- read.tree("phylogeny/phylogeny_buildnodes1.tre")
 
 p <- ggtree(mytree, alpha = 0.1, layout = "circular") + 
   geom_nodelab(aes(label = node))
@@ -87,7 +87,7 @@ pgls_new <- filter(pgls, pgls$species %in% dropped$tip.label)
 
 # write it as a csv for future use!
 
-write_csv(pgls_new, "data/pgls_species_data_poly_dropped.csv")
+write_csv(pgls_new, "species_lists/pgls_species_data_poly_dropped.csv")
 
 setdiff(pgls$species, mytree$tip.label)
 
