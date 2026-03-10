@@ -1,13 +1,9 @@
-
-
 library(ape)
 library(phytools)
 library(nlme)
 library(tidyverse)
-library(ghibli)
 library(ggplot2)
 library(cowplot)
-#install.packages("ggeffects")
 library(ggeffects)
 
 

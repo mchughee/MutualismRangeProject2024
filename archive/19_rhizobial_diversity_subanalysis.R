@@ -1,5 +1,4 @@
-### Subanalysis of how level of specialization in plant-rhizobial interactions
-# influences niche breadth
+### Subanalysis of how level of specialization in plant-rhizobial interactions influences niche breadth
 
 library(ggplot2)
 library(tidyverse)
@@ -8,12 +7,11 @@ library(phytools)
 library(nlme)
 library(ggeffects)
 library(cowplot)
-library(ghibli)
 
 
 # read in csv file with my species-level environmental data
 
-mydat<-read.csv("data_files/pgls_polydropped_final_biome.csv")
+mydat<-read.csv("data/pgls_species_data_poly_dropped.csv")
 
 divdat<-read.csv("data_files/Legume_ploidy_dataset.csv")
 divdat$numGenera<-as.numeric(divdat$numGenera)
@@ -180,7 +178,8 @@ p2 <- ggplot()+
   geom_line(data=temp_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4, colour="#446590FF")
 
 
-save_plot("pgls_figures/numgen_temp_breadth.pdf", p2)
+save_plot("figures/numgen_temp_breadth.pdf", p2)
+save_plot("figures/numgen_temp_breadth.jpg", p2)
 
 
 
@@ -200,10 +199,10 @@ qqnorm(temp_range, abline = c(0,1))
 
 ### Save as RDS file
 
-write_rds(nitro_range, "pgls_rds_files/numgen_nitro_niche_breadth.rds")
+write_rds(nitro_range, "model_fits/numgen_nitro_niche_breadth.rds")
 
 # Read in RDS file (if coming back to code)
-nitro_range<-read_rds("pgls_rds_files/numgen_nitro_niche_breadth.rds")
+nitro_range<-read_rds("model_fits/numgen_nitro_niche_breadth.rds")
 
 # save model output!:')
 
@@ -211,8 +210,8 @@ nitro_breadth<-data.frame(coef(summary(nitro_range))) %>% format(scientific=F)
 nitro_breadth$Value<-as.numeric(nitro_breadth$Value) %>% round(3)
 nitro_breadth$Std.Error<-as.numeric(nitro_breadth$Std.Error) %>% round(3)
 nitro_breadth$t.value<-as.numeric(nitro_breadth$t.value) %>% round(3)
-nitro_breadth$p.value<-as.numeric(nitro_breadth$p.value) %>% round(3)
-write.csv(nitro_breadth, "pgls_output_tables/numgen_nitro_breadth_output_table.csv")
+nitro_breadth$p.value<-as.numeric(nitro_breadth$p.value) %>% round(4)
+write.csv(nitro_breadth, "tables/numgen_nitro_breadth_output_table.csv")
 
 ##################################
 
@@ -228,16 +227,14 @@ plot(nitro_means)
 p3 <- ggplot()+
   geom_point(data=myfil1, aes(x=numGenera, y=nitro_range),alpha=0.7, colour="#446590FF")+
   theme_cowplot()+scale_y_log10()+
-  #scale_shape_manual(values = c(21, 19), guide = "none")+
-  #scale_colour_manual(values=c("#0E84B4FF", "#B50A2AFF"), labels=c("no", "yes"), name = "EFN")+
-  #scale_colour_ghibli_d("YesterdayMedium", direction = -1, labels=c("no", "yes"))+
-  ylab("nitro. range (mm)")+
-  xlab("numGenera")+
+  ylab("Soil nitrogen range (cg/kg)")+
+  xlab("Number of genera")+
   theme(axis.title.x=element_blank())+
   geom_line(data=nitro_means %>% filter(!(group=="1" & x>55)), aes(x=x, y=predicted), linewidth=1.4, colour="#446590FF")
 
 
-save_plot("pgls_figures/numgen_nitro_breadth.pdf", p3)
+save_plot("figures/numgen_nitro_breadth.pdf", p3)
+save_plot("figures/numgen_nitro_breadth.jpg", p3)
 
 
 p<-cowplot::plot_grid(p1+ theme(axis.title.x=element_blank()), 
@@ -250,5 +247,6 @@ p <- add_sub(p, "Number of rhizobia genera", hjust = 0.5, size=12)
 
 plot(p)
 
-save_plot("pgls_figures/numgen_analysis_comp_fig.jpeg", p, base_height=7, base_width=10)
+save_plot("pgls_figures/numgen_analysis_comp_fig.jpg", p, base_height=7, base_width=10)
+save_plot("pgls_figures/numgen_analysis_comp_fig.pdf", p, base_height=7, base_width=10)
 

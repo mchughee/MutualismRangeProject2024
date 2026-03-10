@@ -8,7 +8,7 @@ library(terra)
 library(sf)
 
 # Read in files
-points<-read.csv("invasiveclass_thinnedoccs_soil_clim_biome.csv")
+points<-read.csv("data_large/allocc_with_native_status.csv")
 
 points <- st_as_sf(x = points, coords = c("X", "Y"))
 # Tell R to read coordinates as WGS84
@@ -49,7 +49,7 @@ png(file="temp_histo.png", height=280, width=340)
 ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(temp))+
   geom_density(fill="#26432FFF")+
   theme_classic()+
-  xlab("Average annual temp. (\u00B0C)")+
+  xlab("Mean annual temp. (\u00B0C)")+
   ylab("Density")+
   geom_vline(xintercept = q_temp[1], size=1)+
   geom_vline(xintercept = q_temp[2], size=1)+
@@ -71,7 +71,7 @@ png(file="nitro_histo.png", height=280, width=340)
 ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(nitrogen))+
   geom_density(fill="#6FB382FF")+
   theme_classic()+
-  xlab("Average soil nitrogen (cg/kg)")+
+  xlab("Soil nitrogen (cg/kg)")+
   ylab("Density")+
   geom_vline(xintercept = q_nitro[1], size=1)+
   geom_vline(xintercept = q_nitro[2], size=1)+
