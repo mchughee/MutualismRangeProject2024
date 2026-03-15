@@ -1,4 +1,4 @@
-### Making teeny weeny figures to make my compound figure
+### Making figures for conceptual figure
 ### libraries
 library(ggplot2)
 library(tidyverse)
@@ -6,6 +6,7 @@ library(ghibli)
 library(raster)
 library(terra)
 library(sf)
+library(cowplot)
 
 # Read in files
 points<-read.csv("data_large/allocc_with_native_status.csv")
@@ -23,8 +24,8 @@ Lupinus_nootkatensis<-subset(points_1, species=="Lupinus_nootkatensis")
 # Make precipitation frequency plot
 q_precip <- quantile(Lupinus_nootkatensis$precip, probs = c(0.05, 0.95))
 
-png("precip_histo.png", height=280, width=340)
-ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(precip))+
+
+precip_histo<-ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(precip))+
   geom_density(fill="#4D6D93FF")+
   theme_classic()+
   xlab("Annual precipitation (mm)")+
@@ -37,7 +38,7 @@ ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(precip))+
         axis.ticks.y=element_blank(),
         axis.text.y=element_blank())
 
-dev.off()
+save_plot("precip_histo.png", precip_histo)
 
 #dev.copy2pdf(file="precip_histo.pdf", width = 7, height = 5)
 
@@ -45,8 +46,8 @@ dev.off()
 # Make temp frequency
 q_temp <- quantile(Lupinus_nootkatensis$temp, probs = c(0.05, 0.95))
 
-png(file="temp_histo.png", height=280, width=340)
-ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(temp))+
+
+temp_histo<-ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(temp))+
   geom_density(fill="#26432FFF")+
   theme_classic()+
   xlab("Mean annual temp. (\u00B0C)")+
@@ -59,16 +60,13 @@ ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(temp))+
         axis.ticks.y=element_blank(),
         axis.text.y=element_blank())
 
-dev.off()
-
-#dev.copy2pdf(file="temp_histo.pdf", width = 7, height = 5)
+save_plot("temp_histo.png", temp_histo)
 
 
 # Make nitro frequency
 q_nitro <- quantile(Lupinus_nootkatensis$nitrogen, probs = c(0.05, 0.95))
 
-png(file="nitro_histo.png", height=280, width=340)
-ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(nitrogen))+
+nitro_histo<-ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(nitrogen))+
   geom_density(fill="#6FB382FF")+
   theme_classic()+
   xlab("Soil nitrogen (cg/kg)")+
@@ -81,9 +79,7 @@ ggplot(subset(points_1, species=="Lupinus_nootkatensis"), aes(nitrogen))+
     axis.ticks.y=element_blank(),
     axis.text.y=element_blank())
 
-dev.off()
-
-#dev.copy2pdf(file="nitro_histo.pdf", width = 7, height = 5)
+save_plot("nitro_histo.png", nitro_histo)
 
 
 # Bring in world map data
@@ -147,8 +143,7 @@ dev.off()
 # OCCURRENCES
 world = map_data('world')
 Lupinus_nootkatensis$intrdcd<-as.factor(Lupinus_nootkatensis$intrdcd)
-png(file="lupinus_occs.png", width=480, height=580)
-  occs<-ggplot() +
+occs<-ggplot() +
   geom_polygon(data = world, aes(x = long, y = lat, group = group), colour="darkgrey", fill = NA, alpha = 0.2) +
   geom_sf(data = Lupinus_nootkatensis, aes(color = intrdcd), size = 0.5)+
   scale_colour_manual(values=c("#92BBD9FF", "#DCCA2CFF"), labels=c("native", "intro"))+
@@ -162,12 +157,4 @@ png(file="lupinus_occs.png", width=480, height=580)
         text = element_text(size = 12))+
   guides(colour = guide_legend(override.aes = list(size=4)))
 
-ggsave("lupinus_occs.png", width=6, height=6, units = "in")
-  
-
-
-#dev.copy2pdf(file="lupinus_occs.pdf", width = 7, height = 6)
-
-
-dev.off()
-
+save_plot("occs_map.png", occs)
