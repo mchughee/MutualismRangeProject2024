@@ -12,7 +12,7 @@ library(shapefiles)
 # Put this in data_large once unzipped
 
 # Read in a list of my species
-my_sp <- read.csv("data/species_list_post_thinning.csv")
+my_sp <- read.csv("species_lists/species_list_post_thinning.csv")
 
 # Read in POWO names file
 names = read_delim("data_large/wcvp_names_and_distribution_special_issue_28_feb_2022/wcvp_names.txt", delim = "|") %>% 
@@ -38,7 +38,7 @@ poly_sf3 = geojson_sf("data_large/level3.geojson")
 st_crs(poly_sf3)
 
 # Make sure that the geometries in plant_dist1 and level3.geojson match up
-sum(plant_dist$area_code_l3 %in% poly_sf3$LEVEL3_COD)
+sum(plant_dist$area_code_l3 %in% poly_sf3$LEVEL3_COD) == length(plant_dist$area_code_l3)
 
 # Merge the geometries with the species
 plant_dist$geometry <- poly_sf3$geometry[match(plant_dist$area_code_l3, poly_sf3$LEVEL3_COD)]

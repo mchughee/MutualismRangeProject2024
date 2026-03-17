@@ -10,7 +10,12 @@ library(geojsonsf)
 poly_sf = st_read("data_large/powo_polygons_sorted.shp")
 
 # Read in occurrence data
-points <- read_csv("data_large/allocc_with_env.csv")
+points <- read_csv("data_large/allocc_with_env.csv") %>% 
+  group_by(species) %>% 
+  mutate(n = n()) %>% 
+  filter(n>=25)
+
+n_distinct(points$species)
 
 # Put points into sf
 points_sf <- st_as_sf(x = points,
@@ -20,6 +25,8 @@ points_sf <- st_as_sf(x = points,
                       crs = 4326) %>% 
   filter(species %in% poly_sf$spcs_nm)
 
+
+n_distinct(points_sf$species)
 
 # Okay, now time to run through a big loop check how good the fit is for all the points and the polygons for each species 
 # Turning geodesic geometry off
@@ -78,7 +85,7 @@ plot(look2)
 look3 = points_sf %>% 
   filter(species == "Anthyllis_montana") %>%
   bind_cols(., look) %>% 
-  st_as_sf(coords = c("X", "Y")) %>% 
+  st_as_sf(coords = c("X", "Y"))
   
 
 world = map_data("world")
@@ -102,7 +109,6 @@ write_csv(less50, "species_lists/list_powo_pols_lessthan50.csv")
 # c) have less than 50% overlap with polygons
 
 points_sf1 <- points_sf %>%
-  filter(!(species %in% greater100$species)) %>% 
   filter(!(species %in% less50$species))
 
 n_distinct(points_sf1$species)

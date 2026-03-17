@@ -22,6 +22,8 @@ data_1 <- data[match(mytree$tip.label,data$species),]
 # calculate absolute median latitude
 data_1$abs_med_lat <- abs(data_1$median_lat)
 
+summary(data_1)
+
 # Does our data meet the assumptions of a GLS?
 # and if not, let's transform the variables!
 
@@ -37,6 +39,7 @@ hist(log(data_1$precip_range))
 hist(data_1$nitro_range)
 hist(log(data_1$nitro_range))
 min(data_1$nitro_range)
+# there are 4 species with a nitrogen range of 0, all in Brazil
 
 # make sure R is reading our factors as factors!!!
 data_1$EFN <- as.factor(data_1$EFN)
@@ -45,7 +48,7 @@ data_1$fixer <- as.factor(data_1$fixer)
 
 
 # PGLS for precip range ----
-
+set.seed(10)
 precip_range <- gls(log(precip_range) ~ EFN*abs_med_lat + fixer*abs_med_lat + 
                       woody + uses_num_uses + annual,
                     data = data_1, 
@@ -209,7 +212,7 @@ fixer_nitro_means <- ggpredict(nitro_range, terms = c("abs_med_lat [all]", "fixe
 plot(fixer_nitro_means)
 
 
-# Make plots of nitroegen niche breadth
+# Make plots of nitrogen niche breadth
 
 p5 <- ggplot() +
   geom_point(data = data_1, aes(x = abs_med_lat, y = nitro_range, colour = EFN, shape = EFN), alpha = 0.2) +

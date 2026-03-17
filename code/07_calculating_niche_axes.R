@@ -4,54 +4,81 @@ library(tidyverse)
 library(cowplot)
 library(ggplot2)
 
+# Get some numbers for methods text
+points_c <- read_csv("data_large/allocc_with_env.csv")
+n_distinct(points_c$species)
+per_sp_count_c = points_c %>% 
+  group_by(species) %>% 
+  summarize(n = n()) %>% 
+  filter(n>=25)
+# 2910 before thinning
+# 2867 after 
+2910-2867
+
 
 # Read in occurrences with environmental data etc.
 points <- read_csv("data_large/allocc_with_native_status.csv")
 n_distinct(points$species)
 
-
-x = (points %>% filter(species=="Andira_coriacea"))
-
 per_sp_count = points %>% 
   group_by(species) %>% 
   summarize(n = n())
 
-# Drop points that have NA values for the niche axes and the intrdcd status
+# Drop species with fewer than 25 occurrences, this is described earlier in the methods text but done here. could move this step earlier in revisions.
+points_0 <- points %>% 
+  group_by(species) %>% 
+  mutate(n = n()) %>% 
+  filter(n>=25)
+n_distinct(points_0$species)
 
-points_1 <- points %>% 
-  drop_na(intrdcd)
+# Drop points that have NA values for the intrdcd status 
+
+points_1 <- points_0 %>% 
+  drop_na(intrdcd) %>%
+  group_by(species) %>% 
+  mutate(n1 = n()) %>% 
+  filter(n1 >= 25)
+
+n_distinct(points_0$species)
 n_distinct(points_1$species)
-# Not sure if this filter was applied to final dataset
 
-points_2 <- points_1 %>% 
-  drop_na(precip) %>% 
-  drop_na(temp) %>% 
-  drop_na(nitrogen)
-n_distinct(points_2$species)
+n_distinct(points_0$species) - n_distinct(points_1$species)
 
-# Check what percent of observations are retained on a species-by-species basis
 per_sp_count_1 = points_1 %>% 
   group_by(species) %>% 
   summarize(n1 = n())
 
+check = left_join(per_sp_count, per_sp_count_1) %>%
+  mutate(pct = n1/n) %>% 
+  filter(n1 >= 25)
+
+median(check$pct)
+
+# Drop points that have NA values for the niche axes 
+
+points_2 <- points_1 %>% 
+  drop_na(precip) %>% 
+  drop_na(temp) %>% 
+  drop_na(nitrogen) %>% 
+  group_by(species) %>% 
+  mutate(n2 = n()) %>% 
+  filter(n2>=25)
+n_distinct(points_1$species)
+n_distinct(points_2$species)
+
+hist(points_2$nitrogen)
+
+n_distinct(points_1$species) - n_distinct(points_2$species)
+
+# Check what percent of observations are retained on a species-by-species basis
 per_sp_count_2 = points_2 %>% 
   group_by(species) %>% 
   summarize(n2 = n())
 
-check = left_join(per_sp_count, per_sp_count_1) %>%
-  mutate(pct = n1/n) %>% 
-  filter(n1 >= 25)
-n_distinct(points$species) - n_distinct(check$species)
-
-
 check2 = left_join(check, per_sp_count_2) %>% 
-  mutate(pct2 = n2/n) %>% 
+  mutate(pct2 = n2/n1) %>% 
   filter(n2 >= 25)
 
-n_distinct(check$species) - n_distinct(check2$species)
-
-median(check$pct)
-# 96.4
 median(check2$pct2)
 # 86.7
 
@@ -75,9 +102,8 @@ points_2 %>% group_by(species) %>%
   summarize(num_biome = length(unique(biome)))
 
 # common sense check that the code works
-(points_2 %>% filter(species=="Acacia_acuminata"))$biome
-
-(points_2 %>% filter(species=="Abrus_precatorius"))$biome
+table((points_2 %>% filter(species=="Acacia_acuminata"))$biome)
+table((points_2 %>% filter(species=="Abrus_precatorius"))$biome)
 
 # common sense check-- species shouldn't be found in more than 16 biomes
 # (this is the number of biome levels in the occurrence dataset-- remember,
@@ -86,10 +112,7 @@ points_2 %>% group_by(species) %>%
 # Group by species and get summarizing
 summary_df <- points_2 %>% 
   group_by(species) %>% 
-  # mutate(biome = if_else(biome %in% c("98", "99"), NA, biome)) %>% 
-  filter(!(biome %in% c("98", "99"))) %>% 
-#   I think maybe just changing these to NA is preferable.
-#   Need to mention in methods though if filtering out.
+  mutate(biome = if_else(biome %in% c("98", "99"), NA, biome)) %>%
   droplevels() %>% 
   reframe(n = n(),
           precip_maxquant = quantile(precip, 0.95), 
@@ -113,14 +136,14 @@ summary_df <- points_2 %>%
           quant005 = quantile(Y, 0.05),
           num_biome = length(unique(na.omit(biome))),
           biome = names(which.max(table(na.omit(biome))))
-  )
+  ) %>% 
+  mutate(precip_range = precip_maxquant - precip_minquant,
+         temp_range = temp_maxquant - temp_minquant,
+         nitro_range = nitro_maxquant - nitro_minquant)
 
 summary(summary_df)
-
-# add in our niche breadth measures
-summary_df$precip_range <- summary_df$precip_maxquant-summary_df$precip_minquant
-summary_df$temp_range <- summary_df$temp_maxquant-summary_df$temp_minquant
-summary_df$nitro_range <- summary_df$nitro_maxquant-summary_df$nitro_minquant
+# there are four species with a nitrogen range of 0. this is realy strange. must be due to issues with the soil data?
+plot(points$Y, points$nitrogen)
 
 # Now read in traits
 
@@ -131,18 +154,14 @@ traits <- read.csv("data/legume_range_traits.csv") %>%
 # Let us smoosh the traits together with the summary_df.
 
 traits$species <- gsub(" ", "_", traits$species)
-master_legume <- left_join(summary_df, traits, multiple="any")
+master_legume <- left_join(summary_df, traits, multiple="any") %>% 
+  filter(nitro_range >0)
 
 summary(master_legume)
 
-dropped_sp <- filter(master_legume, n<25)
-
-master_thin <- master_legume %>% 
-  filter(n >= 25)
-
-master_thin$biome <- as.factor(master_thin$biome)
+master_legume$biome <- as.factor(master_legume$biome)
 
 # write our new dataframe into a csv
-write_csv(master_thin, "data/pgls_species_data.csv")
+write_csv(master_legume, "data/pgls_species_data.csv")
 
 

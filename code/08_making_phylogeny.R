@@ -1,7 +1,7 @@
 # Trying out V.phylomaker
 
 library(devtools)
-library(BiocManager)
+# library(BiocManager)
 # devtools::install_github("jinyizju/V.PhyloMaker")
 # BiocManager::install("ggtree")
 library("V.PhyloMaker")
@@ -61,7 +61,7 @@ species_to_drop <- subset(x, branch.length == 84.763337)
 
 # we're going to save the polytomy species as a nice little csv
 # to make them easy to reference in the future
-write.csv(species_to_drop, "data/list_of_species_in_polytomy.csv")
+write.csv(species_to_drop, "species_lists/list_of_species_in_polytomy.csv")
 
 # filter out species with a branch length that is 84.763337
 
@@ -74,6 +74,7 @@ check <- as_tibble(dropped)
 dropped
 # a visual check
 plot(dropped)
+2747-139
 
 # write tree
 write.tree(dropped, "phylogeny/phylogeny_polytomy_removed.tre")
@@ -87,7 +88,7 @@ pgls_new <- filter(pgls, pgls$species %in% dropped$tip.label)
 
 # write it as a csv for future use!
 
-write_csv(pgls_new, "species_lists/pgls_species_data_poly_dropped.csv")
+write_csv(pgls_new, "data/pgls_species_data_poly_dropped.csv")
 
 setdiff(pgls$species, mytree$tip.label)
 

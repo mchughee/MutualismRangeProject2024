@@ -3,7 +3,7 @@
 # First, read in packages and data
 library(terra)
 library(sf)
-library(dplyr)
+library(tidyverse)
 
 # Using the twenty species dataframe for right now, but replace with full data when the time comes
 occ <- read_csv("data_large/allocc_clean.csv")
@@ -26,15 +26,15 @@ occs_ls <- terra::vect(occ, geom = c("decimalLongitude", "decimalLatitude"),
 species_list = unique(occs_ls$species)
 
 results <- NULL
-
+set.seed(1)
 for (i in 1:length(species_list)) {
   this.species <- spatSample(occs_ls[occs_ls$species == species_list[i],], size = 1, strata = temp)
-#   Need to add method = regular to above to make sampling repeatable I think
   my_sf <- sf::st_as_sf(this.species)
   results <- rbind(results, my_sf)
   print(i)
   print(species_list[i])
 }
+
 
 # Check that numbers make sense
 prethinning = occ %>% 
@@ -47,18 +47,24 @@ postthinning = results %>%
 
 check = left_join(prethinning, postthinning)
 plot(check$n_before, check$n_after)
-abline(0, 1, add = TRUE)
+abline(0, 1)
+
+# Add step to drop species with <25 occurrences here
 
 sf::st_write(results, "data_large/allocc_thinned.csv", layer_options = "GEOMETRY=AS_XY")
 
+# write out species list for later comparison
 
 species_list = results %>% 
+  tibble() %>% 
   select(-geometry) %>% 
   group_by(species) %>% 
   summarize(n = n())
 
+species_list %>% filter(n>25)
+species_list %>% filter(n>=25)
+# 2863 >25
+# 2867 >=25
+
 write_csv(species_list, "species_lists/species_list_post_thinning.csv")
 
-
-
-# Nice and easy! Now we have a thinned dataframe

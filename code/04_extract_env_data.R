@@ -38,12 +38,13 @@ nitrogen <- soil_world_vsi("nitrogen", 15, stat = "mean")
 st_crs(nitrogen)
 
 thin_nit_proj = thin %>% 
-  select(species, genus, countryCode, geometry) %>% 
+  select(species, geometry) %>% 
   st_transform(crs = st_crs(nitrogen))
 
 # plot(thin[1:10000,])
 # plot(thin_nit_proj[1:10000,])
 
+# Takes a long time
 nit_extract <- terra::extract(nitrogen, thin_nit_proj)
 
 thin$nitrogen = nit_extract$`nitrogen_5-15cm_mean`
@@ -80,12 +81,11 @@ rm(nitrogen, thin_nit_proj)
 # 3. Extracting biome data for occurrence points -----
 
 # Download wwf data
-download.file("https://files.worldwildlife.org/wwfcmsprod/files/Publication/file/6kcchn7e3u_official_teow.zip", 
-              destfile = "data_large/wwf_biome_data.zip")
+# download.file("https://files.worldwildlife.org/wwfcmsprod/files/Publication/file/6kcchn7e3u_official_teow.zip", destfile = "data_large/wwf_biome_data.zip")
 # If the above doesn't work just copy-paste the URL into the browser, move file to data_large, modify next step as needed
 
 # Unzip data file
-unzip("data_large/6kcchn7e3u_official_teow", exdir = "data_large/wwf_biome_data")
+# unzip("data_large/6kcchn7e3u_official_teow", exdir = "data_large/wwf_biome_data")
 
 # Read in wwf ecoregions shapefile
 shapes <- st_read("data_large/wwf_biome_data/wwf_terr_ecos.shp")
@@ -116,12 +116,12 @@ biome_names = tibble(biome = 1:14,
 # Extract biome for lat and long of all occurrences
 sf_use_s2(FALSE)
 biome_join <- st_join(thin, shapes, join=st_intersects, left=TRUE, largest=FALSE) %>% 
-  select(species, genus, countryCode, geometry, temp, precip, nitrogen, biome = BIOME) # %>% 
+  select(species, geometry, temp, precip, nitrogen, biome = BIOME) # %>% 
   # left_join(., biome_names) # can join these on later when needed
 
 # Common-sense check: does the distribution of species across biomes know what
 # we know to be true, i.e. most falling in temperate/tropical/mediterranean areas
-table(biome_join$biome_name)/nrow(biome_join)
+table(biome_join$biome)/nrow(biome_join)
 
 
 # We have just a few occurrences falling into "rock and ice" and "lake" (98 and 99)
@@ -134,5 +134,9 @@ milkvetch <- filter(biome_join, species=="Astragalus_echinatus")
 # write into a csv file
 sf::st_write(biome_join, "data_large/allocc_with_env.csv", layer_options = "GEOMETRY=AS_XY")
 
+summary(biome_join)
 
-
+sum(is.na(biome_join$nitrogen))/nrow(biome_join)
+sum(is.na(biome_join$temp))/nrow(biome_join)
+sum(is.na(biome_join$precip))/nrow(biome_join)
+sum(is.na(biome_join$biome))/nrow(biome_join)
