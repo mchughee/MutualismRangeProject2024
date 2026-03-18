@@ -17,14 +17,17 @@ per_sp_count = points %>%
   group_by(species) %>% 
   summarize(n = n())
 
-# Drop species with fewer than 25 occurrences, this is described earlier in the methods text but done here. could move this step earlier in revisions.
+# Drop species with fewer than 25 occurrences.
 points_0 <- points %>% 
   group_by(species) %>% 
   mutate(n = n()) %>% 
   filter(n>=25) %>% 
-  # Also drop species with occurrences falling in <50 or >100% of polygons.
-  filter(!(species %in% lt50$species)) %>% 
+#   Drops to 2852
+#   Also drop species with occurrences falling in <50 or >100% of polygons.
+  filter(!(species %in% lt50$species)) %>%
+#   Drops to 2812
   filter(!(species %in% gt100$species)) 
+# Drops to 2734
          
 n_distinct(points_0$species)
 
@@ -35,10 +38,10 @@ points_1 <- points_0 %>%
   group_by(species) %>% 
   mutate(n1 = n()) %>% 
   filter(n1 >= 25)
+# Drops to 2706
 
 n_distinct(points_0$species)
 n_distinct(points_1$species)
-
 n_distinct(points_0$species) - n_distinct(points_1$species)
 
 per_sp_count_1 = points_1 %>% 
@@ -60,11 +63,10 @@ points_2 <- points_1 %>%
   group_by(species) %>% 
   mutate(n2 = n()) %>% 
   filter(n2>=25)
+# Drops to 2669
+
 n_distinct(points_1$species)
 n_distinct(points_2$species)
-
-hist(points_2$nitrogen)
-
 n_distinct(points_1$species) - n_distinct(points_2$species)
 
 # Check what percent of observations are retained on a species-by-species basis
@@ -110,7 +112,6 @@ table((points_2 %>% filter(species=="Abrus_precatorius"))$biome)
 summary_df <- points_2 %>% 
   group_by(species) %>% 
   mutate(biome = if_else(biome %in% c("98", "99"), NA, biome)) %>%
-#   Drop the above instead?
   droplevels() %>% 
   reframe(n = n(),
           precip_maxquant = quantile(precip, 0.95), 
