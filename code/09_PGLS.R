@@ -135,7 +135,7 @@ temp_range <- read_rds("model_fits/temp_niche_breadth.rds")
 # save model output!
 temp_df <- data.frame(coef(summary(temp_range))) %>% format(scientific = F)
 temp_df$p.value <- as.numeric(temp_df$p.value) %>% round(4)
-write.csv(temp_df, "temp_niche_breadth.csv")
+write.csv(temp_df, "tables/temp_breadth_output_table.csv")
 
 
 ## Pull predicted means for EFN and fixer ----
