@@ -44,12 +44,12 @@ biomefig<-cowplot::plot_grid(efn_biome, rhiz_biome); biomefig
 # Make histogram showing distribution of species by latitude and mutualism ----
 
 master_thin$Mutualism<-ifelse(master_thin$EFN=="1" & master_thin$fixer=="0", "EFN",
-                              ifelse(master_thin$EFN=="0" & master_thin$fixer=="1", "Rhizobia",
-                                     ifelse(master_thin$EFN=="1" & master_thin$fixer=="1", "Both", "None")))
+                              ifelse(master_thin$EFN=="0" & master_thin$fixer=="1", "rhizobia",
+                                     ifelse(master_thin$EFN=="1" & master_thin$fixer=="1", "both", "none")))
                               
 
 histo<-master_thin %>% 
-  mutate(Mutualism=fct_relevel(Mutualism, "Both", "EFN", "Rhizobia", "None")) %>% 
+  mutate(Mutualism=fct_relevel(Mutualism, "both", "EFN", "rhizobia", "none")) %>% 
   ggplot(aes(x=median_lat, fill=Mutualism))+
   geom_histogram()+
   theme_classic()+
