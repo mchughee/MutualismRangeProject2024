@@ -10,10 +10,7 @@ library(geojsonsf)
 poly_sf = st_read("data_large/powo_polygons_sorted.shp")
 
 # Read in occurrence data
-points <- read_csv("data_large/allocc_with_env.csv") %>% 
-  group_by(species) %>% 
-  mutate(n = n()) %>% 
-  filter(n>=25)
+points <- read_csv("data_large/allocc_with_env.csv")
 
 n_distinct(points$species)
 
@@ -67,9 +64,33 @@ hist(final_df$percent_in_polys)
 
 # grab species with >100 percent cover, suggesting some overlapping polygons
 greater100 <- final_df %>% filter(percent_in_polys > 100)
-write_csv(greater100, "species_lists/list_powo_pols_greaterthan100.csv")
+sf::st_write(greater100, "species_lists/list_powo_pols_greaterthan100.csv", layer_options = "GEOMETRY=AS_XY")
 
-# Look at why these species have >100%
+# grab species with <50% cover, because that indicates the polygons are not fitting very well
+less50 <- final_df %>% filter(percent_in_polys < 50)
+sf::st_write(less50, "species_lists/list_powo_pols_lessthan50.csv", layer_options = "GEOMETRY=AS_XY")
+
+
+# overlay points with polygons to grab native or invasive status ----
+
+sf_use_s2(FALSE)
+status <- NULL
+
+for (i in (unique(points_sf$species))){
+  this.species <- st_join(points_sf[points_sf$species == i,], 
+                         st_difference(poly_sf[poly_sf$spcs_nm == i,]),
+                         join = st_intersects, left = TRUE, largest = FALSE)
+  status <- rbind(status, this.species)
+  print(i)
+  }
+
+status1 <- status %>% select(-c(plnt_n_, cntn__1, rgn_c_2, ar_cd_3, extinct, lctn_db, spcs_nm))
+
+sf::st_write(status1, "data_large/allocc_with_native_status.csv", layer_options = "GEOMETRY=AS_XY")
+
+
+
+# Look at why some species have >100% ----
 look = all$Anthyllis_montana %>% 
   t() %>% 
   tibble() %>% 
@@ -86,7 +107,7 @@ look3 = points_sf %>%
   filter(species == "Anthyllis_montana") %>%
   bind_cols(., look) %>% 
   st_as_sf(coords = c("X", "Y"))
-  
+
 
 world = map_data("world")
 
@@ -97,41 +118,6 @@ ggplot() +
   theme(legend.title=element_blank())
 
 # I think there is just some overlap in polygon boundaries
-
-# grab species with <50% cover, because that indicates the polygons are not fitting very well
-less50 <- final_df %>% filter(percent_in_polys < 50)
-write_csv(less50, "species_lists/list_powo_pols_lessthan50.csv")
-
-
-# Now, let's drop species from our dataset that either 
-# a) don't have polygons
-# b) have greater than 100% overlap with polygons
-# c) have less than 50% overlap with polygons
-
-points_sf1 <- points_sf %>%
-  filter(!(species %in% less50$species))
-
-n_distinct(points_sf1$species)
-
-# overlay points with polygons to grab native or invasive status
-
-sf_use_s2(FALSE)
-status <- NULL
-
-for (i in (unique(points_sf1$species))){
-  this.species <- st_join(points_sf1[points_sf1$species == i,], 
-                         st_difference(poly_sf[poly_sf$spcs_nm == i,]),
-                         join = st_intersects, left = TRUE, largest = FALSE)
-  status <- rbind(status, this.species)
-  print(i)
-  }
-
-
-status1 <- status %>% select(-c(plnt_n_, cntn__1, rgn_c_2, ar_cd_3, extinct, lctn_db, spcs_nm))
-
-
-sf::st_write(status1, "data_large/allocc_with_native_status.csv", layer_options = "GEOMETRY=AS_XY")
-
 
 
 # set introducd to be a factor
