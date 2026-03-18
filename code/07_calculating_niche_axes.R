@@ -4,21 +4,16 @@ library(tidyverse)
 library(cowplot)
 library(ggplot2)
 
-# Get some numbers for methods text
-points_c <- read_csv("data_large/allocc_with_env.csv")
-n_distinct(points_c$species)
-per_sp_count_c = points_c %>% 
-  group_by(species) %>% 
-  summarize(n = n()) %>% 
-  filter(n>=25)
-# 2910 before thinning
-# 2867 after 
-2910-2867
-
 
 # Read in occurrences with environmental data etc.
 points <- read_csv("data_large/allocc_with_native_status.csv")
 n_distinct(points$species)
+
+
+# Note to self to add step here to drop species that
+# b) have greater than 100% overlap with polygons
+# c) have less than 50% overlap with polygons
+# based on lists
 
 per_sp_count = points %>% 
   group_by(species) %>% 
@@ -32,7 +27,7 @@ points_0 <- points %>%
 n_distinct(points_0$species)
 
 # Drop points that have NA values for the intrdcd status 
-
+# Do this or not?
 points_1 <- points_0 %>% 
   drop_na(intrdcd) %>%
   group_by(species) %>% 
@@ -113,6 +108,7 @@ table((points_2 %>% filter(species=="Abrus_precatorius"))$biome)
 summary_df <- points_2 %>% 
   group_by(species) %>% 
   mutate(biome = if_else(biome %in% c("98", "99"), NA, biome)) %>%
+#   Drop the above instead?
   droplevels() %>% 
   reframe(n = n(),
           precip_maxquant = quantile(precip, 0.95), 
