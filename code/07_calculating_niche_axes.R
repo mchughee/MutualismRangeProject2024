@@ -9,11 +9,9 @@ library(ggplot2)
 points <- read_csv("data_large/allocc_with_native_status.csv")
 n_distinct(points$species)
 
-
-# Note to self to add step here to drop species that
-# b) have greater than 100% overlap with polygons
-# c) have less than 50% overlap with polygons
-# based on lists
+# Read in lists of species with poor polygon overlap
+lt50 = read_csv("species_lists/list_powo_pols_lessthan50.csv")
+gt100 = read_csv("species_lists/list_powo_pols_greaterthan100.csv")
 
 per_sp_count = points %>% 
   group_by(species) %>% 
@@ -23,7 +21,11 @@ per_sp_count = points %>%
 points_0 <- points %>% 
   group_by(species) %>% 
   mutate(n = n()) %>% 
-  filter(n>=25)
+  filter(n>=25) %>% 
+  # Also drop species with occurrences falling in <50 or >100% of polygons.
+  filter(!(species %in% lt50$species)) %>% 
+  filter(!(species %in% gt100$species)) 
+         
 n_distinct(points_0$species)
 
 # Drop points that have NA values for the intrdcd status 
