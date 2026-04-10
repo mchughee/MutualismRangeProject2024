@@ -93,8 +93,6 @@ wcvp_dwca
 wgsrpd-master
 kew_polys_greaterthan_100.csv
 kewpolygonsfit.png
-list_powo_pols_greaterthan100.csv
-list_powo_pols_lessthan50.csv
 mapping_kew_polys
 planar_kew_polys
 powo_polygons
@@ -235,4 +233,3 @@ temp_raster.png
 twopanel_descriptiveresults.jpg
 pgls_figures
 pgls_output_tables
-list_powo_pols_lessthan100.csv
