@@ -39,7 +39,6 @@ hist(log(data_1$precip_range))
 hist(data_1$nitro_range)
 hist(log(data_1$nitro_range))
 min(data_1$nitro_range)
-# there are 4 species with a nitrogen range of 0, all in Brazil
 
 # make sure R is reading our factors as factors!!!
 data_1$EFN <- as.factor(data_1$EFN)
@@ -112,7 +111,7 @@ p2 <- ggplot() +
 
 
 # PGLS for temp range ----
-
+set.seed(10)
 temp_range <- gls(temp_range ~ EFN*abs_med_lat + fixer*abs_med_lat
                   + woody + uses_num_uses + annual,
                   data = data_1, 
@@ -179,7 +178,7 @@ p4 <- ggplot() +
 
 
 # PGLS for nitro range ----
-
+set.seed(10)
 nitro_range <- gls(log(nitro_range) ~ EFN*abs_med_lat + fixer*abs_med_lat +
                    woody + uses_num_uses + annual,
                    data = data_1, 

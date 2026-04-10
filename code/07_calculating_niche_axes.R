@@ -6,6 +6,7 @@ library(ggplot2)
 
 
 # Read in occurrences with environmental data etc.
+# points <- read_csv("data_large/invasiveclass_thindat_climadd_soilgridsadd_biome.csv")
 points <- read_csv("data_large/allocc_with_native_status.csv")
 n_distinct(points$species)
 
@@ -27,9 +28,9 @@ points_0 <- points %>%
   filter(!(species %in% lt50$species)) %>%
 #   Drops to 2812
   filter(!(species %in% gt100$species)) 
-# Drops to 2734
          
 n_distinct(points_0$species)
+# Drops to 2734
 
 # Drop points that have NA values for the intrdcd status 
 # Do this or not?
@@ -42,6 +43,7 @@ points_1 <- points_0 %>%
 
 n_distinct(points_0$species)
 n_distinct(points_1$species)
+# Drops to 2706
 n_distinct(points_0$species) - n_distinct(points_1$species)
 
 per_sp_count_1 = points_1 %>% 
@@ -63,10 +65,10 @@ points_2 <- points_1 %>%
   group_by(species) %>% 
   mutate(n2 = n()) %>% 
   filter(n2>=25)
-# Drops to 2669
 
 n_distinct(points_1$species)
 n_distinct(points_2$species)
+# Drops to 2667
 n_distinct(points_1$species) - n_distinct(points_2$species)
 
 # Check what percent of observations are retained on a species-by-species basis
@@ -141,8 +143,6 @@ summary_df <- points_2 %>%
          nitro_range = nitro_maxquant - nitro_minquant)
 
 summary(summary_df)
-# there are four species with a nitrogen range of 0. this is realy strange. must be due to issues with the soil data?
-plot(points$Y, points$nitrogen)
 
 # Now read in traits
 
@@ -153,8 +153,7 @@ traits <- read.csv("data/legume_range_traits.csv") %>%
 # Let us smoosh the traits together with the summary_df.
 
 traits$species <- gsub(" ", "_", traits$species)
-master_legume <- left_join(summary_df, traits, multiple="any") %>% 
-  filter(nitro_range >0)
+master_legume <- left_join(summary_df, traits, multiple="any") 
 
 summary(master_legume)
 

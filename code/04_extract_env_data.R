@@ -21,8 +21,7 @@ thin <- st_as_sf(x = thin, coords = c("X", "Y")) %>%
 
 temp <- raster::raster("data_large/wc2.1_30s_bio_1.tif")
 precip <- raster::raster("data_large/wc2.1_30s_bio_12.tif")
-crs(temp) <- 4326
-crs(precip) <- 4326
+plot(temp)
 
 # Extract climate data
 
@@ -36,18 +35,32 @@ rm(temp, precip)
 # Pull nitrogen raster data
 nitrogen <- soil_world_vsi("nitrogen", 15, stat = "mean")
 st_crs(nitrogen)
+plot(nitrogen)
+nitrogen
+writeRaster(nitrogen, "nitrogen_5_15_mean_igh.tif")
+
+# Read in nitrogen raster
+nitrogen <- raster::raster("nitrogen_5_15_mean_igh.tif")
+crs(nitrogen)
+nitrogen
+
+# plot nitrogen data to make sure it looks reasonable
+raster::plot(nitrogen)
+st_crs(nitrogen)
 
 thin_nit_proj = thin %>% 
   select(species, geometry) %>% 
   st_transform(crs = st_crs(nitrogen))
 
+head(thin_nit_proj)
+
+plot(thin_nit_proj)
+
+# Extract soil grids data
+thin$nitrogen <- raster::extract(nitrogen, thin_nit_proj)
+
 # plot(thin[1:10000,])
 # plot(thin_nit_proj[1:10000,])
-
-# Takes a long time
-nit_extract <- terra::extract(nitrogen, thin_nit_proj)
-
-thin$nitrogen = nit_extract$`nitrogen_5-15cm_mean`
 
 summary(thin)
 
