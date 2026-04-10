@@ -37,10 +37,10 @@ nitrogen <- soil_world_vsi("nitrogen", 15, stat = "mean")
 st_crs(nitrogen)
 plot(nitrogen)
 nitrogen
-writeRaster(nitrogen, "nitrogen_5_15_mean_igh.tif")
+writeRaster(nitrogen, "data_large/nitrogen_5_15_mean_igh.tif")
 
 # Read in nitrogen raster
-nitrogen <- raster::raster("nitrogen_5_15_mean_igh.tif")
+nitrogen <- raster::raster("data_large/nitrogen_5_15_mean_igh.tif")
 crs(nitrogen)
 nitrogen
 
